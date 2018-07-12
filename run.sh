@@ -70,7 +70,13 @@ while test $# -gt 0; do
         esac
 done
 
-
+# If starts with / then it is an absolute path. We add /data to relative path for convenience
+if  [[ $DIRECTORY == /* ]] ;
+then
+  echo "Mee"
+else
+  DIRECTORY=/data/$DIRECTORY
+fi
 DRILL=${DRILL:-172.17.0.2}
 GRAPHDB=${GRAPHDB:-172.17.0.3}
 GRAPH_REPOSITORY=${GRAPH_REPOSITORY:-kraken_test}
@@ -80,7 +86,7 @@ echo "[-dr] Drill: $DRILL"
 echo "[-db] GraphDB host: $GRAPHDB"
 echo "[-gr] GraphDB repository: $GRAPH_REPOSITORY"
 
-docker run -it --rm --link drill:drill autodrill -h $DRILL -r $DIRECTORY/drill > $DIRECTORY/mappings.ttl
+docker run -it --rm --link drill:drill autodrill -h $DRILL -r $DIRECTORY > $DIRECTORY/mappings.ttl
 
 # Generate config.properties
 echo "connectionURL = jdbc:drill:drillbit=drill:31010
@@ -95,7 +101,6 @@ docker run -it --rm --link drill:drill -v /data:/data r2rml $DIRECTORY/config.pr
 # Unzip generated RDF file
 gzip -d -k -f $DIRECTORY/rdf_output.ttl.gz
 
-: '
 # Run RdfUpload to upload to GraphDB
 docker run -it --rm -v $DIRECTORY:/data rdf-upload \
   -if "/data/rdf_output.ttl" \
@@ -103,6 +108,7 @@ docker run -it --rm -v $DIRECTORY:/data rdf-upload \
   -uep "$GRAPHDB:7200/repositories/$GRAPH_REPOSITORY/statements" \
   -un admin -pw admin
 
+: '
 docker run -it --rm -v /data:/data rdf-upload \
   -if "/data/pharmgkb_drugs/rdf_output.ttl" \
   -ep "http://172.17.0.3:7200/repositories/kraken_test" \
