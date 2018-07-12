@@ -41,6 +41,23 @@ docker run -it --rm -v /data/rdfu:/data rdf-upload -if "/data/affymetrix_test.tt
 
 
 
+# Running the pipeline
+
+```shell
+# Create a directory with your data files in /drill.
+# e.g.: /data/pharmagkb_drugs/drill/drugs.tsv
+
+./run.sh -d /data/pharmagkb_drugs
+[-d] Working directory: 
+[-dr] Drill: 172.17.0.2
+[-db] GraphDB host: 172.17.0.3
+[-gr] GraphDB repository: kraken_test
+```
+
+
+
+
+
 # Building the pipeline
 
 ## OLD Run Apache Drill in background
@@ -82,8 +99,10 @@ Leave the Drill command line using Ctrl+P+Q
 git clone git@github.com:vemonet/apache-drill.git
 
 # Forked from amalic
-git remote add upstream  git@github.com:amalic/apache-drill.git
+git remote add 
+upstream  git@github.com:amalic/apache-drill.git
 git fetch upstream
+git merge upstream/master
 ```
 
 Docs: https://www.tutorialspoint.com/apache_drill/index.htm

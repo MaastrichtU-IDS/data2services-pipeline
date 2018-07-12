@@ -2,50 +2,117 @@
 set -e
 # Any subsequent(*) commands which fail will cause the shell script to exit immediately
 
-FILEPATH=$1
 
-if [ -z "$2" ]
-then
-  DRILL=172.17.0.2
-else
-  DRILL=$2
-fi
+while test $# -gt 0; do
+        case "$1" in
+                -h|--help)
+                        echo "$package - attempt to capture frames"
+                        echo " "
+                        echo "$package [options] application [arguments]"
+                        echo " "
+                        echo "options:"
+                        echo "-h, --help                show brief help"
+                        echo "-d, --directory=/data/pharmgkb_drugs       specify a working directory with tsv, csv and/or psv data files to convert"
+                        echo "-dr, --drill=172.17.0.2      specify a host for drill. Default: 172.17.0.2"
+                        echo "-db, --graphdb=172.17.0.3      specify a host for drill. Default: 172.17.0.3"
+                        exit 0
+                        ;;
+                -d)
+                        shift
+                        if test $# -gt 0; then
+                                export DIRECTORY=$1
+                        else
+                                echo "No working directory specified. Should contain the file tsv, csv and/or psv data files to convert"
+                                exit 1
+                        fi
+                        shift
+                        ;;
+                --directory*)
+                        export DIRECTORY=`echo $1 | sed -e 's/^[^=]*=//g'`
+                        shift
+                        ;;
+                -dh)
+                        shift
+                        if test $# -gt 0; then
+                                export DRILL=$1
+                        fi
+                        shift
+                        ;;
+                --drill-host*)
+                        export DRILL=`echo $1 | sed -e 's/^[^=]*=//g'`
+                        shift
+                        ;;
+                -db)
+                        shift
+                        if test $# -gt 0; then
+                                export GRAPHDB=$1
+                        fi
+                        shift
+                        ;;
+                --graphdb*)
+                        export GRAPHDB=`echo $1 | sed -e 's/^[^=]*=//g'`
+                        shift
+                        ;;
+                -gr)
+                        shift
+                        if test $# -gt 0; then
+                                export GRAPHDB=$1
+                        fi
+                        shift
+                        ;;
+                --graph-repository*)
+                        export GRAPHDB=`echo $1 | sed -e 's/^[^=]*=//g'`
+                        shift
+                        ;;
+                *)
+                        break
+                        ;;
+        esac
+done
 
-if [ -z "$3" ]
-then
-  GRAPHDB=http://172.17.0.3
-else
-  GRAPHDB=$3
-fi
 
-echo $FILEPATH
-echo "Drill: $DRILL"
-echo "GraphDB: $GRAPHDB"
+DRILL=${DRILL:-172.17.0.2}
+GRAPHDB=${GRAPHDB:-172.17.0.3}
+GRAPH_REPOSITORY=${GRAPH_REPOSITORY:-kraken_test}
 
-docker run -it --rm --link drill:drill autodrill -h $DRILL -r /data/$FILEPATH/drill > /data/$FILEPATH/mappings.ttl
+echo "[-d] Working directory: $DIRECTORY"
+echo "[-dr] Drill: $DRILL"
+echo "[-db] GraphDB host: $GRAPHDB"
+echo "[-gr] GraphDB repository: $GRAPH_REPOSITORY"
+
+docker run -it --rm --link drill:drill autodrill -h $DRILL -r $DIRECTORY/drill > $DIRECTORY/mappings.ttl
 
 # Generate config.properties
 echo "connectionURL = jdbc:drill:drillbit=drill:31010
-mappingFile = /data/$FILEPATH/mappings.ttl
-outputFile = /data/$FILEPATH/rdf_output.ttl.gz
-format = TTL" >> /data/$FILEPATH/config.properties
+mappingFile = $DIRECTORY/mappings.ttl
+outputFile = $DIRECTORY/rdf_output.ttl.gz
+format = TTL" >> $DIRECTORY/config.properties
 
 # Run r2rml to generate RDF files
-docker run -it --rm --link drill:drill -v /data:/data r2rml /data/$FILEPATH/config.properties
+#Bug: docker run -it --rm --link drill:drill -v $DIRECTORY:/data r2rml /data/config.properties
+docker run -it --rm --link drill:drill -v /data:/data r2rml $DIRECTORY/config.properties
 
 # Unzip generated RDF file
-gzip -d -k -f /data/$FILEPATH/rdf_output.ttl.gz
+gzip -d -k -f $DIRECTORY/rdf_output.ttl.gz
 
+: '
 # Run RdfUpload to upload to GraphDB
-docker run -it --rm -v /data/$FILEPATH:/data rdf-upload \
+docker run -it --rm -v $DIRECTORY:/data rdf-upload \
   -if "/data/rdf_output.ttl" \
-  -ep "$GRAPHDB:7200/repositories/kraken_test" \
-  -uep "$GRAPHDB:7200/repositories/kraken_test/statements" \
+  -ep "$GRAPHDB:7200/repositories/$GRAPH_REPOSITORY" \
+  -uep "$GRAPHDB:7200/repositories/$GRAPH_REPOSITORY/statements" \
   -un admin -pw admin
-
 
 docker run -it --rm -v /data:/data rdf-upload \
   -if "/data/pharmgkb_drugs/rdf_output.ttl" \
   -ep "http://172.17.0.3:7200/repositories/kraken_test" \
   -uep "http://172.17.0.3:7200/repositories/kraken_test/statements" \
   -un admin -pw admin
+
+WORKING:
+docker run -it --rm -v /data:/data rdf-upload \
+  -if "/data/rdfu/affymetrix_test.ttl" \
+  -ep "http://172.17.0.3:7200/repositories/kraken_test" \
+  -uep "http://172.17.0.3:7200/repositories/kraken_test/statements" \
+  -un admin -pw admin
+'
