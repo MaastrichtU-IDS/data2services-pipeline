@@ -54,7 +54,8 @@ v1.13.0: https://github.com/vemonet/apache-drill-docker/tree/master/1.13.0
 Docs: https://www.tutorialspoint.com/apache_drill/index.htm
 
 ```shell
-cd apache-drill-docker/1.13.0/
+cd apache-drill-docker/1.6.0/
+#cd apache-drill-docker/1.13.0/
 docker build -t drill .
 # 8047 is HTTP port and 31010 is Drill port
 docker run -it --rm -p 8047:8047 -p 31010:31010 --name drill -v /data:/data:ro drill /drill-scripts/bootstrap.sh
@@ -66,7 +67,12 @@ docker run -it --rm -p 8047:8047 -p 31010:31010 --name drill -v c:/data:/data:ro
 show files in dfs.root.`/`;
 # Select on CSV Example
 SELECT * FROM cp.`employee.json` LIMIT 5;
+
+# Attach to a drill docker container with bash
+docker exec -it drill bash
 ```
+
+Leave the Drill command line using Ctrl+P+Q
 
 
 
@@ -169,7 +175,9 @@ docker run -it --rm -v /data/rdfu:/data rdf-upload -if "/data/rdffile.nt" -ep "h
 
 # Test with affymetrix ttl
 docker run -it --rm -v /data/rdfu:/data rdf-upload -if "/data/affymetrix_test.ttl" -ep "http://localhost:7200/repositories/kraken_test" -uep "http://localhost:7200/repositories/kraken_test/statements" -un import_user -pw test
+
 # TO FIX: access through localhost doesn't work, we need to use container IP
+# TEST NETWORK CONNECT (see docker docs)
 docker run -it --rm -v /data/rdfu:/data rdf-upload -if "/data/affymetrix_test.ttl" -ep "http://172.17.0.3:7200/repositories/kraken_test" -uep "http://172.17.0.3:7200/repositories/kraken_test/statements" -un admin -pw admin
 
 docker run -it --rm -v c:/data/rdfu:/data rdf-upload -if "/data/affymetrix_test.ttl" -ep "http://172.17.0.3:7200/repositories/test_drill" -uep "http://172.17.0.3:7200/repositories/test_drill/statements" -un import_user -pw import_pwd
