@@ -132,11 +132,18 @@ Generate mapping file by extracting columns headers (mappings are then used to n
 
 ```shell
 docker build -t autodrill .
+
 # Run it on IDS server
 docker run -it --rm autodrill -h node000002.cluster.ids.unimaas.nl -r /data/tmp/drill/pharmgkb/
 
 # Run it on local server
 docker run -it --rm --link drill:drill autodrill -h localhost -r /data/drill/pharmgkb/
+# Avec drugs
+docker run -it --rm --link drill:drill autodrill -h 172.17.0.2 -r /data/pharmgkb_drugs/ > /data/pharmgkb_drugs/mappings.ttl
+
+docker run -it --rm --link drill:drill autodrill -h 172.17.0.2 -p 31010:31010 -r /data/pharmgkb_drugs/
+docker run -it --rm --link drill:drill autodrill -h localhost -p 8047:8047 -r /data/pharmgkb_drugs/
+
 # With container IP address:
 docker run -it --rm --link drill:drill autodrill -h 172.17.0.2 -r /data/drill/pharmgkb/
 # Note: works even when removing --link
@@ -170,6 +177,8 @@ docker inspect <container_id> | grep "IPAddress"
 
 Generate RDF file from relational database using the RML mapping file previously generated (by AutoDrill)
 
+See `run.sh`
+
 ```shell
 cd r2rml/
 docker build -t r2rml .
@@ -178,6 +187,10 @@ docker build -t r2rml .
 docker run -it --rm --link drill:drill -v /data:/data r2rml /data/mappings/config.properties
 # On Windows
 docker run -it --rm --link drill:drill -v c:/data:/data r2rml /data/mappings/config.properties
+
+# Convert pharmgkb
+docker run -it --rm --link drill:drill -v /data:/data r2rml /data/pharmgkb_drugs/config.properties
+
 # Everything is configured in the config.properties file
 ```
 
