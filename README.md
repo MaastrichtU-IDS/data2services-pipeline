@@ -43,7 +43,7 @@ docker run -it --rm -v /data/rdfu:/data rdf-upload -if "/data/affymetrix_test.tt
 
 # Building the pipeline
 
-## Run Apache Drill in background
+## OLD Run Apache Drill in background
 
 Not detached to get console feedback
 
@@ -71,6 +71,54 @@ SELECT * FROM cp.`employee.json` LIMIT 5;
 # Attach to a drill docker container with bash
 docker exec -it drill bash
 ```
+
+Leave the Drill command line using Ctrl+P+Q
+
+
+
+## Run Apache Drill in background
+
+```shell
+git clone git@github.com:vemonet/apache-drill.git
+
+# Forked from amalic
+git remote add upstream  git@github.com:amalic/apache-drill.git
+git fetch upstream
+```
+
+Docs: https://www.tutorialspoint.com/apache_drill/index.htm
+
+### Download apache-drill
+
+```
+wget ftp://apache.proserve.nl/apache/drill/drill-1.13.0/apache-drill-1.13.0.tar.gz
+```
+
+### Build
+
+```
+docker build -t apache-drill .
+```
+
+### Run
+
+```shell
+docker run -dit --rm -p 8047:8047 -p 31010:31010 --name drill -v /data:/data:ro apache-drill
+
+# On Windows
+docker run -dit --rm -p 8047:8047 -p 31010:31010 --name drill -v c:/data:/data:ro apache-drill
+
+# HTTP access: http://localhost:8047
+# Navigate in dir
+show files in dfs.root.`/`;
+# Select on CSV Example
+SELECT * FROM cp.`employee.json` LIMIT 5;
+
+# Attach to a drill docker container with bash
+docker exec -it drill bash
+```
+
+`-d` for detached. Remove it to get live console feedback
 
 Leave the Drill command line using Ctrl+P+Q
 
@@ -114,9 +162,6 @@ docker inspect <container_id> | grep "IPAddress"
     ```shell
     -h node000002.cluster.ids.unimaas.nl -r /data/tmp/drill/pharmgkb/
     ```
-
-    
-
 
 
 
