@@ -81,6 +81,7 @@ DRILL=${DRILL:-172.17.0.2}
 GRAPHDB=${GRAPHDB:-172.17.0.3}
 GRAPH_REPOSITORY=${GRAPH_REPOSITORY:-kraken_test}
 
+
 echo "[-d] Working directory: $DIRECTORY"
 echo "[-dr] Drill: $DRILL"
 echo "[-db] GraphDB host: $GRAPHDB"
@@ -101,14 +102,16 @@ docker run -it --rm --link drill:drill -v /data:/data r2rml $DIRECTORY/config.pr
 
 # Unzip generated RDF file
 gzip -d -k -f $DIRECTORY/rdf_output.ttl.gz
-
+# Maybe not useful, to remove when problem fixed
+chmod 777 $DIRECTORY/rdf_output.ttl
 
 # Run RdfUpload to upload to GraphDB
-docker run -it --rm -v /data:/data rdf-upload \
-  -if "$DIRECTORY/rdf_output.ttl" \
-  -ep "$GRAPHDB:7200/repositories/$GRAPH_REPOSITORY" \
-  -uep "$GRAPHDB:7200/repositories/$GRAPH_REPOSITORY/statements" \
+docker run -it -v $DIRECTORY:/data rdf-upload \
+  -if "/data/rdf_output.ttl" \
+  -url "$GRAPHDB:7200" \
+  -rep "$GRAPH_REPOSITORY" \
   -un admin -pw admin
+
 
 : '
 docker run -it --rm -v /data:/data rdf-upload \
