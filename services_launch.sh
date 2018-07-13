@@ -1,16 +1,15 @@
 #!/bin/bash
 set -e
 # Any subsequent(*) commands which fail will cause the shell script to exit immediately
+# true statement to avoid getting an error if container does not exist 
+docker stop drill &> /dev/null || true
+docker rm drill &> /dev/null || true
+
+#docker stop graphdb &> /dev/null || true
+#docker rm graphdb &> /dev/null || true
 
 
-docker stop graphdb || true
-docker rm graphdb || true
-
-docker stop drill || true
-docker rm drill || true
-
-
-docker run -dit --rm -p 8047:8047 -p 31010:31010 --name drill -v /data:/data:ro apache-drill
+docker run -dit -p 8047:8047 -p 31010:31010 --name drill -v /data:/data:ro apache-drill
 
 docker run --detach \
     --name graphdb \
@@ -20,8 +19,8 @@ docker run --detach \
     --restart unless-stopped \
     graphdb:8.6.0
 
-echo "Apache Drill"
+echo "Apache Drill running"
 docker inspect drill | grep -m 1 "\"IPAddress\""
 
-echo "GraphDB"
+echo "GraphDB running"
 docker inspect graphdb | grep -m 1 "\"IPAddress\""
