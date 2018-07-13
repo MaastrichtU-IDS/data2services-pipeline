@@ -10,3 +10,6 @@
 [submodule "RdfUpload"]
 	path = RdfUpload
 	url = https://github.com/MaastrichtU-IDS/RdfUpload.git
+[submodule "graphdb"]
+	path = graphdb
+	url = https://github.com/vemonet/graphdb.git
