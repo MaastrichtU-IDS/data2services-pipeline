@@ -277,6 +277,50 @@ Change URL by my graphdb URL
 
 
 
+```shell
+# Upload via the API
+POST /rest/data/import/upload/{repository}/url
+POST /rest/data/import/upload/kraken_test/url
+
+# Parameter importBody
+{
+  "fileNames": [
+    "/data/rdfu/affymetrix_test.ttl"
+  ],
+  "importSettings": {
+    "baseURI": "string",
+    "context": "string",
+    "data": "string",
+    "forceSerial": true,
+    "format": "string",
+    "message": "string",
+    "name": "string",
+    "parserSettings": {
+      "failOnUnknownDataTypes": true,
+      "failOnUnknownLanguageTags": true,
+      "normalizeDataTypeValues": true,
+      "normalizeLanguageTags": true,
+      "preserveBNodeIds": true,
+      "stopOnError": true,
+      "verifyDataTypeValues": true,
+      "verifyLanguageTags": true,
+      "verifyRelativeURIs": true,
+      "verifyURISyntax": true
+    },
+    "replaceGraphs": [
+      "string"
+    ],
+    "status": "PENDING",
+    "timestamp": 0,
+    "type": "string"
+  }
+}
+```
+
+
+
+
+
 ## GraphDB
 
 https://github.com/vemonet/graphdb
