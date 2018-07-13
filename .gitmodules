@@ -1,0 +1,12 @@
+[submodule "apache-drill"]
+	path = apache-drill
+	url = https://github.com/amalic/apache-drill.git
+[submodule "AutoDrill"]
+	path = AutoDrill
+	url = https://github.com/MaastrichtU-IDS/AutoDrill.git
+[submodule "r2rml"]
+	path = r2rml
+	url = https://github.com/amalic/r2rml.git
+[submodule "RdfUpload"]
+	path = RdfUpload
+	url = https://github.com/MaastrichtU-IDS/RdfUpload.git
