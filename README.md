@@ -280,7 +280,7 @@ Change URL by my graphdb URL
 ```shell
 # Upload via the API
 POST /rest/data/import/upload/{repository}/url
-POST /rest/data/import/upload/kraken_test/url
+POST http://172.17.0.3:7200/rest/data/import/upload/kraken_test/url
 
 # Parameter importBody
 {
@@ -315,6 +315,40 @@ POST /rest/data/import/upload/kraken_test/url
     "type": "string"
   }
 }
+```
+
+
+
+```shell
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: text/plain' -d '{
+   "baseURI": "string",
+   "chunkSize": 0,
+   "context": "string",
+   "message": "string",
+   "name": "string",
+   "parserSettings": {
+     "failOnUnknownDataTypes": true,
+     "failOnUnknownLanguageTags": true,
+     "normalizeDataTypeValues": true,
+     "normalizeLanguageTags": true,
+     "preserveBNodeIds": true,
+     "stopOnError": true,
+     "verifyDataTypeValues": true,
+     "verifyLanguageTags": true,
+     "verifyRelativeURIs": true,
+     "verifyURISyntax": true
+   },
+   "retryTimes": 0,
+   "status": "PENDING"
+ }' 'http://172.17.0.3:7200/rest/data/import/server/kraken_test?fileName=%2Fdata%2Frdfu%2Faffymetrix_test.ttl'
+ 
+http://172.17.0.3:7200/rest/data/import/server/kraken_test?fileName=%2Fdata%2Frdfu%2Faffymetrix_test.ttl
+
+curl -G http://172.17.0.3:7200/rest/data/import/server/kraken_test?fileName=%2Fdata%2Frdfu%2Faffymetrix_test.ttl  -H 'Accept: application/json'
+
+# List repos (works)
+curl -G http://172.17.0.3:7200/rest/repositories -H 'Accept: application/json'
+
 ```
 
 

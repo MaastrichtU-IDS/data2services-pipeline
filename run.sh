@@ -86,7 +86,7 @@ echo "[-dr] Drill: $DRILL"
 echo "[-db] GraphDB host: $GRAPHDB"
 echo "[-gr] GraphDB repository: $GRAPH_REPOSITORY"
 
-: '
+
 docker run -it --rm --link drill:drill autodrill -h $DRILL -r $DIRECTORY > $DIRECTORY/mappings.ttl
 
 # Generate config.properties
@@ -101,11 +101,11 @@ docker run -it --rm --link drill:drill -v /data:/data r2rml $DIRECTORY/config.pr
 
 # Unzip generated RDF file
 gzip -d -k -f $DIRECTORY/rdf_output.ttl.gz
-'
+
 
 # Run RdfUpload to upload to GraphDB
-docker run -it --rm -v $DIRECTORY:/data rdf-upload \
-  -if "/data/rdf_output.ttl" \
+docker run -it --rm -v /data:/data rdf-upload \
+  -if "$DIRECTORY/rdf_output.ttl" \
   -ep "$GRAPHDB:7200/repositories/$GRAPH_REPOSITORY" \
   -uep "$GRAPHDB:7200/repositories/$GRAPH_REPOSITORY/statements" \
   -un admin -pw admin
