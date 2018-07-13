@@ -73,7 +73,7 @@ done
 # If starts with / then it is an absolute path. We add /data to relative path for convenience
 if  [[ $DIRECTORY == /* ]] ;
 then
-  echo "Mee"
+  echo "Using absolute path"
 else
   DIRECTORY=/data/$DIRECTORY
 fi
