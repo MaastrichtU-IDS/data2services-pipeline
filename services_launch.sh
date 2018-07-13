@@ -4,9 +4,8 @@ set -e
 # true statement to avoid getting an error if container does not exist 
 docker stop drill &> /dev/null || true
 docker rm drill &> /dev/null || true
-
-#docker stop graphdb &> /dev/null || true
-#docker rm graphdb &> /dev/null || true
+docker stop graphdb &> /dev/null || true
+docker rm graphdb &> /dev/null || true
 
 
 docker run -dit -p 8047:8047 -p 31010:31010 --name drill -v /data:/data:ro apache-drill
@@ -18,6 +17,7 @@ docker run --detach \
     --volume /data/graphdb-import:/root/graphdb-import \
     --restart unless-stopped \
     graphdb:8.6.0
+
 
 echo "Apache Drill running"
 docker inspect drill | grep -m 1 "\"IPAddress\""

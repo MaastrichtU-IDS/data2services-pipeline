@@ -254,10 +254,17 @@ docker run -it --rm -v /data/rdfu:/data rdf-upload -if "/data/rdffile.nt" -ep "h
 docker run -it --rm -v /data/rdfu:/data rdf-upload -if "/data/affymetrix_test.ttl" -ep "http://localhost:7200/repositories/kraken_test" -uep "http://localhost:7200/repositories/kraken_test/statements" -un import_user -pw test
 
 # TO FIX: access through localhost doesn't work, we need to use container IP
-# TEST NETWORK CONNECT (see docker docs)
+# TODO: TEST NETWORK CONNECT (see docker docs)
+
+# Old version for SPARQLRepository
 docker run -it --rm -v /data/rdfu:/data rdf-upload -if "/data/affymetrix_test.ttl" -ep "http://172.17.0.3:7200/repositories/kraken_test" -uep "http://172.17.0.3:7200/repositories/kraken_test/statements" -un admin -pw admin
 
 docker run -it --rm -v c:/data/rdfu:/data rdf-upload -if "/data/affymetrix_test.ttl" -ep "http://172.17.0.3:7200/repositories/test_drill" -uep "http://172.17.0.3:7200/repositories/test_drill/statements" -un import_user -pw import_pwd
+
+# New version using HTTPRepository (work for affymetrix)
+docker run -it --rm -v /data/rdfu:/data rdf-upload -if "/data/affymetrix_test.ttl" -url "http://172.17.0.3:7200" -rep "kraken_test" -un admin -pw admin
+
+docker run -it --rm -v /data/pharmgkb_variants:/data rdf-upload -if "/data/rdf_output.ttl" -url "http://172.17.0.3:7200" -rep "kraken_test" -un admin -pw admin
 ```
 
 
@@ -276,6 +283,8 @@ docker run -it --rm -v c:/data/rdfu:/data rdf-upload -if "/data/affymetrix_test.
 Change URL by my graphdb URL
 
 
+
+### Trying out GraphDB HTTP API (not working)
 
 ```shell
 # Upload via the API

@@ -13,8 +13,9 @@ while test $# -gt 0; do
                         echo "options:"
                         echo "-h, --help                show brief help"
                         echo "-d, --directory=/data/pharmgkb_drugs       specify a working directory with tsv, csv and/or psv data files to convert"
-                        echo "-dr, --drill=172.17.0.2      specify a host for drill. Default: 172.17.0.2"
-                        echo "-db, --graphdb=172.17.0.3      specify a host for drill. Default: 172.17.0.3"
+                        echo "-dh, --drill-host=172.17.0.2      specify a host for drill. Default: 172.17.0.2"
+                        echo "-db, --graphdb-host=172.17.0.3:7200      specify a host for drill. Default: 172.17.0.3:7200"
+                        echo "-gr, --graphdb-repository=kraken_test      specify a GraphDB repository. Default: kraken_test"
                         exit 0
                         ;;
                 -d)
@@ -34,34 +35,34 @@ while test $# -gt 0; do
                 -dh)
                         shift
                         if test $# -gt 0; then
-                                export DRILL=$1
+                                export DRILL_HOST=$1
                         fi
                         shift
                         ;;
                 --drill-host*)
-                        export DRILL=`echo $1 | sed -e 's/^[^=]*=//g'`
+                        export DRILL_HOST=`echo $1 | sed -e 's/^[^=]*=//g'`
                         shift
                         ;;
                 -db)
                         shift
                         if test $# -gt 0; then
-                                export GRAPHDB=$1
+                                export GRAPHDB_HOST=$1
                         fi
                         shift
                         ;;
-                --graphdb*)
-                        export GRAPHDB=`echo $1 | sed -e 's/^[^=]*=//g'`
+                --graphdb-host*)
+                        export GRAPHDB_HOST=`echo $1 | sed -e 's/^[^=]*=//g'`
                         shift
                         ;;
                 -gr)
                         shift
                         if test $# -gt 0; then
-                                export GRAPHDB=$1
+                                export GRAPHDB_REPOSITORY=$1
                         fi
                         shift
                         ;;
-                --graph-repository*)
-                        export GRAPHDB=`echo $1 | sed -e 's/^[^=]*=//g'`
+                --graphdb-repository*)
+                        export GRAPHDB_REPOSITORY=`echo $1 | sed -e 's/^[^=]*=//g'`
                         shift
                         ;;
                 *)
@@ -77,18 +78,18 @@ then
 else
   DIRECTORY=/data/$DIRECTORY
 fi
-DRILL=${DRILL:-172.17.0.2}
-GRAPHDB=${GRAPHDB:-172.17.0.3}
-GRAPH_REPOSITORY=${GRAPH_REPOSITORY:-kraken_test}
+DRILL_HOST=${DRILL_HOST:-172.17.0.2}
+GRAPHDB_HOST=${GRAPHDB_HOST:-http://172.17.0.3:7200}
+GRAPHDB_REPOSITORY=${GRAPHDB_REPOSITORY:-kraken_test}
 
 
 echo "[-d] Working directory: $DIRECTORY"
-echo "[-dr] Drill: $DRILL"
-echo "[-db] GraphDB host: $GRAPHDB"
-echo "[-gr] GraphDB repository: $GRAPH_REPOSITORY"
+echo "[-dr] Drill: $DRILL_HOST"
+echo "[-db] GraphDB host: $GRAPHDB_HOST"
+echo "[-gr] GraphDB repository: $GRAPHDB_REPOSITORY"
 
 
-docker run -it --rm --link drill:drill autodrill -h $DRILL -r $DIRECTORY > $DIRECTORY/mappings.ttl
+docker run -it --rm --link drill:drill autodrill -h $DRILL_HOST -r $DIRECTORY > $DIRECTORY/mappings.ttl
 
 # Generate config.properties
 echo "connectionURL = jdbc:drill:drillbit=drill:31010
@@ -97,23 +98,22 @@ outputFile = $DIRECTORY/rdf_output.ttl.gz
 format = TTL" >> $DIRECTORY/config.properties
 
 # Run r2rml to generate RDF files
-#Bug: docker run -it --rm --link drill:drill -v $DIRECTORY:/data r2rml /data/config.properties
+#FIX: docker run -it --rm --link drill:drill -v $DIRECTORY:/data r2rml /data/config.properties SHOULD WORK
 docker run -it --rm --link drill:drill -v /data:/data r2rml $DIRECTORY/config.properties
 
 # Unzip generated RDF file
 gzip -d -k -f $DIRECTORY/rdf_output.ttl.gz
-# Maybe not useful, to remove when problem fixed
-chmod 777 $DIRECTORY/rdf_output.ttl
 
 # Run RdfUpload to upload to GraphDB
 docker run -it -v $DIRECTORY:/data rdf-upload \
   -if "/data/rdf_output.ttl" \
-  -url "$GRAPHDB:7200" \
-  -rep "$GRAPH_REPOSITORY" \
+  -url "$GRAPHDB_HOST" \
+  -rep "$GRAPHDB_REPOSITORY" \
   -un admin -pw admin
 
 
 : '
+Old using SPARQLRepository
 docker run -it --rm -v /data:/data rdf-upload \
   -if "/data/pharmgkb_drugs/rdf_output.ttl" \
   -ep "http://172.17.0.3:7200/repositories/kraken_test" \
