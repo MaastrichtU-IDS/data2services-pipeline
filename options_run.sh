@@ -75,9 +75,28 @@ format = TTL" >> $DIRECTORY/config.properties
 docker run -it --rm --link drill:drill -v $DIRECTORY:/data r2rml /data/config.properties
 
 # Run RdfUpload to upload to GraphDB
+docker run -it --rm --link graphdb:graphdb -v /data/pharmgkb_variants:/data rdf-upload \
+  -if "/data/rdf_output.ttl.gz" \
+  -url "http://graphdb:7200" \
+  -rep "test" \
+  -un import_user -pw test
+  #-m "RDF4JSPARQL" \
+
+: '
+
+docker run -it --rm --link graphdb:graphdb -v $DIRECTORY:/data rdf-upload \
+  -m "RDF4JSPARQL" \
+  -if "/data/rdf_output.ttl.gz" \
+  -url "http://graphdb:7200" \
+  -rep "test" \
+  -un import_user -pw test
+
+
+With HTTP Loader
 docker run -it --rm --link graphdb:graphdb -v $DIRECTORY:/data rdf-upload \
   -m "HTTP" \
   -if "/data/rdf_output.ttl.gz" \
   -url "http://graphdb:7200" \
   -rep "$GRAPHDB_REPOSITORY" \
   -un import_user -pw test
+'
