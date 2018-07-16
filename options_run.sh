@@ -63,17 +63,16 @@ echo "[-gr] GraphDB repository: $GRAPHDB_REPOSITORY"
 
 
 # Run AutoDrill to generate mapping file
-docker run -it --rm --link drill:drill autodrill -h drill -r $DIRECTORY > $DIRECTORY/mappings.ttl
+docker run -it --rm --link drill:drill autodrill -h drill -r $DIRECTORY > $DIRECTORY/mapping.ttl
 
 # Generate config.properties required for r2rml
 echo "connectionURL = jdbc:drill:drillbit=drill:31010
-mappingFile = $DIRECTORY/mappings.ttl
-outputFile = $DIRECTORY/rdf_output.ttl.gz
+mappingFile = /data/mapping.ttl
+outputFile = /data/rdf_output.ttl.gz
 format = TTL" >> $DIRECTORY/config.properties
 
 # Run r2rml to generate RDF files
-#FIX: docker run -it --rm --link drill:drill -v $DIRECTORY:/data r2rml /data/config.properties SHOULD WORK
-docker run -it --rm --link drill:drill -v /data:/data r2rml $DIRECTORY/config.properties
+docker run -it --rm --link drill:drill -v $DIRECTORY:/data r2rml /data/config.properties
 
 # Run RdfUpload to upload to GraphDB
 docker run -it --rm --link graphdb:graphdb -v $DIRECTORY:/data rdf-upload \
