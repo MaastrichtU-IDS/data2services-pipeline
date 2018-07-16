@@ -24,5 +24,8 @@ git clone --recursive git@github.com:vemonet/data2services_pipeline.git
 
 ## run the pipeline
 ```shell
-# ./run.sh
+./run.sh
+
+# Or for all the files in a repository
+./options_run.sh -f /data/file_directory
 ```

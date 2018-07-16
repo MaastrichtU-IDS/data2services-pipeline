@@ -16,21 +16,21 @@ while test $# -gt 0; do
                         echo "-gr, --graphdb-repository=test      specify a GraphDB repository. Default: test"
                         exit 0
                         ;;
-                -d)
+                -f)
                         shift
                         if test $# -gt 0; then
                                 export DIRECTORY=$1
                         else
-                                echo "No working directory specified. Should contain the file tsv, csv and/or psv data files to convert"
+                                echo "No file directory specified. Should point to a directory thats contains tsv, csv and/or psv data files to convert"
                                 exit 1
                         fi
                         shift
                         ;;
-                --directory*)
+                --file-directory*)
                         export DIRECTORY=`echo $1 | sed -e 's/^[^=]*=//g'`
                         shift
                         ;;
-                -gr)
+                -rep)
                         shift
                         if test $# -gt 0; then
                                 export GRAPHDB_REPOSITORY=$1
