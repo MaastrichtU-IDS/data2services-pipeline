@@ -15,6 +15,8 @@ while test $# -gt 0; do
                         echo "-f, --file-directory=/data/file_repository       specify a working directory with tsv, csv and/or psv data files to convert"
                         echo "-gr, --graphdb-repository=test      specify a GraphDB repository. Default: test"
                         echo "-fo, --format=nquads      Specify a format for RDF out when running r2rml. Default: nquads"
+                        echo "-un, --username=import_user      Specify a format for RDF out when running r2rml. Default: import_user"
+                        echo "-pw, --password=test      Specify a format for RDF out when running r2rml. Default: import_user"
                         exit 0
                         ;;
                 -f)
@@ -53,6 +55,28 @@ while test $# -gt 0; do
                         export RDF_FORMAT=`echo $1 | sed -e 's/^[^=]*=//g'`
                         shift
                         ;;
+                -u)
+                        shift
+                        if test $# -gt 0; then
+                                export GRAPHDB_USERNAME=$1
+                        fi
+                        shift
+                        ;;
+                --username*)
+                        export GRAPHDB_USERNAME=`echo $1 | sed -e 's/^[^=]*=//g'`
+                        shift
+                        ;;
+                -pw)
+                        shift
+                        if test $# -gt 0; then
+                                export GRAPHDB_PASSWORD=$1
+                        fi
+                        shift
+                        ;;
+                --password*)
+                        export GRAPHDB_PASSWORD=`echo $1 | sed -e 's/^[^=]*=//g'`
+                        shift
+                        ;;
                 *)
                         break
                         ;;
@@ -60,18 +84,33 @@ while test $# -gt 0; do
 done
 
 # Set default values
-# If starts with / then it is an absolute path. We add /data to relative path for convenience
+GRAPHDB_REPOSITORY=${GRAPHDB_REPOSITORY:-test}
+GRAPHDB_USERNAME=${GRAPHDB_USERNAME:-import_user}
+GRAPHDB_PASSWORD=${GRAPHDB_PASSWORD:-test}
+
+# If directory starts with / then it is an absolute path. We add /data to relative path for convenience
 if  [[ $DIRECTORY == /* ]] ;
 then
   echo "Using absolute path"
 else
   DIRECTORY=/data/$DIRECTORY
 fi
-GRAPHDB_REPOSITORY=${GRAPHDB_REPOSITORY:-test}
 
+# If the user ask for the turtle format we provide it, otherwise its nquads to get the Graph
+if  [[ "$RDF_FORMAT" == "TURTLE" ]] || [[ "$RDF_FORMAT" == "TTL" ]];
+then
+  OUTPUT_EXTENSION="ttl.gz"
+  RDF_FORMAT="TURTLE"
+else
+  OUTPUT_EXTENSION="nq"
+  RDF_FORMAT="NQUADS"
+fi
 
-echo "[-d] Working directory: $DIRECTORY"
-echo "[-gr] GraphDB repository: $GRAPHDB_REPOSITORY"
+echo "[-f] Working file directory: $DIRECTORY"
+echo "[-fo] RDF format: $RDF_FORMAT"
+echo "[-rep] GraphDB repository: $GRAPHDB_REPOSITORY"
+echo "[-un] GraphDB username: $GRAPHDB_USERNAME"
+echo "[-pw] GraphDB password: $GRAPHDB_PASSWORD"
 
 
 # Run AutoDrill to generate mapping file
@@ -80,27 +119,16 @@ docker run -it --rm --link drill:drill autodrill -h drill -r $DIRECTORY > $DIREC
 # Generate config.properties required for r2rml
 echo "connectionURL = jdbc:drill:drillbit=drill:31010
 mappingFile = /data/mapping.ttl
-outputFile = /data/rdf_output.nq
-format = NQUADS" > $DIRECTORY/config.properties
-
-# Get it in Turtle format
-#outputFile = /data/rdf_output.ttl.gz
-#format = TURTLE" > $DIRECTORY/config.properties
-
+outputFile = /data/rdf_output.$OUTPUT_EXTENSION
+format = $RDF_FORMAT" > $DIRECTORY/config.properties
 
 # Run r2rml to generate RDF files
 docker run -it --rm --link drill:drill -v $DIRECTORY:/data r2rml /data/config.properties
 
-# Optional: Unzip generated RDF file
-#gzip -d -k -f $DIRECTORY/rdf_output.ttl.gz
-
 # Run RdfUpload to upload to GraphDB
 docker run -it --rm --link graphdb:graphdb -v $DIRECTORY:/data rdf-upload \
   -m "HTTP" \
-  -if "/data/rdf_output.nq" \
+  -if "/data/rdf_output.$OUTPUT_EXTENSION" \
   -url "http://graphdb:7200" \
-  -rep "test" \
-  -un import_user -pw test
-
-  #-m "RDF4JSPARQL" \
-  #-if "/data/rdf_output.ttl.gz" \
+  -rep "$GRAPHDB_REPOSITORY" \
+  -un $GRAPHDB_USERNAME -pw $GRAPHDB_PASSWORD
