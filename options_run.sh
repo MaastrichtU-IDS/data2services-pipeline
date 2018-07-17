@@ -12,7 +12,7 @@ while test $# -gt 0; do
                         echo " "
                         echo "options:"
                         echo "-h, --help                show brief help"
-                        echo "-d, --directory=/data/pharmgkb       specify a working directory with tsv, csv and/or psv data files to convert"
+                        echo "-f, --file-directory=/data/file_repository       specify a working directory with tsv, csv and/or psv data files to convert"
                         echo "-gr, --graphdb-repository=test      specify a GraphDB repository. Default: test"
                         exit 0
                         ;;
@@ -68,38 +68,27 @@ docker run -it --rm --link drill:drill autodrill -h drill -r $DIRECTORY > $DIREC
 # Generate config.properties required for r2rml
 echo "connectionURL = jdbc:drill:drillbit=drill:31010
 mappingFile = /data/mapping.ttl
-outputFile = /data/rdf_output.ttl.gz
-format = TTL" >> $DIRECTORY/config.properties
+outputFile = /data/rdf_output.nq
+format = NQUADS" > $DIRECTORY/config.properties
+
+# Get it in Turtle format
+#outputFile = /data/rdf_output.ttl.gz
+#format = TURTLE" > $DIRECTORY/config.properties
+
 
 # Run r2rml to generate RDF files
 docker run -it --rm --link drill:drill -v $DIRECTORY:/data r2rml /data/config.properties
-
 
 # Optional: Unzip generated RDF file
 #gzip -d -k -f $DIRECTORY/rdf_output.ttl.gz
 
 # Run RdfUpload to upload to GraphDB
 docker run -it --rm --link graphdb:graphdb -v /data/pharmgkb_variants:/data rdf-upload \
-  -if "/data/rdf_output.ttl.gz" \
-  -url "http://graphdb:7200" \
-  -rep "test" \
-  -un import_user -pw test
-  #-m "RDF4JSPARQL" \
-
-: '
-docker run -it --rm --link graphdb:graphdb -v $DIRECTORY:/data rdf-upload \
-  -m "RDF4JSPARQL" \
-  -if "/data/rdf_output.ttl.gz" \
-  -url "http://graphdb:7200" \
-  -rep "test" \
-  -un import_user -pw test
-
-
-With HTTP Loader
-docker run -it --rm --link graphdb:graphdb -v $DIRECTORY:/data rdf-upload \
   -m "HTTP" \
-  -if "/data/rdf_output.ttl.gz" \
+  -if "/data/rdf_output.nq" \
   -url "http://graphdb:7200" \
-  -rep "$GRAPHDB_REPOSITORY" \
+  -rep "test" \
   -un import_user -pw test
-'
+
+  #-m "RDF4JSPARQL" \
+  #-if "/data/rdf_output.ttl.gz" \
