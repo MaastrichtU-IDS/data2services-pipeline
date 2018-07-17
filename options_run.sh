@@ -74,6 +74,10 @@ format = TTL" >> $DIRECTORY/config.properties
 # Run r2rml to generate RDF files
 docker run -it --rm --link drill:drill -v $DIRECTORY:/data r2rml /data/config.properties
 
+
+# Optional: Unzip generated RDF file
+#gzip -d -k -f $DIRECTORY/rdf_output.ttl.gz
+
 # Run RdfUpload to upload to GraphDB
 docker run -it --rm --link graphdb:graphdb -v /data/pharmgkb_variants:/data rdf-upload \
   -if "/data/rdf_output.ttl.gz" \
@@ -83,7 +87,6 @@ docker run -it --rm --link graphdb:graphdb -v /data/pharmgkb_variants:/data rdf-
   #-m "RDF4JSPARQL" \
 
 : '
-
 docker run -it --rm --link graphdb:graphdb -v $DIRECTORY:/data rdf-upload \
   -m "RDF4JSPARQL" \
   -if "/data/rdf_output.ttl.gz" \
