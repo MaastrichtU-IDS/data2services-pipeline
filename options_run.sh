@@ -14,6 +14,7 @@ while test $# -gt 0; do
                         echo "-h, --help                show brief help"
                         echo "-f, --file-directory=/data/file_repository       specify a working directory with tsv, csv and/or psv data files to convert"
                         echo "-gr, --graphdb-repository=test      specify a GraphDB repository. Default: test"
+                        echo "-fo, --format=nquads      Specify a format for RDF out when running r2rml. Default: nquads"
                         exit 0
                         ;;
                 -f)
@@ -39,6 +40,17 @@ while test $# -gt 0; do
                         ;;
                 --graphdb-repository*)
                         export GRAPHDB_REPOSITORY=`echo $1 | sed -e 's/^[^=]*=//g'`
+                        shift
+                        ;;
+                -fo)
+                        shift
+                        if test $# -gt 0; then
+                                export RDF_FORMAT=$1
+                        fi
+                        shift
+                        ;;
+                --format*)
+                        export RDF_FORMAT=`echo $1 | sed -e 's/^[^=]*=//g'`
                         shift
                         ;;
                 *)
@@ -83,7 +95,7 @@ docker run -it --rm --link drill:drill -v $DIRECTORY:/data r2rml /data/config.pr
 #gzip -d -k -f $DIRECTORY/rdf_output.ttl.gz
 
 # Run RdfUpload to upload to GraphDB
-docker run -it --rm --link graphdb:graphdb -v /data/pharmgkb_variants:/data rdf-upload \
+docker run -it --rm --link graphdb:graphdb -v $DIRECTORY:/data rdf-upload \
   -m "HTTP" \
   -if "/data/rdf_output.nq" \
   -url "http://graphdb:7200" \

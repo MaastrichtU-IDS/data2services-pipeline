@@ -3,26 +3,30 @@
 ## Clone
 
 ```shell
+# HTTPS
+git clone --recursive https://github.com/vemonet/data2services_pipeline.git
+
+# SSH
 git clone --recursive git@github.com:vemonet/data2services_pipeline.git
 ```
 
 ## Build
 ```shell
-# chmod +x *.sh
-# ./build.sh
+chmod +x *.sh
+./build.sh
 ```
 
 ## Drill and GraphDb for Development
 ### Start
 ```shell
-# ./startup.sh
+./startup.sh
 ```
 ### Stop
 ```shell
-# ./shutdown.sh
+./shutdown.sh
 ```
 
-## run the pipeline
+## Run the pipeline
 ```shell
 ./run.sh
 
