@@ -4,10 +4,10 @@
 
 ```shell
 # HTTPS
-git clone --recursive https://github.com/vemonet/data2services_pipeline.git
+git clone --recursive https://github.com/MaastrichtU-IDS/data2services-pipeline.git
 
 # SSH
-git clone --recursive git@github.com:vemonet/data2services_pipeline.git
+git clone --recursive git@github.com:MaastrichtU-IDS/data2services-pipeline.git
 ```
 
 ## Build
@@ -33,3 +33,4 @@ chmod +x *.sh
 # Or for all the files in a repository
 ./options_run.sh -f /data/file_directory
 ```
+
