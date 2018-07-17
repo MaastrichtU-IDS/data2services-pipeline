@@ -36,7 +36,7 @@ In a production environment it is considered that both Drill and GraphDb are pre
 ```shell
 ./run.sh
 
-# Or for all the files in a repository
-./options_run.sh -f /data/file_directory
+# Or for all the files in a directory
+./options_run.sh -f <absolute path to directory>
 ```
 
