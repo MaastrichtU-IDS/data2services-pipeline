@@ -34,6 +34,6 @@ In a production environment it is considered that both Drill and GraphDb are pre
 
 ## Run the pipeline
 ```shell
-./run.sh -f <absolute path to directory>
+./run.sh -f /data/<some directory within /data>
 ```
 
