@@ -31,8 +31,9 @@ Downloads the files and builds the docker containers if required.
 # ftp://apache.proserve.nl/apache/drill/drill-1.13.0/apache-drill-1.13.0.tar.gz
 ./build.bat
 
-mkdir -p /data/graphdb
-mkdir -p /data/graphdb-import
+# Create graphdb and graphdb-import directories in /data
+mkdir /data/graphdb
+mkdir /data/graphdb-import
 ```
 
 ## Drill and GraphDb for Development
@@ -58,7 +59,7 @@ The directory where the files to convert are needs to be in /data
 time ./run.sh -f /data/<some directory within /data>
 
 # For example to convert all tsv files in /data/pharmgkb 
-time ./run.sh -f /data/pharmgkb
+./run.sh -f /data/pharmgkb
 ```
 
 * Running options
@@ -70,6 +71,7 @@ time ./run.sh -f /data/pharmgkb
 
 ### Windows
 
-```powershell
+```shell
+# With all default settings. Change the script if needed.
 ./run.bat /data/pharmgkb
 ```
