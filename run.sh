@@ -114,7 +114,11 @@ echo "[-pw] GraphDB password: $GRAPHDB_PASSWORD"
 
 
 # Run AutoDrill to generate mapping file
-docker run -it --rm --link drill:drill autodrill -h drill -r $DIRECTORY > $DIRECTORY/mapping.ttl
+# TODO: WARNING the $DIRECTORY passed at the end is the path INSIDE the Apache Drill docker container (it must always starts with /data). So this script only works with dir inside /data)
+
+docker run -it --rm --link drill:drill -v $DIRECTORY:/data autodrill -h drill -r -o /data/mapping.ttl $DIRECTORY
+# Old way: docker run -it --rm --link drill:drill autodrill -h drill -r $DIRECTORY > $DIRECTORY/mapping.ttl
+
 
 # Generate config.properties required for r2rml
 echo "connectionURL = jdbc:drill:drillbit=drill:31010
