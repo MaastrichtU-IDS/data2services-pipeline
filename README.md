@@ -25,12 +25,14 @@ Downloads the files and builds the docker containers if required.
 ./build.sh
 
 ## On Windows
-# Download GraphDB and Apache Drill
-cd graphdb
-wget -O graphdb/graphdb-free-8.6.0-dist.zip -nc http://go.pardot.com/e/45622/38-graphdb-free-8-6-0-dist-zip/5pyc3s/1295914437
-cd apache-drill
-wget ftp://apache.proserve.nl/apache/drill/drill-1.13.0/apache-drill-1.13.0.tar.gz
+# Download GraphDB and put it in the graphdb directory
+# http://go.pardot.com/e/45622/38-graphdb-free-8-6-0-dist-zip/5pyc3s/1295914437
+# Download Apache Drill and put it in the apache-drill directory
+# ftp://apache.proserve.nl/apache/drill/drill-1.13.0/apache-drill-1.13.0.tar.gz
 ./build.bat
+
+mkdir -p /data/graphdb
+mkdir -p /data/graphdb-import
 ```
 
 ## Drill and GraphDb for Development
