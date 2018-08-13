@@ -117,6 +117,7 @@ echo "[-pw] GraphDB password: $GRAPHDB_PASSWORD"
 # TODO: WARNING the $DIRECTORY passed at the end is the path INSIDE the Apache Drill docker container (it must always starts with /data). So this script only works with dir inside /data)
 
 docker run -it --rm --link drill:drill -v $DIRECTORY:/data autodrill -h drill -r -o /data/mapping.ttl $DIRECTORY
+
 # Old way: docker run -it --rm --link drill:drill autodrill -h drill -r $DIRECTORY > $DIRECTORY/mapping.ttl
 
 
