@@ -35,5 +35,15 @@ In a production environment it is considered that both Drill and GraphDb are pre
 ## Run the pipeline
 ```shell
 time ./run.sh -f /data/<some directory within /data>
+
+# For example to convert all tsv files in /data/pharmgkb 
+time ./run.sh -f /data/pharmgkb
 ```
 
+### Running options
+
+* **-f** (--file-directory=/data/file_repository): specify a working directory with tsv, csv and/or psv data files to convert"
+* **-gr** (--graphdb-repository=test): specify a GraphDB repository. Default: test
+* **-fo** (--format=nquads): Specify a format for RDF out when running r2rml. Default: nquads
+* **-un** (--username=import_user): Specify a format for RDF out when running r2rml. Default: import_user
+* **-pw** (--password=test): Specify a format for RDF out when running r2rml. Default: import_user
