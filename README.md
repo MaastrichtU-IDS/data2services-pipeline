@@ -19,32 +19,55 @@ git clone --recursive git@github.com:MaastrichtU-IDS/data2services-pipeline.git
 ```
 
 ## Build
-Downloads the files and builds the docker containers if required.
-```shell
-## On Linux
-./build.sh
 
-## On Windows
-# Download GraphDB and put it in the graphdb directory
-# http://go.pardot.com/e/45622/38-graphdb-free-8-6-0-dist-zip/5pyc3s/1295914437
-# Download Apache Drill and put it in the apache-drill directory
-# ftp://apache.proserve.nl/apache/drill/drill-1.13.0/apache-drill-1.13.0.tar.gz
+Downloads the files and builds the docker containers if required.
+
+### On Linux
+
+```shell
+./build.sh
+```
+
+### On Windows
+
+* Download GraphDB and put it in the graphdb directory
+
+  http://go.pardot.com/e/45622/38-graphdb-free-8-6-0-dist-zip/5pyc3s/1295914437
+
+* Download Apache Drill and put it in the apache-drill directory
+
+  ftp://apache.proserve.nl/apache/drill/drill-1.13.0/apache-drill-1.13.0.tar.gz
+
+* Build the images
+
+```shell
 ./build.bat
 
 # Create graphdb and graphdb-import directories in /data
 mkdir /data/graphdb
 mkdir /data/graphdb-import
+
+# Create user import_user with password "test" and repository test
 ```
 
+
+
 ## Drill and GraphDb for Development
-In a production environment it is considered that both Drill and GraphDb are present. Other RDF stores should also work, but have not been tested yet.
+
+In a production environment it is considered that both Drill and GraphDb services are present. Other RDF stores should also work, but have not been tested yet.
 ### Start
 ```shell
-./startup
+# Linux
+./startup.sh
+# Windows
+./startup.bat
 ```
 ### Stop
 ```shell
-./shutdown
+# Linux
+./shutdown.sh
+# Windows
+./shutdown.bat
 ```
 
 
@@ -69,9 +92,16 @@ time ./run.sh -f /data/<some directory within /data>
   * **-un** (--username=import_user): Specify a format for RDF out when running r2rml. Default: import_user
   * **-pw** (--password=test): Specify a format for RDF out when running r2rml. Default: import_user
 
-### Windows
+
+
+### On Windows
+
+Be careful the AntiVirus might cause problems, you might need to deactivate it
 
 ```shell
 # With all default settings. Change the script if needed.
-./run.bat /data/pharmgkb
+./run.bat c:/data/pharmgkb
+
+# Running Drill
+docker run -it --rm --link drill:drill -v c:/data/pharmgkb:/data autodrill -h drill -r -o /data/mapping.ttl /data/pharmgkb
 ```

@@ -1,6 +1,4 @@
 #!/bin/bash
-set -e
-# Any subsequent(*) commands which fail will cause the shell script to exit immediately
 
 # Get commandline options
 while test $# -gt 0; do
