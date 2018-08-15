@@ -111,22 +111,31 @@ echo "[-un] GraphDB username: $GRAPHDB_USERNAME"
 echo "[-pw] GraphDB password: $GRAPHDB_PASSWORD"
 
 
+
 # Run AutoDrill to generate mapping file
-# TODO: WARNING the $DIRECTORY passed at the end is the path INSIDE the Apache Drill docker container (it must always starts with /data). So this script only works with dir inside /data)
+# TODO: WARNING the $DIRECTORY passed at the end is the path INSIDE the Apache Drill docker container (it must always starts with /data).
+# So this script only works with dir inside /data)
+
+echo "---------------------------------"
+echo "Running AutoDrill..."
+echo "---------------------------------"
 
 docker run -it --rm --link drill:drill -v $DIRECTORY:/data autodrill -h drill -r -o /data/mapping.ttl $DIRECTORY
 
-# Old way: docker run -it --rm --link drill:drill autodrill -h drill -r $DIRECTORY > $DIRECTORY/mapping.ttl
+echo "RML mappings (mapping.ttl) has been generated."
 
 
-# Generate config.properties required for r2rml
-echo "connectionURL = jdbc:drill:drillbit=drill:31010
-mappingFile = /data/mapping.ttl
-outputFile = /data/rdf_output.$OUTPUT_EXTENSION
-format = $RDF_FORMAT" > $DIRECTORY/config.properties
+echo "---------------------------------"
+echo "Running r2rml..."
+echo "---------------------------------"
 
-# Run r2rml to generate RDF files
-docker run -it --rm --link drill:drill -v $DIRECTORY:/data r2rml /data/config.properties
+# Run r2rml to generate RDF files. Using config.properties at the root dir of the container
+docker run -it --rm --link drill:drill -v $DIRECTORY:/data r2rml /config.properties
+
+
+echo "---------------------------------"
+echo "Running RdfUpload..."
+echo "---------------------------------"
 
 # Run RdfUpload to upload to GraphDB
 docker run -it --rm --link graphdb:graphdb -v $DIRECTORY:/data rdf-upload \
