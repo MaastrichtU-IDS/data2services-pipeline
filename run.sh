@@ -132,6 +132,8 @@ echo "---------------------------------"
 # Run r2rml to generate RDF files. Using config.properties at the root dir of the container
 docker run -it --rm --link drill:drill -v $DIRECTORY:/data r2rml /config.properties
 
+docker run -it --rm --link drill:drill -v /data/kraken-download/datasets/pharmgkb:/data r2rml /data/config.properties
+
 
 echo "---------------------------------"
 echo "Running RdfUpload..."
