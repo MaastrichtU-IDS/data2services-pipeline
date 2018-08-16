@@ -15,8 +15,7 @@ while test $# -gt 0; do
                         echo "-fo, --format=nquads      Specify a format for RDF out when running r2rml. Default: nquads"
                         echo "-un, --username=import_user      Specify a format for RDF out when running r2rml. Default: import_user"
                         echo "-pw, --password=test      Specify a format for RDF out when running r2rml. Default: import_user"
-                        exit 0
-                        ;;
+                        exit 0;;
                 -f)
                         shift
                         if test $# -gt 0; then
@@ -25,59 +24,48 @@ while test $# -gt 0; do
                                 echo "No file directory specified. Should point to a directory thats contains tsv, csv and/or psv data files to convert"
                                 exit 1
                         fi
-                        shift
-                        ;;
+                        shift;;
                 --file-directory*)
                         export DIRECTORY=`echo $1 | sed -e 's/^[^=]*=//g'`
-                        shift
-                        ;;
+                        shift;;
                 -rep)
                         shift
                         if test $# -gt 0; then
                                 export GRAPHDB_REPOSITORY=$1
                         fi
-                        shift
-                        ;;
+                        shift;;
                 --graphdb-repository*)
                         export GRAPHDB_REPOSITORY=`echo $1 | sed -e 's/^[^=]*=//g'`
-                        shift
-                        ;;
+                        shift;;
                 -fo)
                         shift
                         if test $# -gt 0; then
                                 export RDF_FORMAT=$1
                         fi
-                        shift
-                        ;;
+                        shift;;
                 --format*)
                         export RDF_FORMAT=`echo $1 | sed -e 's/^[^=]*=//g'`
-                        shift
-                        ;;
+                        shift;;
                 -u)
                         shift
                         if test $# -gt 0; then
                                 export GRAPHDB_USERNAME=$1
                         fi
-                        shift
-                        ;;
+                        shift;;
                 --username*)
                         export GRAPHDB_USERNAME=`echo $1 | sed -e 's/^[^=]*=//g'`
-                        shift
-                        ;;
+                        shift;;
                 -pw)
                         shift
                         if test $# -gt 0; then
                                 export GRAPHDB_PASSWORD=$1
                         fi
-                        shift
-                        ;;
+                        shift;;
                 --password*)
                         export GRAPHDB_PASSWORD=`echo $1 | sed -e 's/^[^=]*=//g'`
-                        shift
-                        ;;
+                        shift;;
                 *)
-                        break
-                        ;;
+                        break;;
         esac
 done
 
