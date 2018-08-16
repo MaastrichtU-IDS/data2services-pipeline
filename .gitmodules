@@ -7,9 +7,6 @@
 [submodule "r2rml"]
 	path = r2rml
 	url = https://github.com/MaastrichtU-IDS/r2rml.git
-[submodule "xml2rdf"]
-	path = xml2rdf
-	url = https://github.com/MaastrichtU-IDS/xml2rdf.git
 [submodule "RdfUpload"]
 	path = RdfUpload
 	url = https://github.com/MaastrichtU-IDS/RdfUpload.git
