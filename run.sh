@@ -130,10 +130,22 @@ echo "Running r2rml..."
 echo "---------------------------------"
 
 # Run r2rml to generate RDF files. Using config.properties at the root dir of the container
-docker run -it --rm --link drill:drill -v $DIRECTORY:/data r2rml /config.properties
+#docker run -it --rm --link drill:drill -v $DIRECTORY:/data r2rml /config.properties
 # To run it with local config.properties:
 #docker run -it --rm --link drill:drill -v /data/kraken-download/datasets/pharmgkb:/data r2rml /data/config.properties
 
+echo "---------------------------------"
+echo "Running xml2rdf..."
+echo "---------------------------------"
+
+docker run --rm -it -v $DIRECTORY:/data/ xml2rdf "/data"
+
+#for f in $(find /data/kraken-download/datasets/xml_sample/pubmed18n0009.xml -name '*.xml'); do echo "$f"; done
+
+# Works on Pubmed, 3G nt file: 
+#docker run --rm -it -v /data:/data/ xml2rdf "/data/kraken-download/datasets/pubmed/baseline/pubmed18n0009.xml" "/data/kraken-download/datasets/pubmed/pubmed.nt.gz"
+# Error, needs dtd apparently
+#docker run --rm -it -v /data:/data/ xml2rdf "/data/kraken-download/datasets/interpro/interpro.xml" "/data/kraken-download/datasets/interpro/interpro.nt.gz"
 
 echo "---------------------------------"
 echo "Running RdfUpload..."
