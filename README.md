@@ -83,6 +83,7 @@ time ./run.sh -f /data/<some directory within /data>
 
 # For example to convert all tsv files in /data/pharmgkb 
 ./run.sh -f /data/pharmgkb
+./run.sh -f /data/pharmgkb
 ```
 
 * Running options
@@ -105,3 +106,12 @@ Be careful the AntiVirus might cause problems, you might need to deactivate it
 # Running Drill
 docker run -it --rm --link drill:drill -v c:/data/pharmgkb:/data autodrill -h drill -r -o /data/mapping.ttl /data/pharmgkb
 ```
+
+
+# To do
+
+* Automate user and repository creation at GraphDB build
+
+* The triples are uploaded to a graph named after the directory we are running the command on. We might want to name the graph after the datasets name.
+
+  When I run it on `/data/kraken-download/datasets` I want the triples to be uploaded to http://kraken/graph/data/kraken-download/datasets/ndc and  http://kraken/graph/data/kraken-download/datasets/pharmgkb instead of  http://kraken/graph/data/kraken-download/datasets
