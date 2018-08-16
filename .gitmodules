@@ -13,3 +13,6 @@
 [submodule "graphdb"]
 	path = graphdb
 	url = https://github.com/MaastrichtU-IDS/graphdb.git
+[submodule "xml2rdf"]
+	path = xml2rdf
+	url = https://github.com/MaastrichtU-IDS/xml2rdf.git
