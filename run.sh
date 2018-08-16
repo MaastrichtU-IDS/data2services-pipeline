@@ -111,15 +111,13 @@ echo "[-un] GraphDB username: $GRAPHDB_USERNAME"
 echo "[-pw] GraphDB password: $GRAPHDB_PASSWORD"
 
 
-
-# Run AutoDrill to generate mapping file
-# TODO: WARNING the $DIRECTORY passed at the end is the path INSIDE the Apache Drill docker container (it must always starts with /data).
-# So this script only works with dir inside /data)
-
 echo "---------------------------------"
 echo "Running AutoDrill..."
 echo "---------------------------------"
 
+# Run AutoDrill to generate mapping file
+# TODO: WARNING the $DIRECTORY passed at the end is the path INSIDE the Apache Drill docker container (it must always starts with /data).
+# So this script only works with dir inside /data)
 docker run -it --rm --link drill:drill -v $DIRECTORY:/data autodrill -h drill -r -o /data/mapping.ttl $DIRECTORY
 
 echo "RML mappings (mapping.ttl) has been generated."
@@ -130,7 +128,10 @@ echo "Running r2rml..."
 echo "---------------------------------"
 
 # Run r2rml to generate RDF files. Using config.properties at the root dir of the container
-#docker run -it --rm --link drill:drill -v $DIRECTORY:/data r2rml /config.properties
+docker run -it --rm --link drill:drill -v $DIRECTORY:/data r2rml /config.properties
+
+echo "r2rml completed."
+
 # To run it with local config.properties:
 #docker run -it --rm --link drill:drill -v /data/kraken-download/datasets/pharmgkb:/data r2rml /data/config.properties
 
@@ -139,8 +140,6 @@ echo "Running xml2rdf..."
 echo "---------------------------------"
 
 docker run --rm -it -v $DIRECTORY:/data/ xml2rdf "/data"
-
-#for f in $(find /data/kraken-download/datasets/xml_sample/pubmed18n0009.xml -name '*.xml'); do echo "$f"; done
 
 # Works on Pubmed, 3G nt file: 
 #docker run --rm -it -v /data:/data/ xml2rdf "/data/kraken-download/datasets/pubmed/baseline/pubmed18n0009.xml" "/data/kraken-download/datasets/pubmed/pubmed.nt.gz"
