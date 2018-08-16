@@ -141,7 +141,7 @@ echo "---------------------------------"
 # Run RdfUpload to upload to GraphDB
 docker run -it --rm --link graphdb:graphdb -v $DIRECTORY:/data rdf-upload \
   -m "HTTP" \
-  -if "/data/rdf_output.$OUTPUT_EXTENSION" \
+  -if "/data" \
   -url "http://graphdb:7200" \
   -rep "$GRAPHDB_REPOSITORY" \
   -un $GRAPHDB_USERNAME -pw $GRAPHDB_PASSWORD

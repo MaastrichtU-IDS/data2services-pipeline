@@ -14,4 +14,4 @@ docker run -it --rm --link drill:drill -v %1:/data r2rml /config.properties
 docker run --rm -it -v %1:/data/ xml2rdf "/data"
 
 :: Run RdfUpload to upload to GraphDB
-docker run -it --rm --link graphdb:graphdb -v %1:/data rdf-upload -m "HTTP" -if "/data/rdf_output.nq" -url "http://graphdb:7200" -rep "test" -un import_user -pw test
+docker run -it --rm --link graphdb:graphdb -v %1:/data rdf-upload -m "HTTP" -if "/data" -url "http://graphdb:7200" -rep "test" -un import_user -pw test
