@@ -108,6 +108,7 @@ echo "Running AutoDrill..."
 # TODO: WARNING the $DIRECTORY passed at the end is the path INSIDE the Apache Drill docker container (it must always starts with /data).
 # So this script only works with dir inside /data)
 docker run -it --rm --link drill:drill -v $DIRECTORY:/data autodrill -h drill -r -o /data/mapping.ttl $DIRECTORY
+# Flag to define the graph URI: -g "http://graph/test/autodrill"
 
 echo "RML mappings (mapping.ttl) has been generated."
 
@@ -125,7 +126,8 @@ echo "---------------------------------"
 echo "  Running xml2rdf..."
 echo "---------------------------------"
 
-docker run --rm -it -v $DIRECTORY:/data/ xml2rdf "/data"
+docker run --rm -it -v $DIRECTORY:/data/ xml2rdf "/data" 
+# Flag to define the graph URI: -g "http://graph/test/xml2rdf"
 
 # Works on Pubmed, 3G nt file: 
 #docker run --rm -it -v /data:/data/ xml2rdf "/data/kraken-download/datasets/pubmed/baseline/pubmed18n0009.xml" "/data/kraken-download/datasets/pubmed/pubmed.nt.gz"
