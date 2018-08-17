@@ -46,9 +46,23 @@ Downloads the files and builds the docker containers if required.
 # Create graphdb and graphdb-import directories in /data
 mkdir /data/graphdb
 mkdir /data/graphdb-import
-
-# Create user import_user with password "test" and repository test
 ```
+
+### Create GraphDB repo and users
+
+* Go to http://localhost:7200/
+* Setup > Repositories > Create new repository
+  * Repository ID: **test** (or whatever you want it to be, but you will need to change data2services default config)
+  * Check `Use context index`
+  * Create
+* Setup > Users and access
+  * Edit admin user > Enter a new password > Save
+  * Click on `Security is off` 
+  * Create new user
+    * User name: import_user
+    * Password: test
+    * Repository rights > Write right on `Any data repository`
+    * Click `Create`
 
 
 
