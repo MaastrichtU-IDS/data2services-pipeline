@@ -100,8 +100,9 @@ echo "[-pw] GraphDB password: $GRAPHDB_PASSWORD"
 
 
 echo "---------------------------------"
-echo "Running AutoDrill..."
+echo "  Converting TSV to RDF..."
 echo "---------------------------------"
+echo "Running AutoDrill..."
 
 # Run AutoDrill to generate mapping file
 # TODO: WARNING the $DIRECTORY passed at the end is the path INSIDE the Apache Drill docker container (it must always starts with /data).
@@ -110,10 +111,7 @@ docker run -it --rm --link drill:drill -v $DIRECTORY:/data autodrill -h drill -r
 
 echo "RML mappings (mapping.ttl) has been generated."
 
-
-echo "---------------------------------"
 echo "Running r2rml..."
-echo "---------------------------------"
 
 # Run r2rml to generate RDF files. Using config.properties at the root dir of the container
 docker run -it --rm --link drill:drill -v $DIRECTORY:/data r2rml /config.properties
@@ -124,7 +122,7 @@ echo "r2rml completed."
 #docker run -it --rm --link drill:drill -v /data/kraken-download/datasets/pharmgkb:/data r2rml /data/config.properties
 
 echo "---------------------------------"
-echo "Running xml2rdf..."
+echo "  Running xml2rdf..."
 echo "---------------------------------"
 
 docker run --rm -it -v $DIRECTORY:/data/ xml2rdf "/data"
@@ -135,7 +133,7 @@ docker run --rm -it -v $DIRECTORY:/data/ xml2rdf "/data"
 #docker run --rm -it -v /data:/data/ xml2rdf "/data/kraken-download/datasets/interpro/interpro.xml" "/data/kraken-download/datasets/interpro/interpro.nt.gz"
 
 echo "---------------------------------"
-echo "Running RdfUpload..."
+echo "  Running RdfUpload..."
 echo "---------------------------------"
 
 # Run RdfUpload to upload to GraphDB
