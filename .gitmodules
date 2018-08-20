@@ -16,3 +16,6 @@
 [submodule "xml2rdf"]
 	path = xml2rdf
 	url = https://github.com/MaastrichtU-IDS/xml2rdf.git
+[submodule "rdb2rml"]
+	path = rdb2rml
+	url = https://github.com/MaastrichtU-IDS/rdb2rml.git
