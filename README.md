@@ -131,7 +131,7 @@ Be careful the AntiVirus might cause problems, you might need to deactivate it
 ./run.bat c:/data/pharmgkb
 
 # Running Drill
-docker run -it --rm --link drill:drill -v c:/data/pharmgkb:/data autodrill -h drill -r -o /data/mapping.ttl /data/pharmgkb
+docker run -it --rm --link drill:drill -v c:/data/pharmgkb:/data autor2rml -h drill -r -o /data/mapping.ttl /data/pharmgkb
 ```
 
 
