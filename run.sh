@@ -104,10 +104,12 @@ echo "  Converting TSV to RDF..."
 echo "---------------------------------"
 echo "Running AutoR2RML..."
 
-# Run AutoR2RML to generate mapping files
+# Run AutoR2RML to generate R2RML mapping files
+
 # TODO: WARNING the $DIRECTORY passed at the end is the path INSIDE the Apache Drill docker container (it must always starts with /data).
 # So this script only works with dir inside /data)
-docker run -it --rm --link drill:drill -v $DIRECTORY:/data autor2rml -h drill -r -o /data/mapping.ttl $DIRECTORY
+# Not working: docker run -it --rm --link drill:drill -v $DIRECTORY:/data autor2rml -h drill -r -o /data/mapping.ttl $DIRECTORY
+docker run -it --rm --link drill:drill -v /data:/data autor2rml -h drill -r -o /data/mapping.ttl $DIRECTORY
 # Flag to define the graph URI: -g "http://graph/test/autodrill"
 
 echo "R2RML mappings (mapping.ttl) has been generated."

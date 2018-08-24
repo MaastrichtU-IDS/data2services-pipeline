@@ -4,8 +4,9 @@ SET replace=/
 SET path=!1:%search%=%replace%!
 ECHO %path%
 
-:: Generate RML mapping.ttl file
-docker run -it --rm --link drill:drill -v %1:/data autor2rml -h drill -r -o /data/mapping.ttl %path%
+:: Generate RML mapping.ttl file. Be careful it needs to be in /data
+::docker run -it --rm --link drill:drill -v %1:/data autor2rml -h drill -r -o /data/mapping.ttl %path%
+docker run -it --rm --link drill:drill -v /data:/data autor2rml -h drill -r -o /data/mapping.ttl %1
 
 :: Run r2rml to generate RDF files from TSV with the AutoDrill mappings
 docker run -it --rm --link drill:drill -v %1:/data r2rml /config.properties
