@@ -135,6 +135,18 @@ docker run -it --rm --link drill:drill -v c:/data/pharmgkb:/data autor2rml -h dr
 ```
 
 
+
+## Generate the Swagger UI
+
+Not Dockerized at the moment
+
+```shell
+cd generate-java-swagger-api
+mvn jetty:run-war
+```
+
+
+
 # To do
 
 * Automate user and repository creation at GraphDB build
