@@ -16,6 +16,3 @@
 [submodule "apache-drill"]
 	path = apache-drill
 	url = https://github.com/amalic/apache-drill
-[submodule "generate-java-swagger-api"]
-	path = generate-java-swagger-api
-	url = https://github.com/MaastrichtU-IDS/generate-java-swagger-api
