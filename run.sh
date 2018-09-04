@@ -37,15 +37,6 @@ while test $# -gt 0; do
                 --graphdb-repository*)
                         export GRAPHDB_REPOSITORY=`echo $1 | sed -e 's/^[^=]*=//g'`
                         shift;;
-                -fo)
-                        shift
-                        if test $# -gt 0; then
-                                export RDF_FORMAT=$1
-                        fi
-                        shift;;
-                --format*)
-                        export RDF_FORMAT=`echo $1 | sed -e 's/^[^=]*=//g'`
-                        shift;;
                 -u)
                         shift
                         if test $# -gt 0; then
@@ -74,26 +65,8 @@ GRAPHDB_REPOSITORY=${GRAPHDB_REPOSITORY:-test}
 GRAPHDB_USERNAME=${GRAPHDB_USERNAME:-import_user}
 GRAPHDB_PASSWORD=${GRAPHDB_PASSWORD:-test}
 
-# If directory starts with / then it is an absolute path. We add /data to relative path for convenience
-if  [[ $DIRECTORY == /* ]] ;
-then
-  echo "Using absolute path"
-else
-  DIRECTORY=/data/$DIRECTORY
-fi
-
-# If the user ask for the turtle format we provide it, otherwise its nquads to get the Graph
-if  [[ "$RDF_FORMAT" == "TURTLE" ]] || [[ "$RDF_FORMAT" == "TTL" ]];
-then
-  OUTPUT_EXTENSION="ttl.gz"
-  RDF_FORMAT="TURTLE"
-else
-  OUTPUT_EXTENSION="nq"
-  RDF_FORMAT="NQUADS"
-fi
 
 echo "[-f] Working file directory: $DIRECTORY"
-echo "[-fo] RDF format: $RDF_FORMAT"
 echo "[-rep] GraphDB repository: $GRAPHDB_REPOSITORY"
 echo "[-un] GraphDB username: $GRAPHDB_USERNAME"
 echo "[-pw] GraphDB password: $GRAPHDB_PASSWORD"
