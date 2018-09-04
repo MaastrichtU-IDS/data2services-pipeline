@@ -116,8 +116,14 @@ echo "R2RML mappings (mapping.ttl) has been generated."
 
 echo "Running r2rml..."
 
+# Generate config.properties required for r2rml
+echo "connectionURL = jdbc:drill:drillbit=drill:31010
+mappingFile = /data/mapping.ttl
+outputFile = /data/rdf_output.nq
+format = NQUADS" > $DIRECTORY/config.properties
+
 # Run r2rml to generate RDF files. Using config.properties at the root dir of the container
-docker run -it --rm --link drill:drill -v $DIRECTORY:/data r2rml /config.properties
+docker run -it --rm --link drill:drill -v $DIRECTORY:/data r2rml /data/config.properties
 
 echo "r2rml completed."
 
