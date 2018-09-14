@@ -1,0 +1,15 @@
+JDBC_URL: "jdbc:drill:drillbit=drill:31010"
+# Bug without reason because of :. The sed regex do a weird thing by extracting "JDBC_URL:" and "jdbc:drill:drillbit=drill31010"
+# Instead of "JDBC_URL" and "jdbc:drill:drillbit=drill:31010". The regex is good and works on regex101...
+
+WORKING_DIRECTORY: "/data/kraken-download/datasets"
+
+JDBC_CONTAINER: "drill"
+
+JDBC_USERNAME: "foo"
+JDBC_PASSWORD: "bar"
+
+GRAPHDB_REPOSITORY: "test"
+
+GRAPHDB_USERNAME: "import_user" 
+GRAPHDB_PASSWORD: "test"

@@ -105,6 +105,32 @@ The directory where the files to convert are needs to be in /data
 
 ### On Linux
 
+config.yaml
+
+```yaml
+# Where the mapping.ttl file will be generated. And where the files (XML, TSV, CSV...) to convert need to be put
+WORKING_DIRECTORY: "/data/kraken-download/datasets"
+
+# The JDBC URL used to access the data for AutoR2RML (Drill, SQLite, Postgres)
+JDBC_URL: "jdbc:drill:drillbit=drill:31010"
+
+# JDBC DB docker container name to link to AutoR2RML container. Default: drill
+JDBC_CONTAINER: "drill"
+
+# JDBC DB credentials for AutoR2RML
+JDBC_USERNAME: "foo"
+JDBC_PASSWORD: "bar"
+
+# Specify a GraphDB repository to upload RDF. Default: test
+GRAPHDB_REPOSITORY: "test"
+
+# GraphDB credentials
+GRAPHDB_USERNAME: "import_user" 
+GRAPHDB_PASSWORD: "test"
+```
+
+
+
 ```shell
 # For example to convert all tsv files in /data/pharmgkb using Drill 
 ./run.sh -jdbc "jdbc:drill:drillbit=drill:31010" -jc drill -f /data/pharmgkb -gu import_user -gp test

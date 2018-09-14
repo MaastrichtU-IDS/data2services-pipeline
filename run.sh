@@ -1,107 +1,29 @@
 #!/bin/bash
 
-# Get commandline options
-while test $# -gt 0; do
-        case "$1" in
-                -h|--help)
-                        echo "$package - attempt to capture frames"
-                        echo " "
-                        echo "$package [options] application [arguments]"
-                        echo " "
-                        echo "options:"
-                        echo "-h, --help                show brief help"
-                        echo "-f, --file-directory=/data/file_repository       specify a working directory with tsv, csv and/or psv data files to convert"
-                        echo "-j, --jdbc-url=jdbc:drill:drillbit=drill:31010       The JDBC URL used to access the data for AutoR2RML (Drill, SQLite, Postgres)"
-                        echo "-jc, --jdbc-container=drill      JDBC DB docker container name to link to AutoR2RML container. Default: drill"
-                        echo "-ju, --jdbc-username=foo      JDBC DB username for AutoR2RML"
-                        echo "-jp, --jdbc-password=bar      JDBC DB password for AutoR2RML"
-                        echo "-gr, --graphdb-repository=test      specify a GraphDB repository. Default: test"
-                        echo "-fo, --format=nquads      Specify a format for RDF out when running r2rml. Default: nquads"
-                        echo "-gu, --graphdb-username=import_user      GraphDB username to upload RDF. Default: import_user"
-                        echo "-gp, --graphdb-password=test      GraphDB password to upload RDF. Default: import_user"
-                        exit 0;;
-                -f)
-                        shift
-                        if test $# -gt 0; then
-                                export DIRECTORY=$1
-                        else
-                                echo "No file directory specified. Should point to a directory thats contains tsv, csv and/or psv data files to convert."
-                                exit 1
-                        fi
-                        shift;;
-                --file-directory*)
-                        export DIRECTORY=`echo $1 | sed -e 's/^[^=]*=//g'`
-                        shift;;
-                -j)
-                        shift
-                        if test $# -gt 0; then
-                                export JDBC_URL=$1
-                        else
-                                echo "The JDBC URL used to access the data for AutoR2RML (Drill, SQLite, Postgres)"
-                                exit 1
-                        fi
-                        shift;;
-                --jdbc-url*)
-                        export JDBC_URL=`echo $1 | sed -e 's/^[^=]*=//g'`
-                        shift;;
-                -ju)
-                        shift
-                        if test $# -gt 0; then
-                                export JDBC_USERNAME=$1
-                        fi
-                        shift;;
-                --jdbc-username*)
-                        export JDBC_USERNAME=`echo $1 | sed -e 's/^[^=]*=//g'`
-                        shift;;
-                -jp)
-                        shift
-                        if test $# -gt 0; then
-                                export JDBC_PASSWORD=$1
-                        fi
-                        shift;;
-                --jdbc-password*)
-                        export JDBC_PASSWORD=`echo $1 | sed -e 's/^[^=]*=//g'`
-                        shift;;
-                -jc)
-                        shift
-                        if test $# -gt 0; then
-                                export JDBC_CONTAINER=$1
-                        fi
-                        shift;;
-                --jdbc-container*)
-                        export JDBC_CONTAINER=`echo $1 | sed -e 's/^[^=]*=//g'`
-                        shift;;
-                -rep)
-                        shift
-                        if test $# -gt 0; then
-                                export GRAPHDB_REPOSITORY=$1
-                        fi
-                        shift;;
-                --graphdb-repository*)
-                        export GRAPHDB_REPOSITORY=`echo $1 | sed -e 's/^[^=]*=//g'`
-                        shift;;
-                -gu)
-                        shift
-                        if test $# -gt 0; then
-                                export GRAPHDB_USERNAME=$1
-                        fi
-                        shift;;
-                --graphdb-username*)
-                        export GRAPHDB_USERNAME=`echo $1 | sed -e 's/^[^=]*=//g'`
-                        shift;;
-                -gp)
-                        shift
-                        if test $# -gt 0; then
-                                export GRAPHDB_PASSWORD=$1
-                        fi
-                        shift;;
-                --graphdb-password*)
-                        export GRAPHDB_PASSWORD=`echo $1 | sed -e 's/^[^=]*=//g'`
-                        shift;;
-                *)
-                        break;;
-        esac
+YAML_PATH=$1
+
+# Parse yaml
+echo "---------------------------------"
+echo "  YAML configuration:"
+param_array=( $(cat $YAML_PATH | sed -r -n 's/([^#]*?):(.*)/\1\2/p') )
+i=0  
+while [ $i -le ${#param_array[@]} ]  
+do  
+  VAR_NAME=${param_array[$i]}
+  echo $VAR_NAME
+  i=$(( $i + 1 ))
+  if [[ -z "$VAR_NAME" ]]; then
+    continue
+  fi
+  echo "$VAR_NAME = ${param_array[$i]}"
+  eval "$VAR_NAME"="\"${param_array[$i]}\""
+  # Show an error but works at naming the var with another var
+  i=$(( $i + 1 ))
 done
+# Careful: it takes all lines starting with a "-". So no other array
+download_datasets=( $(sed -n -e 's/^\s*- //p' $YAML_PATH) )
+
+
 
 # Set default values
 GRAPHDB_REPOSITORY=${GRAPHDB_REPOSITORY:-test}
@@ -109,7 +31,7 @@ GRAPHDB_USERNAME=${GRAPHDB_USERNAME:-import_user}
 GRAPHDB_PASSWORD=${GRAPHDB_PASSWORD:-test}
 
 
-echo "[-f] Working file directory: $DIRECTORY"
+echo "[-f] Working file directory: $WORKING_DIRECTORY"
 echo "[-j] JDBC URL for AutoR2RML: $JDBC_URL"
 echo "[-jc] JDBC DB container for AutoR2RML: $JDBC_CONTAINER"
 echo "[-ju] JDBC DB username for AutoR2RML: $JDBC_USERNAME"
@@ -128,7 +50,7 @@ then
   echo "  Running xml2rdf..."
   echo "---------------------------------"
 
-  docker run --rm -it -v /data:/data xml2rdf  -i "$DIRECTORY" -o "$DIRECTORY.nq.gz" -g "http://kraken/graph/xml2rdf"
+  docker run --rm -it -v /data:/data xml2rdf  -i "$WORKING_DIRECTORY" -o "$WORKING_DIRECTORY.nq.gz" -g "http://kraken/graph/xml2rdf"
   # XML file needs to be in /data. TODO: put the first part of the path as the shared volume
 
   # Works on Pubmed, 3G nt file: 
@@ -146,10 +68,10 @@ else
 
   # Run AutoR2RML to generate R2RML mapping files
 
-  # TODO: WARNING the $DIRECTORY passed at the end is the path INSIDE the Apache Drill docker container (it must always starts with /data).
+  # TODO: WARNING the $WORKING_DIRECTORY passed at the end is the path INSIDE the Apache Drill docker container (it must always starts with /data).
   # So this script only works with dir inside /data)
-  # Not working for sqlite: docker run -it --rm --link drill:drill -v $DIRECTORY:/data autor2rml -h drill -r -o /data/mapping.ttl $DIRECTORY
-  docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v $DIRECTORY:/data autor2rml -j "$JDBC_URL" -r -o /data/mapping.ttl -d $DIRECTORY -u "$JDBC_USERNAME" -p "$JDBC_PASSWORD"
+  # Not working for sqlite: docker run -it --rm --link drill:drill -v $WORKING_DIRECTORY:/data autor2rml -h drill -r -o /data/mapping.ttl $WORKING_DIRECTORY
+  docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v $WORKING_DIRECTORY:/data autor2rml -j "$JDBC_URL" -r -o /data/mapping.ttl -d $DIRECTORY -u "$JDBC_USERNAME" -p "$JDBC_PASSWORD"
   # Flag to define the graph URI: -g "http://graph/test/autodrill"
 
   echo "R2RML mappings (mapping.ttl) has been generated."
@@ -162,10 +84,10 @@ else
   outputFile = /data/rdf_output.nq
   user = $JDBC_USERNAME
   password = $JDBC_PASSWORD
-  format = NQUADS" > $DIRECTORY/config.properties
+  format = NQUADS" > $WORKING_DIRECTORY/config.properties
 
   # Run r2rml to generate RDF files. Using config.properties at the root dir of the container
-  docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v $DIRECTORY:/data r2rml /data/config.properties
+  docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v $WORKING_DIRECTORY:/data r2rml /data/config.properties
 
   echo "r2rml completed."
 
@@ -179,7 +101,7 @@ echo "  Running RdfUpload..."
 echo "---------------------------------"
 
 # Run RdfUpload to upload to GraphDB
-docker run -it --rm --link graphdb:graphdb -v $DIRECTORY:/data rdf-upload \
+docker run -it --rm --link graphdb:graphdb -v $WORKING_DIRECTORY:/data rdf-upload \
   -m "HTTP" \
   -if "/data" \
   -url "http://graphdb:7200" \
