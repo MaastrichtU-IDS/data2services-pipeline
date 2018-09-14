@@ -21,7 +21,7 @@ while test $# -gt 0; do
                         if test $# -gt 0; then
                                 export DIRECTORY=$1
                         else
-                                echo "No file directory specified. Should point to a directory thats contains tsv, csv and/or psv data files to convert"
+                                echo "No file directory specified. Should point to a directory thats contains tsv, csv and/or psv data files to convert."
                                 exit 1
                         fi
                         shift;;
@@ -72,48 +72,57 @@ echo "[-un] GraphDB username: $GRAPHDB_USERNAME"
 echo "[-pw] GraphDB password: $GRAPHDB_PASSWORD"
 
 
-echo "---------------------------------"
-echo "  Converting TSV to RDF..."
-echo "---------------------------------"
-echo "Running AutoR2RML..."
+#if [ ${file: -4} == ".xml" || ${file: -7} == ".xml.gz" ]
+if [[ $file == *.xml || $file == *.xml.gz ]]
+then
 
-# Run AutoR2RML to generate R2RML mapping files
+  echo "---------------------------------"
+  echo "  Running xml2rdf..."
+  echo "---------------------------------"
 
-# TODO: WARNING the $DIRECTORY passed at the end is the path INSIDE the Apache Drill docker container (it must always starts with /data).
-# So this script only works with dir inside /data)
-# Not working for sqlite: docker run -it --rm --link drill:drill -v $DIRECTORY:/data autor2rml -h drill -r -o /data/mapping.ttl $DIRECTORY
-docker run -it --rm --link drill:drill -v $DIRECTORY:/data autor2rml -h drill -r -o /data/mapping.ttl $DIRECTORY
-# Flag to define the graph URI: -g "http://graph/test/autodrill"
+  docker run --rm -it -v /data:/data xml2rdf  -i "$DIRECTORY" -o "$DIRECTORY.nq.gz" -g "http://kraken/graph/xml2rdf"
+  # XML file needs to be in /data. TODO: put the first part of the path as the shared volume
 
-echo "R2RML mappings (mapping.ttl) has been generated."
+  # Works on Pubmed, 3G nt file: 
+  #docker run --rm -it -v /data:/data/ xml2rdf "/data/kraken-download/datasets/pubmed/baseline/pubmed18n0009.xml" "/data/kraken-download/datasets/pubmed/pubmed.nt.gz"
+  # Error, needs dtd apparently
+  #docker run --rm -it -v /data:/data/ xml2rdf "/data/kraken-download/datasets/interpro/interpro.xml" "/data/kraken-download/datasets/interpro/interpro.nt.gz"
 
-echo "Running r2rml..."
 
-# Generate config.properties required for r2rml
-echo "connectionURL = jdbc:drill:drillbit=drill:31010
-mappingFile = /data/mapping.ttl
-outputFile = /data/rdf_output.nq
-format = NQUADS" > $DIRECTORY/config.properties
+else
 
-# Run r2rml to generate RDF files. Using config.properties at the root dir of the container
-docker run -it --rm --link drill:drill -v $DIRECTORY:/data r2rml /data/config.properties
+  echo "---------------------------------"
+  echo "  Converting TSV to RDF..."
+  echo "---------------------------------"
+  echo "Running AutoR2RML..."
 
-echo "r2rml completed."
+  # Run AutoR2RML to generate R2RML mapping files
 
-# To run it with local config.properties:
-#docker run -it --rm --link drill:drill -v /data/kraken-download/datasets/pharmgkb:/data r2rml /data/config.properties
+  # TODO: WARNING the $DIRECTORY passed at the end is the path INSIDE the Apache Drill docker container (it must always starts with /data).
+  # So this script only works with dir inside /data)
+  # Not working for sqlite: docker run -it --rm --link drill:drill -v $DIRECTORY:/data autor2rml -h drill -r -o /data/mapping.ttl $DIRECTORY
+  docker run -it --rm --link drill:drill -v $DIRECTORY:/data autor2rml -h drill -r -o /data/mapping.ttl $DIRECTORY
+  # Flag to define the graph URI: -g "http://graph/test/autodrill"
 
-echo "---------------------------------"
-echo "  Running xml2rdf..."
-echo "---------------------------------"
+  echo "R2RML mappings (mapping.ttl) has been generated."
 
-docker run --rm -it -v $DIRECTORY:/data/ xml2rdf "/data" 
-# Flag to define the graph URI: -g "http://graph/test/xml2rdf"
+  echo "Running r2rml..."
 
-# Works on Pubmed, 3G nt file: 
-#docker run --rm -it -v /data:/data/ xml2rdf "/data/kraken-download/datasets/pubmed/baseline/pubmed18n0009.xml" "/data/kraken-download/datasets/pubmed/pubmed.nt.gz"
-# Error, needs dtd apparently
-#docker run --rm -it -v /data:/data/ xml2rdf "/data/kraken-download/datasets/interpro/interpro.xml" "/data/kraken-download/datasets/interpro/interpro.nt.gz"
+  # Generate config.properties required for r2rml
+  echo "connectionURL = jdbc:drill:drillbit=drill:31010
+  mappingFile = /data/mapping.ttl
+  outputFile = /data/rdf_output.nq
+  format = NQUADS" > $DIRECTORY/config.properties
+
+  # Run r2rml to generate RDF files. Using config.properties at the root dir of the container
+  docker run -it --rm --link drill:drill -v $DIRECTORY:/data r2rml /data/config.properties
+
+  echo "r2rml completed."
+
+  # To run it with local config.properties:
+  #docker run -it --rm --link drill:drill -v /data/kraken-download/datasets/pharmgkb:/data r2rml /data/config.properties
+
+fi
 
 echo "---------------------------------"
 echo "  Running RdfUpload..."
