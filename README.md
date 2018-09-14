@@ -106,8 +106,6 @@ The directory where the files to convert are needs to be in /data
 ### On Linux
 
 ```shell
-time ./run.sh -f /data/<some directory within /data>
-
 # For example to convert all tsv files in /data/pharmgkb using Drill 
 ./run.sh -jdbc "jdbc:drill:drillbit=drill:31010" -jc drill -f /data/pharmgkb -gu import_user -gp test
 
