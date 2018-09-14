@@ -11,10 +11,14 @@ while test $# -gt 0; do
                         echo "options:"
                         echo "-h, --help                show brief help"
                         echo "-f, --file-directory=/data/file_repository       specify a working directory with tsv, csv and/or psv data files to convert"
+                        echo "-j, --jdbc-url=jdbc:drill:drillbit=drill:31010       The JDBC URL used to access the data for AutoR2RML (Drill, SQLite, Postgres)"
+                        echo "-jc, --jdbc-container=drill      JDBC DB docker container name to link to AutoR2RML container. Default: drill"
+                        echo "-ju, --jdbc-username=foo      JDBC DB username for AutoR2RML"
+                        echo "-jp, --jdbc-password=bar      JDBC DB password for AutoR2RML"
                         echo "-gr, --graphdb-repository=test      specify a GraphDB repository. Default: test"
                         echo "-fo, --format=nquads      Specify a format for RDF out when running r2rml. Default: nquads"
-                        echo "-un, --username=import_user      Specify a format for RDF out when running r2rml. Default: import_user"
-                        echo "-pw, --password=test      Specify a format for RDF out when running r2rml. Default: import_user"
+                        echo "-gu, --graphdb-username=import_user      GraphDB username to upload RDF. Default: import_user"
+                        echo "-gp, --graphdb-password=test      GraphDB password to upload RDF. Default: import_user"
                         exit 0;;
                 -f)
                         shift
@@ -28,6 +32,45 @@ while test $# -gt 0; do
                 --file-directory*)
                         export DIRECTORY=`echo $1 | sed -e 's/^[^=]*=//g'`
                         shift;;
+                -j)
+                        shift
+                        if test $# -gt 0; then
+                                export JDBC_URL=$1
+                        else
+                                echo "The JDBC URL used to access the data for AutoR2RML (Drill, SQLite, Postgres)"
+                                exit 1
+                        fi
+                        shift;;
+                --jdbc-url*)
+                        export JDBC_URL=`echo $1 | sed -e 's/^[^=]*=//g'`
+                        shift;;
+                -ju)
+                        shift
+                        if test $# -gt 0; then
+                                export JDBC_USERNAME=$1
+                        fi
+                        shift;;
+                --jdbc-username*)
+                        export JDBC_USERNAME=`echo $1 | sed -e 's/^[^=]*=//g'`
+                        shift;;
+                -jp)
+                        shift
+                        if test $# -gt 0; then
+                                export JDBC_PASSWORD=$1
+                        fi
+                        shift;;
+                --jdbc-password*)
+                        export JDBC_PASSWORD=`echo $1 | sed -e 's/^[^=]*=//g'`
+                        shift;;
+                -jc)
+                        shift
+                        if test $# -gt 0; then
+                                export JDBC_CONTAINER=$1
+                        fi
+                        shift;;
+                --jdbc-container*)
+                        export JDBC_CONTAINER=`echo $1 | sed -e 's/^[^=]*=//g'`
+                        shift;;
                 -rep)
                         shift
                         if test $# -gt 0; then
@@ -37,22 +80,22 @@ while test $# -gt 0; do
                 --graphdb-repository*)
                         export GRAPHDB_REPOSITORY=`echo $1 | sed -e 's/^[^=]*=//g'`
                         shift;;
-                -u)
+                -gu)
                         shift
                         if test $# -gt 0; then
                                 export GRAPHDB_USERNAME=$1
                         fi
                         shift;;
-                --username*)
+                --graphdb-username*)
                         export GRAPHDB_USERNAME=`echo $1 | sed -e 's/^[^=]*=//g'`
                         shift;;
-                -pw)
+                -gp)
                         shift
                         if test $# -gt 0; then
                                 export GRAPHDB_PASSWORD=$1
                         fi
                         shift;;
-                --password*)
+                --graphdb-password*)
                         export GRAPHDB_PASSWORD=`echo $1 | sed -e 's/^[^=]*=//g'`
                         shift;;
                 *)
@@ -67,9 +110,14 @@ GRAPHDB_PASSWORD=${GRAPHDB_PASSWORD:-test}
 
 
 echo "[-f] Working file directory: $DIRECTORY"
+echo "[-j] JDBC URL for AutoR2RML: $JDBC_URL"
+echo "[-jc] JDBC DB container for AutoR2RML: $JDBC_CONTAINER"
+echo "[-ju] JDBC DB username for AutoR2RML: $JDBC_USERNAME"
+echo "[-jp] JDBC DB password for AutoR2RML: $JDBC_PASSWORD"
 echo "[-rep] GraphDB repository: $GRAPHDB_REPOSITORY"
-echo "[-un] GraphDB username: $GRAPHDB_USERNAME"
-echo "[-pw] GraphDB password: $GRAPHDB_PASSWORD"
+echo "[-gu] GraphDB username: $GRAPHDB_USERNAME"
+echo "[-gp] GraphDB password: $GRAPHDB_PASSWORD"
+
 
 
 #if [ ${file: -4} == ".xml" || ${file: -7} == ".xml.gz" ]
@@ -101,7 +149,7 @@ else
   # TODO: WARNING the $DIRECTORY passed at the end is the path INSIDE the Apache Drill docker container (it must always starts with /data).
   # So this script only works with dir inside /data)
   # Not working for sqlite: docker run -it --rm --link drill:drill -v $DIRECTORY:/data autor2rml -h drill -r -o /data/mapping.ttl $DIRECTORY
-  docker run -it --rm --link drill:drill -v $DIRECTORY:/data autor2rml -h drill -r -o /data/mapping.ttl $DIRECTORY
+  docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v $DIRECTORY:/data autor2rml -j "$JDBC_URL" -r -o /data/mapping.ttl -d $DIRECTORY -u "$JDBC_USERNAME" -p "$JDBC_PASSWORD"
   # Flag to define the graph URI: -g "http://graph/test/autodrill"
 
   echo "R2RML mappings (mapping.ttl) has been generated."
@@ -109,13 +157,15 @@ else
   echo "Running r2rml..."
 
   # Generate config.properties required for r2rml
-  echo "connectionURL = jdbc:drill:drillbit=drill:31010
+  echo "connectionURL = $JDBC_URL
   mappingFile = /data/mapping.ttl
   outputFile = /data/rdf_output.nq
+  user = $JDBC_USERNAME
+  password = $JDBC_PASSWORD
   format = NQUADS" > $DIRECTORY/config.properties
 
   # Run r2rml to generate RDF files. Using config.properties at the root dir of the container
-  docker run -it --rm --link drill:drill -v $DIRECTORY:/data r2rml /data/config.properties
+  docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v $DIRECTORY:/data r2rml /data/config.properties
 
   echo "r2rml completed."
 
