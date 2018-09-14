@@ -5,7 +5,6 @@ YAML_PATH=$1
 # Parse yaml
 echo "---------------------------------"
 echo "  YAML configuration:"
-
 parse_yaml() {
    local prefix=$2
    local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
@@ -21,29 +20,7 @@ parse_yaml() {
       }
    }'
 }
-
-eval $(parse_yaml $YAML_PATH "config_")
-
-echo $config_JDBC_URL
-
-
-param_array=( $(cat $YAML_PATH | sed -r -n 's/([^#]*?):(.*)/\1\2/p') )
-i=0  
-while [ $i -le ${#param_array[@]} ]  
-do  
-  VAR_NAME=${param_array[$i]}
-  echo $VAR_NAME
-  i=$(( $i + 1 ))
-  if [[ -z "$VAR_NAME" ]]; then
-    continue
-  fi
-  echo "$VAR_NAME = ${param_array[$i]}"
-  eval "$VAR_NAME"="\"${param_array[$i]}\""
-  # Show an error but works at naming the var with another var
-  i=$(( $i + 1 ))
-done
-# Careful: it takes all lines starting with a "-". So no other array
-download_datasets=( $(sed -n -e 's/^\s*- //p' $YAML_PATH) )
+eval $(parse_yaml $YAML_PATH "")
 
 
 
