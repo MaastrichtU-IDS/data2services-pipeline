@@ -108,17 +108,23 @@ The directory where the files to convert are needs to be in /data
 ```shell
 time ./run.sh -f /data/<some directory within /data>
 
-# For example to convert all tsv files in /data/pharmgkb 
-./run.sh -f /data/pharmgkb
-./run.sh -f /data/pharmgkb
+# For example to convert all tsv files in /data/pharmgkb using Drill 
+./run.sh -jdbc "jdbc:drill:drillbit=drill:31010" -jc drill -f /data/pharmgkb -gu import_user -gp test
+
+# On Postgres
+./run.sh -jdbc "jdbc:postgresql://postgres:5432/drugcentral" -jc postgres -ju postgres -jp pwd -f /data/pharmgkb -gu import_user -gp test
 ```
 
 * Running options
-  * **-f** (--file-directory=/data/file_repository): specify a working directory with tsv, csv and/or psv data files to convert"
+  * **-f** (--file-directory=/data/file_repository): specify a working directory with tsv, csv and/or psv data files to convert. The generated mapping.ttl file will be found here.
+  * **-j** JDBC URL
+  * **-jc** JDBC docker container name
+  * **-ju** JDBC DB username
+  * **-jp** JDBC DB password
   * **-gr** (--graphdb-repository=test): specify a GraphDB repository. Default: test
   * **-fo** (--format=nquads): Specify a format for RDF out when running r2rml. Default: nquads
-  * **-un** (--username=import_user): Specify a format for RDF out when running r2rml. Default: import_user
-  * **-pw** (--password=test): Specify a format for RDF out when running r2rml. Default: import_user
+  * **-gu** (--username=import_user): Specify a format for RDF out when running r2rml. Default: import_user
+  * **-gp** (--password=test): Specify a format for RDF out when running r2rml. Default: import_user
 
 
 
@@ -144,6 +150,20 @@ Not Dockerized at the moment
 cd generate-java-swagger-api
 mvn jetty:run-war
 ```
+
+
+
+## Run Postgres
+
+```shell
+# Run and load Postgres DB
+docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=pwd -d -v /data/autor2rml/:/data postgres
+docker exec -it postgres bash
+su postgres
+psql drugcentral < /data/drugcentral.dump.08262018.sql
+```
+
+
 
 
 
