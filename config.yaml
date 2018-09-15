@@ -1,10 +1,10 @@
-JDBC_URL: "jdbc:postgresql://postgres:5432/drugcentral"
+JDBC_URL: "jdbc:drill:drillbit=drill:31010"
 
-# "jdbc:drill:drillbit=drill:31010"
+# "jdbc:postgresql://postgres:5432/drugcentral"
 
 WORKING_DIRECTORY: "/data/pharmgkb_drugs"
 
-JDBC_CONTAINER: "postgres"
+JDBC_CONTAINER: "drill"
 
 JDBC_USERNAME: "postgres"
 JDBC_PASSWORD: "pwd"

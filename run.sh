@@ -69,10 +69,9 @@ else
 
   # TODO: WARNING the $WORKING_DIRECTORY passed at the end is the path INSIDE the Apache Drill docker container (it must always starts with /data).
   # So this script only works with dir inside /data)
-  # Not working for sqlite: docker run -it --rm --link drill:drill -v $WORKING_DIRECTORY:/data autor2rml -h drill -r -o /data/mapping.ttl $WORKING_DIRECTORY
   docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v $WORKING_DIRECTORY:/data autor2rml -j "$JDBC_URL" -r -o /data/mapping.ttl -d "$WORKING_DIRECTORY" -u "$JDBC_USERNAME" -p "$JDBC_PASSWORD"
-  docker run -it --rm --link postgres:postgres -v /data/pharmgkb_drugs:/data autor2rml -j "jdbc:postgresql://postgres:5432/drugcentral" -r -o /data/mapping.ttl -d "/data/pharmgkb_drugs" -u "postgres" -p "pwd"
-  # Flag to define the graph URI: -g "http://graph/test/autodrill"
+  
+  #docker run -it --rm --link postgres:postgres -v /data/pharmgkb_drugs:/data autor2rml -j "jdbc:postgresql://postgres:5432/drugcentral" -r -o /data/mapping.ttl -d "/data/pharmgkb_drugs" -u "postgres" -p "pwd"
 
   echo "R2RML mappings (mapping.ttl) has been generated."
 
@@ -90,10 +89,7 @@ else
   docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v $WORKING_DIRECTORY:/data r2rml /data/config.properties
 
   echo "r2rml completed."
-
-  # To run it with local config.properties:
-  #docker run -it --rm --link drill:drill -v /data/kraken-download/datasets/pharmgkb:/data r2rml /data/config.properties
-
+  
 fi
 
 echo "---------------------------------"
