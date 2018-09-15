@@ -1,13 +1,13 @@
-JDBC_URL: "jdbc:drill:drillbit=drill:31010"
-# Bug without reason because of :. The sed regex do a weird thing by extracting "JDBC_URL:" and "jdbc:drill:drillbit=drill31010"
-# Instead of "JDBC_URL" and "jdbc:drill:drillbit=drill:31010". The regex is good and works on regex101...
+JDBC_URL: "jdbc:postgresql://postgres:5432/drugcentral"
 
-WORKING_DIRECTORY: "/data/kraken-download/datasets"
+# "jdbc:drill:drillbit=drill:31010"
 
-JDBC_CONTAINER: "drill"
+WORKING_DIRECTORY: "/data/pharmgkb_drugs"
 
-JDBC_USERNAME: "foo"
-JDBC_PASSWORD: "bar"
+JDBC_CONTAINER: "postgres"
+
+JDBC_USERNAME: "postgres"
+JDBC_PASSWORD: "pwd"
 
 GRAPHDB_REPOSITORY: "test"
 
