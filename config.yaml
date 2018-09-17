@@ -1,10 +1,14 @@
-JDBC_URL: "jdbc:drill:drillbit=drill:31010"
+JDBC_URL: "jdbc:postgresql://postgres:5432/drugcentral"
 
-# "jdbc:postgresql://postgres:5432/drugcentral"
+#   Build Postgre DB
+# docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=pwd -d -v /data/autor2rml/:/data postgres
+# docker exec -it postgres bash
+# su postgres
+# psql drugcentral < /data/drugcentral.dump.08262018.sql
 
-WORKING_DIRECTORY: "/data/pharmgkb_drugs"
+WORKING_DIRECTORY: "/data/drugcentral"
 
-JDBC_CONTAINER: "drill"
+JDBC_CONTAINER: "postgres"
 
 JDBC_USERNAME: "postgres"
 JDBC_PASSWORD: "pwd"

@@ -78,7 +78,11 @@ else
   echo "Running r2rml..."
 
   # Generate config.properties required for r2rml
-  sudo echo "connectionURL = $JDBC_URL
+  sudo touch $WORKING_DIRECTORY/config.properties
+
+  # TODO: Remove this when everything will be done in a Docker container
+  sudo chmod 777 $WORKING_DIRECTORY/config.properties
+  echo "connectionURL = $JDBC_URL
   mappingFile = /data/mapping.ttl
   outputFile = /data/rdf_output.nq
   user = $JDBC_USERNAME

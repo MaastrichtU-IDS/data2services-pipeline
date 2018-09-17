@@ -101,11 +101,9 @@ In a production environment it is considered that both Drill and GraphDb service
 
 ## Run the pipeline
 
-The directory where the files to convert are needs to be in /data
+The directory where are the files to convert needs to be in /data
 
-### On Linux
-
-config.yaml
+Complete the config.yaml file:
 
 ```yaml
 # Where the mapping.ttl file will be generated. And where the files (XML, TSV, CSV...) to convert need to be put
@@ -131,24 +129,11 @@ GRAPHDB_PASSWORD: "test"
 
 
 
+* Run it
+
 ```shell
-# For example to convert all tsv files in /data/pharmgkb using Drill 
-./run.sh -jdbc "jdbc:drill:drillbit=drill:31010" -jc drill -f /data/pharmgkb -gu import_user -gp test
-
-# On Postgres
-./run.sh -jdbc "jdbc:postgresql://postgres:5432/drugcentral" -jc postgres -ju postgres -jp pwd -f /data/pharmgkb -gu import_user -gp test
+./run.sh /path/to/data2services-pipeline/config.yaml
 ```
-
-* Running options
-  * **-f** (--file-directory=/data/file_repository): specify a working directory with tsv, csv and/or psv data files to convert. The generated mapping.ttl file will be found here.
-  * **-j** JDBC URL
-  * **-jc** JDBC docker container name
-  * **-ju** JDBC DB username
-  * **-jp** JDBC DB password
-  * **-gr** (--graphdb-repository=test): specify a GraphDB repository. Default: test
-  * **-fo** (--format=nquads): Specify a format for RDF out when running r2rml. Default: nquads
-  * **-gu** (--username=import_user): Specify a format for RDF out when running r2rml. Default: import_user
-  * **-gp** (--password=test): Specify a format for RDF out when running r2rml. Default: import_user
 
 
 
@@ -166,21 +151,12 @@ docker run -it --rm --link drill:drill -v c:/data/pharmgkb:/data autor2rml -h dr
 
 
 
-## Generate the Swagger UI
-
-Not Dockerized at the moment
-
-```shell
-cd generate-java-swagger-api
-mvn jetty:run-war
-```
-
 
 
 ## Run Postgres
 
 ```shell
-# Run and load Postgres DB
+# Run and load Postgres DB to test
 docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=pwd -d -v /data/autor2rml/:/data postgres
 docker exec -it postgres bash
 su postgres
