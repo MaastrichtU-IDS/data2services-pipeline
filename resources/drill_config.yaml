@@ -1,0 +1,15 @@
+JDBC_URL: "jdbc:drill:drillbit=drill:31010"
+
+# "jdbc:postgresql://postgres:5432/drugcentral"
+
+WORKING_DIRECTORY: "/data/pharmgkb_drugs"
+
+JDBC_CONTAINER: "drill"
+
+JDBC_USERNAME: "postgres"
+JDBC_PASSWORD: "pwd"
+
+GRAPHDB_REPOSITORY: "test"
+
+GRAPHDB_USERNAME: "import_user" 
+GRAPHDB_PASSWORD: "test"
