@@ -6,7 +6,7 @@ JDBC_URL: "jdbc:postgresql://postgres:5432/drugcentral"
 # su postgres
 # psql drugcentral < /data/drugcentral.dump.08262018.sql
 
-WORKING_DIRECTORY: "/data/kraken/download/kraken-download/datasets/pubmed/baseline/pubmed18n0002.xml.gz"
+WORKING_DIRECTORY: "/data/drugcentral"
 
 JDBC_CONTAINER: "postgres"
 
