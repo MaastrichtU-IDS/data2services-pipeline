@@ -25,6 +25,7 @@ eval $(parse_yaml $YAML_PATH "")
 
 
 # Set default values
+GRAPHDB_REPOSITORY=${GRAPHDB_URL:-http://graphdb:7200}
 GRAPHDB_REPOSITORY=${GRAPHDB_REPOSITORY:-test}
 GRAPHDB_USERNAME=${GRAPHDB_USERNAME:-import_user}
 GRAPHDB_PASSWORD=${GRAPHDB_PASSWORD:-test}
@@ -35,6 +36,7 @@ echo "[-j] JDBC URL for AutoR2RML: $JDBC_URL"
 echo "[-jc] JDBC DB container for AutoR2RML: $JDBC_CONTAINER"
 echo "[-ju] JDBC DB username for AutoR2RML: $JDBC_USERNAME"
 echo "[-jp] JDBC DB password for AutoR2RML: $JDBC_PASSWORD"
+echo "[-rep] GraphDB URL: $GRAPHDB_URL"
 echo "[-rep] GraphDB repository: $GRAPHDB_REPOSITORY"
 echo "[-gu] GraphDB username: $GRAPHDB_USERNAME"
 echo "[-gp] GraphDB password: $GRAPHDB_PASSWORD"
@@ -104,6 +106,6 @@ echo "---------------------------------"
 docker run -it --rm --link graphdb:graphdb -v $WORKING_DIRECTORY:/data rdf-upload \
   -m "HTTP" \
   -if "/data" \
-  -url "http://graphdb:7200" \
+  -url "$GRAPHDB_URL" \
   -rep "$GRAPHDB_REPOSITORY" \
   -un $GRAPHDB_USERNAME -pw $GRAPHDB_PASSWORD
