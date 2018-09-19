@@ -44,7 +44,7 @@ echo "[-gp] GraphDB password: $GRAPHDB_PASSWORD"
 
 
 #if [ ${file: -4} == ".xml" || ${file: -7} == ".xml.gz" ]
-if [[ $file == *.xml || $file == *.xml.gz ]]
+if [[ $WORKING_DIRECTORY == *.xml || $WORKING_DIRECTORY == *.xml.gz ]]
 then
 
   echo "---------------------------------"
