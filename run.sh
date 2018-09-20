@@ -25,7 +25,7 @@ eval $(parse_yaml $YAML_PATH "")
 
 
 # Set default values
-GRAPHDB_REPOSITORY=${GRAPHDB_URL:-http://graphdb:7200}
+GRAPHDB_URL=${GRAPHDB_URL:-http://graphdb:7200}
 GRAPHDB_REPOSITORY=${GRAPHDB_REPOSITORY:-test}
 GRAPHDB_USERNAME=${GRAPHDB_USERNAME:-import_user}
 GRAPHDB_PASSWORD=${GRAPHDB_PASSWORD:-test}
@@ -58,7 +58,6 @@ then
   #docker run --rm -it -v /data:/data/ xml2rdf "/data/kraken-download/datasets/pubmed/baseline/pubmed18n0009.xml" "/data/kraken-download/datasets/pubmed/pubmed.nt.gz"
   # Error, needs dtd apparently
   #docker run --rm -it -v /data:/data/ xml2rdf "/data/kraken-download/datasets/interpro/interpro.xml" "/data/kraken-download/datasets/interpro/interpro.nt.gz"
-
 
 else
 

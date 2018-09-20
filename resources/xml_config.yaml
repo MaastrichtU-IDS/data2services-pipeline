@@ -1,19 +1,12 @@
 JDBC_URL: "jdbc:postgresql://postgres:5432/drugcentral"
 
-#   Build Postgre DB
-# docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=pwd -d -v /data/autor2rml/:/data postgres
-# docker exec -it postgres bash
-# su postgres
-# psql drugcentral < /data/drugcentral.dump.08262018.sql
-
 WORKING_DIRECTORY: "/data/kraken/download/kraken-download/datasets/pubmed/baseline/pubmed18n0002.xml.gz"
 
 JDBC_CONTAINER: "postgres"
-
 JDBC_USERNAME: "postgres"
 JDBC_PASSWORD: "pwd"
 
+GRAPHDB_URL: "http://graphdb:7200"
 GRAPHDB_REPOSITORY: "test"
-
 GRAPHDB_USERNAME: "import_user" 
 GRAPHDB_PASSWORD: "test"

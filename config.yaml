@@ -10,7 +10,8 @@ JDBC_CONTAINER: "drill"
 JDBC_USERNAME: "postgres"
 JDBC_PASSWORD: "pwd"
 
-GRAPHDB_URL: "http://graphdb.dumontierlab.com/"
+#GRAPHDB_URL: "http://graphdb.dumontierlab.com/"
+GRAPHDB_URL: "http://graphdb:7200"
 GRAPHDB_REPOSITORY: "test"
 
 GRAPHDB_USERNAME: "import_user" 
