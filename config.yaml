@@ -2,11 +2,12 @@ JDBC_URL: "jdbc:drill:drillbit=drill:31010"
 
 # "jdbc:postgresql://postgres:5432/drugcentral"
 
-#WORKING_DIRECTORY: "/data/ncats/hgnc"
-WORKING_DIRECTORY: "/data/ncats/drugbank/full_database.xml"
+WORKING_DIRECTORY: "/data/ncats/hgnc/hgnc_complete_set.txt"
+#WORKING_DIRECTORY: "/data/ncats/drugbank/full_database.xml"
+
+BASE_URI: "http://data2service/"
 
 JDBC_CONTAINER: "drill"
-
 JDBC_USERNAME: "postgres"
 JDBC_PASSWORD: "pwd"
 

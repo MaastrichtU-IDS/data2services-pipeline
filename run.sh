@@ -29,6 +29,7 @@ GRAPHDB_URL=${GRAPHDB_URL:-http://graphdb:7200}
 GRAPHDB_REPOSITORY=${GRAPHDB_REPOSITORY:-test}
 GRAPHDB_USERNAME=${GRAPHDB_USERNAME:-import_user}
 GRAPHDB_PASSWORD=${GRAPHDB_PASSWORD:-test}
+BASE_URI=${BASE_URI:-http://data2services/}
 
 
 echo "[-f] Working file directory: $WORKING_DIRECTORY"
@@ -66,11 +67,20 @@ else
   echo "---------------------------------"
   echo "Running AutoR2RML..."
 
-  # Run AutoR2RML to generate R2RML mapping files
+  ## Run AutoR2RML to generate R2RML mapping files
+
+  INPUT_PATH=$WORKING_DIRECTORY
+  # If file provided is a txt then we convert it to tsv for Apache Drill
+  if [ ${WORKING_DIRECTORY: -4} == ".txt" ]
+  then
+    sudo cp "$WORKING_DIRECTORY" "$WORKING_DIRECTORY.tsv"
+    INPUT_PATH="$WORKING_DIRECTORY.tsv"
+    WORKING_DIRECTORY=$(dirname "$INPUT_PATH")
+  fi
 
   # TODO: WARNING the $WORKING_DIRECTORY passed at the end is the path INSIDE the Apache Drill docker container (it must always starts with /data).
   # So this script only works with dir inside /data)
-  docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v $WORKING_DIRECTORY:/data autor2rml -j "$JDBC_URL" -r -o /data/mapping.ttl -d "$WORKING_DIRECTORY" -u "$JDBC_USERNAME" -p "$JDBC_PASSWORD"
+  docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v $WORKING_DIRECTORY:/data autor2rml -j "$JDBC_URL" -r -o /data/mapping.ttl -d "$INPUT_PATH" -u "$JDBC_USERNAME" -p "$JDBC_PASSWORD" -b "$BASE_URI"
   
   #docker run -it --rm --link postgres:postgres -v /data/pharmgkb_drugs:/data autor2rml -j "jdbc:postgresql://postgres:5432/drugcentral" -r -o /data/mapping.ttl -d "/data/pharmgkb_drugs" -u "postgres" -p "pwd"
 
@@ -78,7 +88,7 @@ else
 
   echo "Running r2rml..."
 
-  # Generate config.properties required for r2rml
+  ## Generate config.properties required for r2rml
   sudo touch $WORKING_DIRECTORY/config.properties
 
   # TODO: Remove this when everything will be done in a Docker container
@@ -90,7 +100,7 @@ else
   password = $JDBC_PASSWORD
   format = NQUADS" > $WORKING_DIRECTORY/config.properties
 
-  # Run r2rml to generate RDF files. Using config.properties at the root dir of the container
+  ## Run r2rml to generate RDF files. Using config.properties at the root dir of the container
   docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v $WORKING_DIRECTORY:/data r2rml /data/config.properties
 
   echo "r2rml completed."
