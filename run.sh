@@ -32,19 +32,18 @@ GRAPHDB_PASSWORD=${GRAPHDB_PASSWORD:-test}
 BASE_URI=${BASE_URI:-http://data2services/}
 
 
-echo "[-f] Working file directory: $WORKING_DIRECTORY"
-echo "[-j] JDBC URL for AutoR2RML: $JDBC_URL"
-echo "[-jc] JDBC DB container for AutoR2RML: $JDBC_CONTAINER"
-echo "[-ju] JDBC DB username for AutoR2RML: $JDBC_USERNAME"
-echo "[-jp] JDBC DB password for AutoR2RML: $JDBC_PASSWORD"
-echo "[-rep] GraphDB URL: $GRAPHDB_URL"
-echo "[-rep] GraphDB repository: $GRAPHDB_REPOSITORY"
-echo "[-gu] GraphDB username: $GRAPHDB_USERNAME"
-echo "[-gp] GraphDB password: $GRAPHDB_PASSWORD"
+echo "Working file directory: $WORKING_DIRECTORY"
+echo "JDBC URL for AutoR2RML: $JDBC_URL"
+echo "JDBC DB container for AutoR2RML: $JDBC_CONTAINER"
+echo "JDBC DB username for AutoR2RML: $JDBC_USERNAME"
+echo "JDBC DB password for AutoR2RML: $JDBC_PASSWORD"
+echo "GraphDB URL: $GRAPHDB_URL"
+echo "GraphDB repository: $GRAPHDB_REPOSITORY"
+echo "GraphDB username: $GRAPHDB_USERNAME"
+echo "GraphDB password: $GRAPHDB_PASSWORD"
 
 INPUT_PATH=$WORKING_DIRECTORY
 
-#if [ ${file: -4} == ".xml" || ${file: -7} == ".xml.gz" ]
 if [[ $WORKING_DIRECTORY == *.xml || $WORKING_DIRECTORY == *.xml.gz ]]
 then
 
@@ -56,12 +55,6 @@ then
 
   docker run --rm -it -v /data:/data xml2rdf  -i "$INPUT_PATH" -o "$INPUT_PATH.nq" -g "http://data2services/graph/xml2rdf"
   # XML file needs to be in /data. TODO: put the first part of the path as the shared volume
-
-
-  # Works on Pubmed, 3G nt file: 
-  #docker run --rm -it -v /data:/data/ xml2rdf "/data/kraken-download/datasets/pubmed/baseline/pubmed18n0009.xml" "/data/kraken-download/datasets/pubmed/pubmed.nt.gz"
-  # Error, needs dtd apparently
-  #docker run --rm -it -v /data:/data/ xml2rdf "/data/kraken-download/datasets/interpro/interpro.xml" "/data/kraken-download/datasets/interpro/interpro.nt.gz"
 
 else
 
@@ -84,8 +77,6 @@ else
   # So this script only works with dir inside /data)
   docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v $WORKING_DIRECTORY:/data autor2rml -j "$JDBC_URL" -r -o /data/mapping.ttl -d "$INPUT_PATH" -u "$JDBC_USERNAME" -p "$JDBC_PASSWORD" -b "$BASE_URI"
   
-  #docker run -it --rm --link postgres:postgres -v /data/pharmgkb_drugs:/data autor2rml -j "jdbc:postgresql://postgres:5432/drugcentral" -r -o /data/mapping.ttl -d "/data/pharmgkb_drugs" -u "postgres" -p "pwd"
-
   echo "R2RML mappings (mapping.ttl) has been generated."
 
   echo "Running r2rml..."
