@@ -42,7 +42,7 @@ echo "[-rep] GraphDB repository: $GRAPHDB_REPOSITORY"
 echo "[-gu] GraphDB username: $GRAPHDB_USERNAME"
 echo "[-gp] GraphDB password: $GRAPHDB_PASSWORD"
 
-
+INPUT_PATH=$WORKING_DIRECTORY
 
 #if [ ${file: -4} == ".xml" || ${file: -7} == ".xml.gz" ]
 if [[ $WORKING_DIRECTORY == *.xml || $WORKING_DIRECTORY == *.xml.gz ]]
@@ -52,8 +52,11 @@ then
   echo "  Running xml2rdf..."
   echo "---------------------------------"
 
-  docker run --rm -it -v /data:/data xml2rdf  -i "$WORKING_DIRECTORY" -o "$WORKING_DIRECTORY.nq.gz" -g "http://kraken/graph/xml2rdf"
+  WORKING_DIRECTORY=$(dirname "$INPUT_PATH")
+
+  docker run --rm -it -v /data:/data xml2rdf  -i "$INPUT_PATH" -o "$INPUT_PATH.nq" -g "http://data2services/graph/xml2rdf"
   # XML file needs to be in /data. TODO: put the first part of the path as the shared volume
+
 
   # Works on Pubmed, 3G nt file: 
   #docker run --rm -it -v /data:/data/ xml2rdf "/data/kraken-download/datasets/pubmed/baseline/pubmed18n0009.xml" "/data/kraken-download/datasets/pubmed/pubmed.nt.gz"
@@ -69,7 +72,6 @@ else
 
   ## Run AutoR2RML to generate R2RML mapping files
 
-  INPUT_PATH=$WORKING_DIRECTORY
   # If file provided is a txt then we convert it to tsv for Apache Drill
   if [ ${WORKING_DIRECTORY: -4} == ".txt" ]
   then
