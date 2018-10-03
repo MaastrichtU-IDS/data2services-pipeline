@@ -75,8 +75,8 @@ else
   # If file provided is a txt then we convert it to tsv for Apache Drill
   if [ ${WORKING_DIRECTORY: -4} == ".txt" ]
   then
-    sudo cp "$WORKING_DIRECTORY" "$WORKING_DIRECTORY.tsv"
-    INPUT_PATH="$WORKING_DIRECTORY.tsv"
+    INPUT_PATH="${WORKING_DIRECTORY::-4}.tsv"
+    sudo cp $WORKING_DIRECTORY $INPUT_PATH
     WORKING_DIRECTORY=$(dirname "$INPUT_PATH")
   fi
 
