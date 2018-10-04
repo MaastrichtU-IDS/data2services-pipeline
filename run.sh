@@ -65,7 +65,7 @@ else
 
   ## Run AutoR2RML to generate R2RML mapping files
 
-  # If file provided is a txt then we convert it to tsv for Apache Drill
+  # If file provided is a txt then we rename it to tsv for Apache Drill
   if [ ${WORKING_DIRECTORY: -4} == ".txt" ]
   then
     INPUT_PATH="${WORKING_DIRECTORY::-4}.tsv"
@@ -84,7 +84,7 @@ else
   ## Generate config.properties required for r2rml
   sudo touch $WORKING_DIRECTORY/config.properties
 
-  # TODO: Remove this when everything will be done in a Docker container
+  # TODO: Should we generate this directly in AutoR2RML?
   sudo chmod 777 $WORKING_DIRECTORY/config.properties
   echo "connectionURL = $JDBC_URL
   mappingFile = /data/mapping.ttl
