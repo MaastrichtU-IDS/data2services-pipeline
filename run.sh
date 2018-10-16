@@ -53,7 +53,7 @@ then
 
   WORKING_DIRECTORY=$(dirname "$INPUT_PATH")
 
-  docker run --rm -it -v /data:/data xml2rdf  -i "$INPUT_PATH" -o "$INPUT_PATH.nq" -g "http://data2services/graph/xml2rdf"
+  docker run --rm -it -v /data:/data xml2rdf  -i "$INPUT_PATH" -o "$INPUT_PATH.nq.gz" -g "http://data2services/graph/xml2rdf"
   # XML file needs to be in /data. TODO: put the first part of the path as the shared volume
 
 else

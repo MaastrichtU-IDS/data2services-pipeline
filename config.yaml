@@ -1,7 +1,7 @@
 JDBC_URL: "jdbc:drill:drillbit=drill:31010"
 
-WORKING_DIRECTORY: "/data/hgnc/hgnc_complete_set.txt"
-#WORKING_DIRECTORY: "/data/drugbank/full_database.xml"
+#WORKING_DIRECTORY: "/data/hgnc/hgnc_complete_set.txt"
+WORKING_DIRECTORY: "/data/drugbank/full_database.xml"
 
 JDBC_CONTAINER: "drill"
 JDBC_USERNAME: "postgres"
