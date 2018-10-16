@@ -65,14 +65,6 @@ else
 
   ## Run AutoR2RML to generate R2RML mapping files
 
-  # If file provided is a txt then we rename it to tsv for Apache Drill
-  if [ ${WORKING_DIRECTORY: -4} == ".txt" ]
-  then
-    INPUT_PATH="${WORKING_DIRECTORY::-4}.tsv"
-    sudo cp $WORKING_DIRECTORY $INPUT_PATH
-    WORKING_DIRECTORY=$(dirname "$INPUT_PATH")
-  fi
-
   # TODO: WARNING the $WORKING_DIRECTORY passed at the end is the path INSIDE the Apache Drill docker container (it must always starts with /data).
   # So this script only works with dir inside /data)
   docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v $WORKING_DIRECTORY:/data autor2rml -j "$JDBC_URL" -r -o /data/mapping.ttl -d "$INPUT_PATH" -u "$JDBC_USERNAME" -p "$JDBC_PASSWORD" -b "$BASE_URI"
