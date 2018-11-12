@@ -23,7 +23,6 @@ parse_yaml() {
 eval $(parse_yaml $YAML_PATH "")
 
 
-
 # Set default values
 GRAPHDB_URL=${GRAPHDB_URL:-http://graphdb:7200}
 GRAPHDB_REPOSITORY=${GRAPHDB_REPOSITORY:-test}
@@ -87,8 +86,7 @@ else
   ## Run r2rml to generate RDF files. Using config.properties at the root dir of the container
   docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v $WORKING_DIRECTORY:/data r2rml /data/config.properties
 
-  echo "r2rml completed."
-  
+  echo "r2rml completed."  
 fi
 
 echo "---------------------------------"
