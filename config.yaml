@@ -1,13 +1,13 @@
 JDBC_URL: "jdbc:drill:drillbit=drill:31010"
 
 #WORKING_DIRECTORY: "/data/hgnc/hgnc_complete_set.txt"
-WORKING_DIRECTORY: "/data/drugbank/full_database.xml"
+WORKING_DIRECTORY: "/data/hgnc"
 
 JDBC_CONTAINER: "drill"
 JDBC_USERNAME: "postgres"
 JDBC_PASSWORD: "pwd"
 
-GRAPHDB_URL: "http://graphdb:7200"
+GRAPHDB_URL: "http://graphdb.dumontierlab.com"
 GRAPHDB_REPOSITORY: "test"
 
 GRAPHDB_USERNAME: "import_user" 
