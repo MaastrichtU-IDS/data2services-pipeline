@@ -174,3 +174,30 @@ psql drugcentral < /data/drugcentral.dump.08262018.sql
 * The triples are uploaded to a graph named after the directory we are running the command on. We might want to name the graph after the datasets name.
 
   When I run it on `/data/kraken-download/datasets` I want the triples to be uploaded to http://kraken/graph/data/kraken-download/datasets/ndc and  http://kraken/graph/data/kraken-download/datasets/pharmgkb instead of  http://kraken/graph/data/kraken-download/datasets
+
+* Create repository with the "REST" API: http://localhost:7200/webapi
+
+```json
+{
+ "id": "apitest2",
+ "location": "",
+ "params": {},
+ "sesameType": "graphdb:FreeSailRepository",
+ "title": "",
+ "type": "free"
+}
+```
+
+cURL query
+
+```shell
+curl -X PUT --header 'Content-Type: application/json' --header 'Accept: */*' -d '{
+  "id": "apitest2",
+  "location": "",
+  "params": {},
+  "sesameType": "graphdb:FreeSailRepository",
+  "title": "",
+  "type": "free"
+ }' 'http://localhost:7200/rest/repositories'
+```
+
