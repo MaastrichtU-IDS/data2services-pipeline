@@ -141,6 +141,23 @@ psql drugcentral < /data/drugcentral.dump.08262018.sql
 
 
 
+## Citing this work
+
+If you use data2services in a scientific publication, you are highly encouraged (not required) to cite the following paper.
+
+Bibtex entry:
+
+```tex
+@inproceedings{Emonet2018,
+author = {Emonet, Vincent and Malic, Alexander and Zaveri, Amrapali and Grigoriu, Andreea and Dumontier, Michel},
+title = {Data2Services: enabling automated conversion of data to services},
+booktitle = {11th Semantic Web Applications and Tools for Healthcare and Life Sciences},
+year = {2018}
+}
+```
+
+
+
 
 
 # To do
