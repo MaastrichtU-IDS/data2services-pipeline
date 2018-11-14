@@ -5,30 +5,57 @@ After the enpoint is started up, a repository called "test", and a user called "
 
 This pipeline has been tested with PharmGKB (located in /data/pharmgkb) and HGNC data on both Linux and Mac OS-X running the latest Docker-CE version. This pipeline should also work on Windows. Paths from "/data" need to be changed to "c:/data".
 
-## Clone
+## Linux
+
+### Clone
 
 ```shell
 # WARNING: for Windows execute it before cloning to fix bugs with newlines
 git config --global core.autocrlf false
-
 # HTTPS
 git clone --recursive https://github.com/MaastrichtU-IDS/data2services-pipeline.git
-
 # SSH
 git clone --recursive git@github.com:MaastrichtU-IDS/data2services-pipeline.git
 ```
 
-## Build
+### Build
 
 Downloads the files and builds the docker containers if required.
-
-### On Linux
 
 ```shell
 ./build.sh
 ```
 
-### On Windows
+### Drill and GraphDb for Development
+
+In a production environment it is considered that both Drill and GraphDb services are present. Other RDF stores should also work, but have not been tested yet.
+
+```shell
+# Start
+./startup.sh
+# Stop
+./shutdown.sh
+```
+
+### Run
+
+The directory where are the files to convert needs to be in /data. Change the WORKING_DIRECTORY in config.yaml file if required.
+
+```shell
+./run.sh /path/to/data2services-pipeline/config.yaml
+```
+
+
+
+## Windows
+
+All windows scripts are in directory `windows_scripts`
+
+```powershell
+dir windows_scripts
+```
+
+### Build
 
 * Download GraphDB and put it in the graphdb directory
 
@@ -48,96 +75,16 @@ mkdir /data/graphdb
 mkdir /data/graphdb-import
 ```
 
-### Create GraphDB repo and users
-
-* Start graphdb
-
-  ```shell
-  # On Linux
-  ./startup.sh
-  # On Windows
-  ./startup.bat
-  ```
-
-* Go to http://localhost:7200/
-
-* Setup > Repositories > Create new repository
-
-  * Repository ID: **test** (or whatever you want it to be, but you will need to change data2services default config)
-  * Check `Use context index`
-  * Create
-
-* Setup > Users and access
-
-  * Edit admin user > Enter a new password > Save
-  * Click on `Security is off` 
-  * Create new user
-    * User name: import_user
-    * Password: test
-    * Repository rights > Write right on `Any data repository`
-    * Click `Create`
-
-
-
-## Drill and GraphDb for Development
+### Drill and GraphDb for Development
 
 In a production environment it is considered that both Drill and GraphDb services are present. Other RDF stores should also work, but have not been tested yet.
-### Start
 ```shell
-# Linux
-./startup.sh
-# Windows
+# Start
 ./startup.bat
-```
-### Stop
-```shell
-# Linux
-./shutdown.sh
-# Windows
+# Stop
 ./shutdown.bat
 ```
-
-
-
-## Run the pipeline
-
-The directory where are the files to convert needs to be in /data
-
-Complete the config.yaml file:
-
-```yaml
-# Where the mapping.ttl file will be generated. And where the files (XML, TSV, CSV...) to convert need to be put
-WORKING_DIRECTORY: "/data/kraken-download/datasets"
-
-# The JDBC URL used to access the data for AutoR2RML (Drill, SQLite, Postgres)
-JDBC_URL: "jdbc:drill:drillbit=drill:31010"
-
-# JDBC DB docker container name to link to AutoR2RML container. Default: drill
-JDBC_CONTAINER: "drill"
-
-# JDBC DB credentials for AutoR2RML
-JDBC_USERNAME: "foo"
-JDBC_PASSWORD: "bar"
-
-# Specify a GraphDB repository to upload RDF. Default: test
-GRAPHDB_REPOSITORY: "test"
-
-# GraphDB credentials
-GRAPHDB_USERNAME: "import_user" 
-GRAPHDB_PASSWORD: "test"
-```
-
-
-
-* Run it
-
-```shell
-./run.sh /path/to/data2services-pipeline/config.yaml
-```
-
-
-
-### On Windows
+### Run
 
 Be careful the AntiVirus might cause problems, you might need to deactivate it
 
@@ -148,8 +95,6 @@ Be careful the AntiVirus might cause problems, you might need to deactivate it
 # Running Drill
 docker run -it --rm --link drill:drill -v c:/data/pharmgkb:/data autor2rml -h drill -r -o /data/mapping.ttl /data/pharmgkb
 ```
-
-
 
 
 
@@ -165,6 +110,37 @@ psql drugcentral < /data/drugcentral.dump.08262018.sql
 
 
 
+## Secure GraphDB: create users
+
+- Start graphdb
+
+  ```shell
+  # On Linux
+  ./startup.sh
+  # On Windows
+  ./startup.bat
+  ```
+
+- Go to http://localhost:7200/
+
+- Setup > Repositories > Create new repository
+
+  - Repository ID: **test** (or whatever you want it to be, but you will need to change data2services default config)
+  - Check `Use context index`
+  - Create
+
+- Setup > Users and access
+
+  - Edit admin user > Enter a new password > Save
+  - Click on `Security is off` 
+  - Create new user
+    - User name: import_user
+    - Password: test
+    - Repository rights > Write right on `Any data repository`
+    - Click `Create`
+
+
+
 
 
 # To do
@@ -174,30 +150,4 @@ psql drugcentral < /data/drugcentral.dump.08262018.sql
 * The triples are uploaded to a graph named after the directory we are running the command on. We might want to name the graph after the datasets name.
 
   When I run it on `/data/kraken-download/datasets` I want the triples to be uploaded to http://kraken/graph/data/kraken-download/datasets/ndc and  http://kraken/graph/data/kraken-download/datasets/pharmgkb instead of  http://kraken/graph/data/kraken-download/datasets
-
-* Create repository with the "REST" API: http://localhost:7200/webapi
-
-```json
-{
- "id": "apitest2",
- "location": "",
- "params": {},
- "sesameType": "graphdb:FreeSailRepository",
- "title": "",
- "type": "free"
-}
-```
-
-cURL query
-
-```shell
-curl -X PUT --header 'Content-Type: application/json' --header 'Accept: */*' -d '{
-  "id": "apitest2",
-  "location": "",
-  "params": {},
-  "sesameType": "graphdb:FreeSailRepository",
-  "title": "",
-  "type": "free"
- }' 'http://localhost:7200/rest/repositories'
-```
 

@@ -90,6 +90,16 @@ echo "---------------------------------"
 echo "  Running RdfUpload..."
 echo "---------------------------------"
 
+# Create GraphDB repository
+curl -X PUT --header 'Content-Type: application/json' --header 'Accept: */*' -d "{
+  \"id\": \"$GRAPHDB_REPOSITORY\",
+  \"location\": \"\",
+  \"params\": {},
+  \"sesameType\": \"graphdb:FreeSailRepository\",
+  \"title\": \"\",
+  \"type\": \"free\"
+ }" "http://localhost:7200/rest/repositories"
+
 # Run RdfUpload to upload to GraphDB
 docker run -it --rm --link graphdb:graphdb -v $WORKING_DIRECTORY:/data rdf-upload \
   -m "HTTP" \
