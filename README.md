@@ -143,7 +143,9 @@ psql drugcentral < /data/drugcentral.dump.08262018.sql
 
 ## Citing this work
 
-If you use data2services in a scientific publication, you are highly encouraged (not required) to cite the following paper.
+If you use data2services in a scientific publication, you are highly encouraged (not required) to cite the following paper:
+
+Data2Services: enabling automated conversion of data to services. Vincent Emonet, Alexander Malic, Amrapali Zaveri, Andreea Grigoriu and Michel Dumontier.
 
 Bibtex entry:
 
