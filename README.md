@@ -45,6 +45,10 @@ The directory where are the files to convert needs to be in /data. Change the WO
 ./run.sh /path/to/data2services-pipeline/config.yaml
 ```
 
+### Tranform generic RDF to target model
+
+https://github.com/vemonet/insert-data2services
+
 
 
 ## Windows
