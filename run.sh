@@ -93,6 +93,19 @@ echo "--base-uri = $BASE_URI"
 
 INPUT_PATH=$WORKING_DIRECTORY
 
+# Start Apache Drill if not running
+if [ ! "$(docker ps -q -f name=drill)" ]; then
+    docker run -dit --rm -p 8047:8047 -p 31010:31010 --name drill -v /data:/data:ro apache-drill
+fi
+
+# Start GraphDB if not running
+if [ ! "$(docker ps -q -f name=graphdb)" ]; then
+    docker run -d --rm --name graphdb -p 7200:7200 -v /data/graphdb:/opt/graphdb/home -v /data/graphdb-import:/root/graphdb-import graphdb
+    sleep 20
+fi
+
+
+
 if [[ $WORKING_DIRECTORY == *.xml || $WORKING_DIRECTORY == *.xml.gz ]]
 then
 
@@ -115,10 +128,6 @@ else
   # TODO: WARNING the $WORKING_DIRECTORY passed at the end is the path INSIDE the Apache Drill docker container (it must always starts with /data).
   # So this script only works with dir inside /data)
   docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v $WORKING_DIRECTORY:/data autor2rml -j "$JDBC_URL" -r -o /data/mapping.ttl -d "$INPUT_PATH" -u "$JDBC_USERNAME" -p "$JDBC_PASSWORD" -b "$BASE_URI" -g "http://data2services/graph/autor2rml"
-  
-
-docker run -it --rm --link STRING-postgres:STRING-postgres -v /data/emonet/string:/data autor2rml -j "jdbc:postgresql://STRING-postgres:5432/string" -r -o /data/mapping.ttl -d "/data/emonet/string" -u "string" -p "test" -b "http://data2services/" -g "http://data2services/graph/autor2rml"
-
 
   echo "R2RML mappings (mapping.ttl) has been generated."
   echo "Running r2rml..."

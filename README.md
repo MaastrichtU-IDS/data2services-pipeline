@@ -26,20 +26,9 @@ Downloads the files and builds the docker containers if required.
 ./build.sh
 ```
 
-### Drill and GraphDb for Development
-
-In a production environment it is considered that both Drill and GraphDb services are present. Other RDF stores should also work, but have not been tested yet.
-
-```shell
-# Start
-./startup.sh
-# Stop
-./shutdown.sh
-```
-
 ### Run
 
-The directory where are the files to convert needs to be in /data. Change the WORKING_DIRECTORY in config.yaml file if required.
+The directory where are the files to convert needs to be in `/data`.
 
 ```shell
 # All parameters
@@ -61,14 +50,29 @@ The directory where are the files to convert needs to be in /data. Change the WO
 ./run.sh --working-directory /data/data2services --jdbc-url "jdbc:drill:drillbit=drill:31010" --jdbc-container drill
 
 # Postgres
-./run.sh --working-directory /data/data2services --jdbc-url jdbc:postgresql://postgres:5432/my_database --jdbc-container postgres --jdbc-username postgres --jdbc-password pwd
+./run.sh --working-directory /data/data2services --jdbc-url "jdbc:postgresql://postgres:5432/my_database" --jdbc-container postgres --jdbc-username postgres --jdbc-password pwd
 ```
+
+
 
 ### Transform generic RDF to target model
 
 https://github.com/vemonet/insert-data2services
 
 
+
+### Drill and GraphDb for Development
+
+In a production environment it is considered that both Drill and GraphDb services are present. Other RDF stores should also work, but have not been tested yet.
+
+```shell
+# Start
+./startup.sh
+# Stop
+./shutdown.sh
+```
+
+### 
 
 ## Windows
 
