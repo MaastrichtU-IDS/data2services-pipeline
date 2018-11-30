@@ -16,6 +16,9 @@ git config --global core.autocrlf false
 git clone --recursive https://github.com/MaastrichtU-IDS/data2services-pipeline.git
 # SSH
 git clone --recursive git@github.com:MaastrichtU-IDS/data2services-pipeline.git
+
+# Or pull the submodule
+git submodule update --init --recursive
 ```
 
 ### Build
@@ -100,11 +103,9 @@ dir windows_scripts
 # Create graphdb and graphdb-import directories in /data
 mkdir /data/graphdb
 mkdir /data/graphdb-import
-
-
 ```
 
-* Create "test" repository by accessing http://localhost:7200
+* Create "test" repository by accessing http://localhost:7200/repository
 
 ### Drill and GraphDb for Development
 
@@ -120,10 +121,13 @@ In a production environment it is considered that both Drill and GraphDb service
 Be careful the AntiVirus might cause problems, you might need to deactivate it
 
 ```shell
-# With all default settings. Change the script if needed.
-./run.bat c:/data/pharmgkb
+# Run xml2rdf for XML files. Edit the script
+./run-xml.bat
 
-# Running Drill
+# Run AutoR2RML for Tabular files and RDB. Edit the script
+./run-r2rml.bat
+
+# Example running Drill
 docker run -it --rm --link drill:drill -v c:/data/pharmgkb:/data autor2rml -h drill -r -o /data/mapping.ttl /data/pharmgkb
 ```
 

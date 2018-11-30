@@ -1,4 +1,4 @@
-SET working_directory="/data/data2services"
+SET working_directory="c:/data/data2services"
 
 ECHO %working_directory%
 
