@@ -75,7 +75,7 @@ In a production environment it is considered that both Drill and GraphDb service
 ./shutdown.sh
 ```
 
-### 
+
 
 ## Windows
 
