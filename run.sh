@@ -112,9 +112,7 @@ then
   echo "---------------------------------"
   echo "  Running xml2rdf..."
   echo "---------------------------------"
-
-  GRAPH_URI="graph/autor2rml"
-
+  GRAPH_URI="graph/xml2rdf"
   WORKING_DIRECTORY=$(dirname "$INPUT_PATH")
 
   docker run --rm -it -v /data:/data xml2rdf  -i "$INPUT_PATH" -o "$INPUT_PATH.nq.gz" -g "$BASE_URI$GRAPH_URI"
@@ -168,6 +166,6 @@ curl -X PUT --header 'Content-Type: application/json' --header 'Accept: */*' -d 
 docker run -it --rm --link graphdb:graphdb -v $WORKING_DIRECTORY:/data rdf-upload \
   -m "HTTP" \
   -if "/data" \
-  -url "$GRAPHDB_URL" \
-  -rep "$GRAPHDB_REPOSITORY" \
+  -url $GRAPHDB_URL \
+  -rep $GRAPHDB_REPOSITORY \
   -un $GRAPHDB_USERNAME -pw $GRAPHDB_PASSWORD
