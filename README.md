@@ -33,6 +33,8 @@ Downloads the files and builds the docker containers if required.
 
 The directory where are the files to convert needs to be in `/data`.
 
+The script starts GraphDB and Apache Drill services on Docker. They can be started manually with `resources/startup.sh` and stopped with `shutdown.sh`
+
 ```shell
 # All parameters
 ./run.sh --working-directory /data/data2services \
@@ -192,16 +194,3 @@ booktitle = {11th Semantic Web Applications and Tools for Healthcare and Life Sc
 year = {2018}
 }
 ```
-
-
-
-
-
-# To do
-
-* Automate user and repository creation at GraphDB build
-
-* The triples are uploaded to a graph named after the directory we are running the command on. We might want to name the graph after the datasets name.
-
-  When I run it on `/data/kraken-download/datasets` I want the triples to be uploaded to http://kraken/graph/data/kraken-download/datasets/ndc and  http://kraken/graph/data/kraken-download/datasets/pharmgkb instead of  http://kraken/graph/data/kraken-download/datasets
-
