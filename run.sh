@@ -1,27 +1,76 @@
 #!/bin/bash
 
-YAML_PATH=$1
+#YAML_PATH=$1
 
-# Parse yaml
+# Parse commandline
 echo "---------------------------------"
-echo "  YAML configuration:"
-parse_yaml() {
-   local prefix=$2
-   local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
-   sed -ne "s|^\($s\)\($w\)$s:$s\"\(.*\)\"$s\$|\1$fs\2$fs\3|p" \
-        -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p"  $1 |
-   awk -F$fs '{
-      indent = length($1)/2;
-      vname[indent] = $2;
-      for (i in vname) {if (i > indent) {delete vname[i]}}
-      if (length($3) > 0) {
-         vn=""; for (i=0; i<indent; i++) {vn=(vn)(vname[i])("_")}
-         printf("%s%s%s=\"%s\"\n", "'$prefix'",vn, $2, $3);
-      }
-   }'
-}
-eval $(parse_yaml $YAML_PATH "")
-
+echo "  Commandline configuration:"
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+key="$1"
+case $key in
+    -d|--working-directory)
+    WORKING_DIRECTORY="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -j|--jdbc-url)
+    JDBC_URL="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -ju|--jdbc-username)
+    JDBC_USERNAME="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -jp|--jdbc-password)
+    JDBC_PASSWORD="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -jc|--jdbc-container)
+    JDBC_CONTAINER="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -gurl|--graphdb-url)
+    GRAPHDB_URL="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -gurl|--graphdb-url)
+    GRAPHDB_URL="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -gu|--graphdb-username)
+    GRAPHDB_USERNAME="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -gp|--graphdb-password)
+    GRAPHDB_PASSWORD="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -uri|--base-uri)
+    BASE_URI="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    #--default)
+    #DEFAULT=YES
+    #shift # past argument
+    #;;
+    *)    # unknown option
+    POSITIONAL+=("$1") # save it in an array for later
+    shift # past argument
+    ;;
+esac
+done
+set -- "${POSITIONAL[@]}" # restore positional parameters
 
 # Set default values
 GRAPHDB_URL=${GRAPHDB_URL:-http://graphdb:7200}
@@ -31,15 +80,16 @@ GRAPHDB_PASSWORD=${GRAPHDB_PASSWORD:-test}
 BASE_URI=${BASE_URI:-http://data2services/}
 
 
-echo "Working file directory: $WORKING_DIRECTORY"
-echo "JDBC URL for AutoR2RML: $JDBC_URL"
-echo "JDBC DB container for AutoR2RML: $JDBC_CONTAINER"
-echo "JDBC DB username for AutoR2RML: $JDBC_USERNAME"
-echo "JDBC DB password for AutoR2RML: $JDBC_PASSWORD"
-echo "GraphDB URL: $GRAPHDB_URL"
-echo "GraphDB repository: $GRAPHDB_REPOSITORY"
-echo "GraphDB username: $GRAPHDB_USERNAME"
-echo "GraphDB password: $GRAPHDB_PASSWORD"
+echo "--working-directory = $WORKING_DIRECTORY"
+echo "--jdbc-url = $JDBC_URL"
+echo "--jdbc-container for AutoR2RML = $JDBC_CONTAINER"
+echo "--jdbc-username for AutoR2RML = $JDBC_USERNAME"
+echo "--jdbc-password for AutoR2RML = $JDBC_PASSWORD"
+echo "--graphdb-url = $GRAPHDB_URL"
+echo "--graphdb-repository = $GRAPHDB_REPOSITORY"
+echo "--graphdb-username = $GRAPHDB_USERNAME"
+echo "--graphdb-password = $GRAPHDB_PASSWORD"
+echo "--base-uri = $BASE_URI"
 
 INPUT_PATH=$WORKING_DIRECTORY
 

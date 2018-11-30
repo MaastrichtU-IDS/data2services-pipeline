@@ -42,7 +42,18 @@ In a production environment it is considered that both Drill and GraphDb service
 The directory where are the files to convert needs to be in /data. Change the WORKING_DIRECTORY in config.yaml file if required.
 
 ```shell
-./run.sh /path/to/data2services-pipeline/config.yaml
+# Minimum to parse tabular files using Apache Drill
+./run.sh --file-directory /data/data2services --jdbc-url jdbc:drill:drillbit=drill:31010 --jdbc-container drill
+
+# All parameters
+./run.sh --file-directory /data/data2services \
+	--jdbc-url jdbc:drill:drillbit=drill:31010 \
+	--jdbc-container drill \
+	--jdbc-username foo --jdbc-password bar \
+	--graphdb-url http://graphdb:7200/ \
+	--graphdb-repository test \
+	--graphdb-username import_user --graphdb-password test \
+	--base-uri http://data2services/
 ```
 
 ### Tranform generic RDF to target model
