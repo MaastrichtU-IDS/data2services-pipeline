@@ -31,7 +31,7 @@ Downloads the files and builds the docker containers if required.
 
 The directory where are the files to convert needs to be in `/data` (to comply with Apache Drill path).
 
-The script starts GraphDB and Apache Drill services on Docker. They can be started manually with `resources/startup.sh` and stopped with `shutdown.sh`
+The script starts GraphDB and Apache Drill services on Docker. They can be started manually with `resources/startup.sh` and stopped with `shutdown.sh`.
 
 ```shell
 # All parameters
@@ -93,7 +93,7 @@ dir windows_scripts
 
 * Download Apache Drill and put it in the apache-drill directory
 
-  ftp://apache.proserve.nl/apache/drill/drill-1.13.0/apache-drill-1.13.0.tar.gz
+  [ftp://apache.proserve.nl/apache/drill/drill-1.13.0/apache-drill-1.13.0.tar.gz](ftp://apache.proserve.nl/apache/drill/drill-1.13.0/apache-drill-1.13.0.tar.gz)
 
 * Build the images
 
