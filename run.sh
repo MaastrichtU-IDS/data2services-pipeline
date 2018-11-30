@@ -113,9 +113,11 @@ then
   echo "  Running xml2rdf..."
   echo "---------------------------------"
 
+  GRAPH_URI="graph/autor2rml"
+
   WORKING_DIRECTORY=$(dirname "$INPUT_PATH")
 
-  docker run --rm -it -v /data:/data xml2rdf  -i "$INPUT_PATH" -o "$INPUT_PATH.nq.gz" -g "http://data2services/graph/xml2rdf"
+  docker run --rm -it -v /data:/data xml2rdf  -i "$INPUT_PATH" -o "$INPUT_PATH.nq.gz" -g "$BASE_URI$GRAPH_URI"
   # XML file needs to be in /data. TODO: put the first part of the path as the shared volume
 
 else
@@ -124,10 +126,11 @@ else
   echo "  Converting TSV to RDF..."
   echo "---------------------------------"
   echo "Running AutoR2RML to generate R2RML mapping files..."
+  GRAPH_URI="graph/autor2rml"
 
   # TODO: WARNING the $WORKING_DIRECTORY passed at the end is the path INSIDE the Apache Drill docker container (it must always starts with /data).
   # So this script only works with dir inside /data)
-  docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v $WORKING_DIRECTORY:/data autor2rml -j "$JDBC_URL" -r -o /data/mapping.ttl -d "$WORKING_DIRECTORY" -u "$JDBC_USERNAME" -p "$JDBC_PASSWORD" -b "$BASE_URI" -g "http://data2services/graph/autor2rml"
+  docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v $WORKING_DIRECTORY:/data autor2rml -j "$JDBC_URL" -r -o /data/mapping.ttl -d "$WORKING_DIRECTORY" -u "$JDBC_USERNAME" -p "$JDBC_PASSWORD" -b "$BASE_URI" -g "$BASE_URI$GRAPH_URI"
 
   echo "R2RML mappings (mapping.ttl) has been generated. Running r2rml..."
 
@@ -159,7 +162,7 @@ curl -X PUT --header 'Content-Type: application/json' --header 'Accept: */*' -d 
   \"sesameType\": \"graphdb:FreeSailRepository\",
   \"title\": \"\",
   \"type\": \"free\"
- }" "$GRAPHDB_URL/rest/repositories"
+ }" "http://localhost:7200/rest/repositories"
 
 # Run RdfUpload to upload to GraphDB
 docker run -it --rm --link graphdb:graphdb -v $WORKING_DIRECTORY:/data rdf-upload \

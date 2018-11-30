@@ -1,9 +1,7 @@
 # Data 2 Services pipeline
-This is a demonstrator ETL pipeline that converts PharmGKB data into a generic RDF-format and loads it into a GraphDb endpoint. 
+This is a demonstrator ETL pipeline that converts relational databases, tabular files, and XML files into a generic RDF-format based on the input data structure, and loads it into a GraphDB endpoint. 
 
-After the enpoint is started up, a repository called "test", and a user called "import_user" (password "test") with write permissons to the test repository need to be configured. Also security has to be enabled.
-
-This pipeline has been tested with PharmGKB (located in /data/pharmgkb) and HGNC data on both Linux and Mac OS-X running the latest Docker-CE version. This pipeline should also work on Windows. Paths from "/data" need to be changed to "c:/data".
+[Docker](https://docs.docker.com/install/) is required to run the pipeline.
 
 ## Linux
 
@@ -17,7 +15,7 @@ git clone --recursive https://github.com/MaastrichtU-IDS/data2services-pipeline.
 # SSH
 git clone --recursive git@github.com:MaastrichtU-IDS/data2services-pipeline.git
 
-# Or pull the submodule
+# Or pull the submodule after a normal git clone
 git submodule update --init --recursive
 ```
 
@@ -31,7 +29,7 @@ Downloads the files and builds the docker containers if required.
 
 ### Run
 
-The directory where are the files to convert needs to be in `/data`.
+The directory where are the files to convert needs to be in `/data` (to comply with Apache Drill path).
 
 The script starts GraphDB and Apache Drill services on Docker. They can be started manually with `resources/startup.sh` and stopped with `shutdown.sh`
 
@@ -47,7 +45,7 @@ The script starts GraphDB and Apache Drill services on Docker. They can be start
 	--base-uri http://data2services/
 
 # Parse XML using xml2rdf.
-./run.sh --working-directory /data/data2services
+./run.sh --working-directory /data/my_file.xml
 # Support compressed files.
 ./run.sh --working-directory /data/my_file.xml.gz
 
