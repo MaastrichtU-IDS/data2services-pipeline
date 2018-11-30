@@ -145,6 +145,20 @@ psql drugcentral < /data/drugcentral.dump.08262018.sql
 
 
 
+## Fix tabular file without columns
+
+```shell
+# CSV
+sed -i '1s/^/column1,column2,column3\n/' *.csv
+
+# TSV
+sed -i '1s/^/column1\tcolumn2\tcolumn3\n/' *.tsv
+```
+
+
+
+
+
 ## Secure GraphDB: create users
 
 - Start graphdb
