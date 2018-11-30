@@ -67,6 +67,9 @@ else
   docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v $WORKING_DIRECTORY:/data autor2rml -j "$JDBC_URL" -r -o /data/mapping.ttl -d "$INPUT_PATH" -u "$JDBC_USERNAME" -p "$JDBC_PASSWORD" -b "$BASE_URI" -g "http://data2services/graph/autor2rml"
   
 
+docker run -it --rm --link STRING-postgres:STRING-postgres -v /data/emonet/string:/data autor2rml -j "jdbc:postgresql://STRING-postgres:5432/string" -r -o /data/mapping.ttl -d "/data/emonet/string" -u "string" -p "test" -b "http://data2services/" -g "http://data2services/graph/autor2rml"
+
+
   echo "R2RML mappings (mapping.ttl) has been generated."
   echo "Running r2rml..."
 
@@ -98,7 +101,7 @@ curl -X PUT --header 'Content-Type: application/json' --header 'Accept: */*' -d 
   \"sesameType\": \"graphdb:FreeSailRepository\",
   \"title\": \"\",
   \"type\": \"free\"
- }" "http://localhost:7200/rest/repositories"
+ }" "$GRAPHDB_URL/rest/repositories"
 
 # Run RdfUpload to upload to GraphDB
 docker run -it --rm --link graphdb:graphdb -v $WORKING_DIRECTORY:/data rdf-upload \
