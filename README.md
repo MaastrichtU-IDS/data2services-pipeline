@@ -100,7 +100,11 @@ dir windows_scripts
 # Create graphdb and graphdb-import directories in /data
 mkdir /data/graphdb
 mkdir /data/graphdb-import
+
+
 ```
+
+* Create "test" repository by accessing http://localhost:7200
 
 ### Drill and GraphDb for Development
 

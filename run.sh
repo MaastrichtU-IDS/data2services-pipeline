@@ -127,10 +127,9 @@ else
 
   # TODO: WARNING the $WORKING_DIRECTORY passed at the end is the path INSIDE the Apache Drill docker container (it must always starts with /data).
   # So this script only works with dir inside /data)
-  docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v $WORKING_DIRECTORY:/data autor2rml -j "$JDBC_URL" -r -o /data/mapping.ttl -d "$INPUT_PATH" -u "$JDBC_USERNAME" -p "$JDBC_PASSWORD" -b "$BASE_URI" -g "http://data2services/graph/autor2rml"
+  docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v $WORKING_DIRECTORY:/data autor2rml -j "$JDBC_URL" -r -o /data/mapping.ttl -d "$WORKING_DIRECTORY" -u "$JDBC_USERNAME" -p "$JDBC_PASSWORD" -b "$BASE_URI" -g "http://data2services/graph/autor2rml"
 
-  echo "R2RML mappings (mapping.ttl) has been generated."
-  echo "Running r2rml..."
+  echo "R2RML mappings (mapping.ttl) has been generated. Running r2rml..."
 
   ## Generate config.properties required for r2rml. TODO: Should we generate this directly in AutoR2RML? Alex: no
   sudo touch $WORKING_DIRECTORY/config.properties
