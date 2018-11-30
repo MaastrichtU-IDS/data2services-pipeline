@@ -42,21 +42,29 @@ In a production environment it is considered that both Drill and GraphDb service
 The directory where are the files to convert needs to be in /data. Change the WORKING_DIRECTORY in config.yaml file if required.
 
 ```shell
-# Minimum to parse tabular files using Apache Drill
-./run.sh --file-directory /data/data2services --jdbc-url jdbc:drill:drillbit=drill:31010 --jdbc-container drill
-
 # All parameters
-./run.sh --file-directory /data/data2services \
+./run.sh --working-directory /data/data2services \
 	--jdbc-url jdbc:drill:drillbit=drill:31010 \
 	--jdbc-container drill \
-	--jdbc-username foo --jdbc-password bar \
+	--jdbc-username postgres --jdbc-password pwd \
 	--graphdb-url http://graphdb:7200/ \
 	--graphdb-repository test \
 	--graphdb-username import_user --graphdb-password test \
 	--base-uri http://data2services/
+
+# Parse XML using xml2rdf.
+./run.sh --working-directory /data/data2services
+# Support compressed files.
+./run.sh --working-directory /data/my_file.xml.gz
+
+# Parse tabular files using Apache Drill
+./run.sh --working-directory /data/data2services --jdbc-url "jdbc:drill:drillbit=drill:31010" --jdbc-container drill
+
+# Postgres
+./run.sh --working-directory /data/data2services --jdbc-url jdbc:postgresql://postgres:5432/my_database --jdbc-container postgres --jdbc-username postgres --jdbc-password pwd
 ```
 
-### Tranform generic RDF to target model
+### Transform generic RDF to target model
 
 https://github.com/vemonet/insert-data2services
 
