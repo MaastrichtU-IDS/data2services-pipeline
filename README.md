@@ -145,7 +145,7 @@ psql drugcentral < /data/drugcentral.dump.08262018.sql
 
 
 
-## Fix tabular file without columns
+## Fix tabular files without columns
 
 ```shell
 # CSV

@@ -80,7 +80,7 @@ GRAPHDB_PASSWORD=${GRAPHDB_PASSWORD:-test}
 BASE_URI=${BASE_URI:-http://data2services/}
 
 
-echo "--working-directory = $WORKING_DIRECTORY"
+echo "--working-directory = $WORKING_DIRECTORY (must be in a subfolder of /data)"
 echo "--jdbc-url = $JDBC_URL"
 echo "--jdbc-container for AutoR2RML = $JDBC_CONTAINER"
 echo "--jdbc-username for AutoR2RML = $JDBC_USERNAME"
@@ -90,8 +90,6 @@ echo "--graphdb-repository = $GRAPHDB_REPOSITORY"
 echo "--graphdb-username = $GRAPHDB_USERNAME"
 echo "--graphdb-password = $GRAPHDB_PASSWORD"
 echo "--base-uri = $BASE_URI"
-
-INPUT_PATH=$WORKING_DIRECTORY
 
 # Start Apache Drill if not running
 if [ ! "$(docker ps -q -f name=drill)" ]; then
@@ -112,27 +110,22 @@ then
   echo "---------------------------------"
   echo "  Running xml2rdf..."
   echo "---------------------------------"
-  GRAPH_URI="graph/xml2rdf"
-  WORKING_DIRECTORY=$(dirname "$INPUT_PATH")
+  GRAPH_URI_FRAGMENT="graph/xml2rdf"
 
-  docker run --rm -it -v /data:/data xml2rdf  -i "$INPUT_PATH" -o "$INPUT_PATH.nq.gz" -g "$BASE_URI$GRAPH_URI"
-  # XML file needs to be in /data. TODO: put the first part of the path as the shared volume
-
+  docker run --rm -it -v /data:/data xml2rdf  -i "$WORKING_DIRECTORY" -o "$WORKING_DIRECTORY.nq.gz" -g "$BASE_URI$GRAPH_URI_FRAGMENT"
 else
 
   echo "---------------------------------"
   echo "  Converting TSV to RDF..."
   echo "---------------------------------"
   echo "Running AutoR2RML to generate R2RML mapping files..."
-  GRAPH_URI="graph/autor2rml"
+  GRAPH_URI_FRAGMENT="graph/autor2rml"
 
-  # TODO: WARNING the $WORKING_DIRECTORY passed at the end is the path INSIDE the Apache Drill docker container (it must always starts with /data).
-  # So this script only works with dir inside /data)
-  docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v $WORKING_DIRECTORY:/data autor2rml -j "$JDBC_URL" -r -o /data/mapping.ttl -d "$WORKING_DIRECTORY" -u "$JDBC_USERNAME" -p "$JDBC_PASSWORD" -b "$BASE_URI" -g "$BASE_URI$GRAPH_URI"
+  docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v /data:/data autor2rml -j "$JDBC_URL" -r -o /data/mapping.ttl -d "$WORKING_DIRECTORY" -u "$JDBC_USERNAME" -p "$JDBC_PASSWORD" -b "$BASE_URI" -g "$BASE_URI$GRAPH_URI_FRAGMENT"
 
   echo "R2RML mappings (mapping.ttl) has been generated. Running r2rml..."
 
-  ## Generate config.properties required for r2rml. TODO: Should we generate this directly in AutoR2RML? Alex: no
+  # Generate config.properties required for r2rml.
   sudo touch $WORKING_DIRECTORY/config.properties
   sudo chmod 777 $WORKING_DIRECTORY/config.properties
   echo "connectionURL = $JDBC_URL
@@ -142,10 +135,9 @@ else
   password = $JDBC_PASSWORD
   format = NQUADS" > $WORKING_DIRECTORY/config.properties
 
-  ## Run r2rml to generate RDF files. Using config.properties at the root dir of the container
+  # Run r2rml to generate RDF files. Using config.properties at the root dir of the container
   docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v $WORKING_DIRECTORY:/data r2rml /data/config.properties
 
-  echo "r2rml completed."  
 fi
 
 echo "---------------------------------"
