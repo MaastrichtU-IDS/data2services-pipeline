@@ -10,8 +10,8 @@ while [[ $# -gt 0 ]]
 do
 key="$1"
 case $key in
-    -d|--working-directory)
-    WORKING_DIRECTORY="$2"
+    -p|--working-path)
+    WORKING_PATH="$2"
     shift # past argument
     shift # past value
     ;;
@@ -80,7 +80,7 @@ GRAPHDB_PASSWORD=${GRAPHDB_PASSWORD:-test}
 BASE_URI=${BASE_URI:-http://data2services/}
 
 
-echo "--working-directory = $WORKING_DIRECTORY (must be in a subfolder of /data)"
+echo "--working-directory = $WORKING_PATH (must be in a subfolder of /data)"
 echo "--jdbc-url = $JDBC_URL"
 echo "--jdbc-container for AutoR2RML = $JDBC_CONTAINER"
 echo "--jdbc-username for AutoR2RML = $JDBC_USERNAME"
@@ -104,7 +104,7 @@ fi
 
 
 
-if [[ $WORKING_DIRECTORY == *.xml || $WORKING_DIRECTORY == *.xml.gz ]]
+if [[ $WORKING_PATH == *.xml || $WORKING_PATH == *.xml.gz ]]
 then
 
   echo "---------------------------------"
@@ -112,7 +112,7 @@ then
   echo "---------------------------------"
   GRAPH_URI_FRAGMENT="graph/xml2rdf"
 
-  docker run --rm -it -v /data:/data xml2rdf  -i "$WORKING_DIRECTORY" -o "$WORKING_DIRECTORY.nq.gz" -g "$BASE_URI$GRAPH_URI_FRAGMENT"
+  docker run --rm -it -v /data:/data xml2rdf  -i "$WORKING_PATH" -o "$WORKING_PATH.nq.gz" -g "$BASE_URI$GRAPH_URI_FRAGMENT"
 else
 
   echo "---------------------------------"
@@ -121,22 +121,22 @@ else
   echo "Running AutoR2RML to generate R2RML mapping files..."
   GRAPH_URI_FRAGMENT="graph/autor2rml"
 
-  docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v /data:/data autor2rml -j "$JDBC_URL" -r -o /data/mapping.ttl -d "$WORKING_DIRECTORY" -u "$JDBC_USERNAME" -p "$JDBC_PASSWORD" -b "$BASE_URI" -g "$BASE_URI$GRAPH_URI_FRAGMENT"
+  docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v /data:/data autor2rml -j "$JDBC_URL" -r -o /data/mapping.ttl -d "$WORKING_PATH" -u "$JDBC_USERNAME" -p "$JDBC_PASSWORD" -b "$BASE_URI" -g "$BASE_URI$GRAPH_URI_FRAGMENT"
 
   echo "R2RML mappings (mapping.ttl) has been generated. Running r2rml..."
 
   # Generate config.properties required for r2rml.
-  sudo touch $WORKING_DIRECTORY/config.properties
-  sudo chmod 777 $WORKING_DIRECTORY/config.properties
+  sudo touch $WORKING_PATH/config.properties
+  sudo chmod 777 $WORKING_PATH/config.properties
   echo "connectionURL = $JDBC_URL
   mappingFile = /data/mapping.ttl
   outputFile = /data/rdf_output.nq
   user = $JDBC_USERNAME
   password = $JDBC_PASSWORD
-  format = NQUADS" > $WORKING_DIRECTORY/config.properties
+  format = NQUADS" > $WORKING_PATH/config.properties
 
   # Run r2rml to generate RDF files. Using config.properties at the root dir of the container
-  docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v $WORKING_DIRECTORY:/data r2rml /data/config.properties
+  docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v $WORKING_PATH:/data r2rml /data/config.properties
 
 fi
 
@@ -155,7 +155,7 @@ curl -X PUT --header 'Content-Type: application/json' --header 'Accept: */*' -d 
  }" "http://localhost:7200/rest/repositories"
 
 # Run RdfUpload to upload to GraphDB
-docker run -it --rm --link graphdb:graphdb -v $WORKING_DIRECTORY:/data rdf-upload \
+docker run -it --rm --link graphdb:graphdb -v $WORKING_PATH:/data rdf-upload \
   -m "HTTP" \
   -if "/data" \
   -url $GRAPHDB_URL \

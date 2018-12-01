@@ -35,7 +35,7 @@ The script starts GraphDB and Apache Drill services on Docker. They can be start
 
 ```shell
 # All parameters
-./run.sh --working-directory /data/data2services \
+./run.sh --working-path /data/data2services \
 	--jdbc-url jdbc:drill:drillbit=drill:31010 \
 	--jdbc-container drill \
 	--jdbc-username postgres --jdbc-password pwd \
@@ -45,15 +45,15 @@ The script starts GraphDB and Apache Drill services on Docker. They can be start
 	--base-uri http://data2services/
 
 # Parse XML using xml2rdf.
-./run.sh --working-directory /data/my_file.xml
+./run.sh --working-path /data/my_file.xml
 # Support compressed files.
-./run.sh --working-directory /data/my_file.xml.gz
+./run.sh --working-path /data/my_file.xml.gz
 
 # Parse tabular files using Apache Drill
-./run.sh --working-directory /data/data2services --jdbc-url "jdbc:drill:drillbit=drill:31010" --jdbc-container drill
+./run.sh --working-path /data/data2services --jdbc-url "jdbc:drill:drillbit=drill:31010" --jdbc-container drill
 
 # Postgres
-./run.sh --working-directory /data/data2services --jdbc-url "jdbc:postgresql://postgres:5432/my_database" --jdbc-container postgres --jdbc-username postgres --jdbc-password pwd
+./run.sh --working-path /data/data2services --jdbc-url "jdbc:postgresql://postgres:5432/my_database" --jdbc-container postgres --jdbc-username postgres --jdbc-password pwd
 ```
 
 
