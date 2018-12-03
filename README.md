@@ -27,6 +27,17 @@ Downloads the files and builds the docker containers if required.
 ./build.sh
 ```
 
+### Start services
+
+In a production environment it is considered that both **Apache Drill** and **GraphDB** services are present. Other RDF stores should also work, but have not been tested yet.
+
+```shell
+# Start
+./startup.sh
+# Stop
+./shutdown.sh
+```
+
 ### Run
 
 The directory where are the files to convert needs to be in `/data` (to comply with Apache Drill path).
@@ -61,19 +72,6 @@ The script starts GraphDB and Apache Drill services on Docker. They can be start
 ### Transform generic RDF to target model
 
 https://github.com/vemonet/insert-data2services
-
-
-
-### Drill and GraphDb for Development
-
-In a production environment it is considered that both Drill and GraphDb services are present. Other RDF stores should also work, but have not been tested yet.
-
-```shell
-# Start
-./startup.sh
-# Stop
-./shutdown.sh
-```
 
 
 
