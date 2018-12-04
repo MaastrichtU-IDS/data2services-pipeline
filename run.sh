@@ -101,6 +101,8 @@ then
   GRAPH_URI_FRAGMENT="graph/xml2rdf"
 
   docker run --rm -it -v /data:/data xml2rdf  -i "$WORKING_PATH" -o "$WORKING_PATH.nq.gz" -g "$BASE_URI$GRAPH_URI_FRAGMENT"
+  # Now that the XML has been processed we are getting the directory of the file (for RdfUpload)
+  WORKING_PATH=$(dirname "$WORKING_PATH")
 else
 
   echo "---------------------------------"
