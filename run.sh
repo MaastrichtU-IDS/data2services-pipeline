@@ -109,7 +109,8 @@ else
   echo "Running AutoR2RML to generate R2RML mapping files..."
   GRAPH_URI_FRAGMENT="graph/autor2rml"
 
-  docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v /data:/data autor2rml -j "$JDBC_URL" -r -o /data/mapping.ttl -d "$WORKING_PATH" -u "$JDBC_USERNAME" -p "$JDBC_PASSWORD" -b "$BASE_URI" -g "$BASE_URI$GRAPH_URI_FRAGMENT"
+  docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v /data:/data autor2rml -j "$JDBC_URL" -r -o "$WORKING_PATH/mapping.ttl" -d "$WORKING_PATH" -u "$JDBC_USERNAME" -p "$JDBC_PASSWORD" -b "$BASE_URI" -g "$BASE_URI$GRAPH_URI_FRAGMENT"
+
 
   echo "R2RML mappings (mapping.ttl) has been generated. Running r2rml..."
 
