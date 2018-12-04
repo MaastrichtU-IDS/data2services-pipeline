@@ -80,7 +80,7 @@ GRAPHDB_PASSWORD=${GRAPHDB_PASSWORD:-test}
 BASE_URI=${BASE_URI:-http://data2services/}
 
 
-echo "--working-directory = $WORKING_PATH (must be in a subfolder of /data)"
+echo "--working-path = $WORKING_PATH (must be in a subfolder of /data)"
 echo "--jdbc-url = $JDBC_URL"
 echo "--jdbc-container for AutoR2RML = $JDBC_CONTAINER"
 echo "--jdbc-username for AutoR2RML = $JDBC_USERNAME"
