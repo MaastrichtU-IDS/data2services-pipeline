@@ -18,6 +18,8 @@ git clone --recursive https://github.com/MaastrichtU-IDS/data2services-pipeline.
 # SSH
 git clone --recursive git@github.com:MaastrichtU-IDS/data2services-pipeline.git
 
+cd data2services-pipeline
+
 # Or pull the submodule after a normal git clone
 git submodule update --init --recursive
 ```
