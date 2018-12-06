@@ -115,8 +115,7 @@ docker run -it --rm --link drill:drill -v /data:/data autor2rml \
 # SQLite
 docker run -it --rm -v /data:/data autor2rml \
 	-j "jdbc:sqlite:/data/sqlite/my_database.db" -r \
-	-o "/data/data2services/mapping.ttl" \
-	-d "/data/data2services" \
+	-o "/data/sqlite/mapping.ttl" \
 	-b "http://data2services/" -g "http://data2services/graph/sqlite"
 ```
 
@@ -146,6 +145,10 @@ docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-uplo
 
 
 ## Windows
+
+Be careful if Docker can't access internet when building you might want to change the Network > DNS Server > Fixed: 8.8.8.8
+
+Be careful the AntiVirus might cause problems, you might need to deactivate it
 
 All windows scripts are in directory `windows_scripts`
 
@@ -185,8 +188,6 @@ In a production environment it is considered that both Drill and GraphDb service
 ./shutdown.bat
 ```
 ### Run
-
-Be careful the AntiVirus might cause problems, you might need to deactivate it
 
 ```shell
 # Run xml2rdf for XML files. Edit the script
