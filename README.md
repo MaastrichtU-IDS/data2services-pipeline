@@ -78,6 +78,57 @@ https://github.com/vemonet/insert-data2services
 
 
 
+## Run Docker commands
+
+### xml2rdf
+
+```shell
+docker run --rm -it -v /data:/data xml2rdf  -i "/data/data2services/myfile.xml.gz" -o "/data/data2services/myfile.nq.gz" -g "http://data2services/graph/xml2rdf"
+
+docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-upload \
+  -m "HTTP" \
+  -if "/data" \
+  -url "http://graphdb:7200" \
+  -rep "test" \
+  -un "import_user" -pw "test"
+```
+
+### R2RML
+
+```shell
+# Generate R2RML mapping file using AutoR2RML
+docker run -it --rm --link drill:drill -v /data:/data autor2rml \
+	-j "jdbc:drill:drillbit=drill:31010" -r \
+	-o "/data/data2services/mapping.ttl" \
+	-d "/data/data2services" \
+	-b "http://data2services/" -g "http://data2services/graph/autor2rml"
+
+# R2RML config file
+echo "connectionURL = jdbc:drill:drillbit=drill:31010
+  mappingFile = /data/mapping.ttl
+  outputFile = /data/rdf_output.nq
+  format = NQUADS" > /data/data2services/config.properties
+
+# R2RML
+docker run -it --rm --link drill:drill -v /data/data2services:/data r2rml /data/config.properties
+
+# RDF Upload
+docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-upload \
+  -m "HTTP" \
+  -if "/data" \
+  -url "http://graphdb:7200" \
+  -rep "test" \
+  -un "import_user" -pw "test"
+```
+
+
+
+### Postgres
+
+To come
+
+
+
 ## Windows
 
 All windows scripts are in directory `windows_scripts`
