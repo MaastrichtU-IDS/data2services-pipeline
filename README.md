@@ -97,15 +97,31 @@ docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-uplo
 
 ### R2RML
 
+First run AutoR2RML to generate the R2RML mapping file
+
 ```shell
-# Generate R2RML mapping file using AutoR2RML
+# Apache Drill for CSV files
 docker run -it --rm --link drill:drill -v /data:/data autor2rml \
 	-j "jdbc:drill:drillbit=drill:31010" -r \
 	-o "/data/data2services/mapping.ttl" \
 	-d "/data/data2services" \
 	-b "http://data2services/" -g "http://data2services/graph/autor2rml"
+	
+# Postgres
+#jdbc:postgresql://localhost:5432/database
 
-# R2RML config file
+# SQLite
+docker run -it --rm -v /data:/data autor2rml \
+	-j "jdbc:sqlite:/data/sqlite/my_database.db" -r \
+	-o "/data/data2services/mapping.ttl" \
+	-d "/data/data2services" \
+	-b "http://data2services/" -g "http://data2services/graph/sqlite"
+```
+
+Generate RDF from R2RML
+
+```shell
+# Generate R2RML config file
 echo "connectionURL = jdbc:drill:drillbit=drill:31010
   mappingFile = /data/mapping.ttl
   outputFile = /data/rdf_output.nq
@@ -124,10 +140,6 @@ docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-uplo
 ```
 
 
-
-### Postgres
-
-To come
 
 
 
