@@ -41,6 +41,8 @@ In a production environment it is considered that both **Apache Drill** and **Gr
 ./shutdown.sh
 ```
 
+For MacOS make sure the `/data` repository is access has been granted 
+
 ### Run
 
 The directory where are the files to convert needs to be in `/data` (to comply with Apache Drill path).
@@ -60,7 +62,7 @@ The script starts GraphDB and Apache Drill services on Docker. They can be start
 
 # Parse XML using xml2rdf.
 ./run.sh --working-path /data/my_file.xml
-# Support compressed files.
+# Support GZ compressed file.
 ./run.sh --working-path /data/my_file.xml.gz
 
 # Parse tabular files using Apache Drill
