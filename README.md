@@ -1,4 +1,7 @@
 # Data 2 Services pipeline
+
+Hackathon Google doc: https://docs.google.com/document/d/1DXcpH559jEGrMTSYr3rJ6el7j64mqtrz2f5gcqnE6nE/edit# 
+
 This is a demonstrator ETL pipeline that converts relational databases, tabular files, and XML files into a generic RDF-format based on the input data structure, and loads it into a GraphDB endpoint. 
 
 [Docker](https://docs.docker.com/install/) is required to run the pipeline.
