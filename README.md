@@ -80,6 +80,8 @@ Here examples with files in */data/data2services*
 
 ##### xml2rdf
 
+To convert XML files to a generic RDF based on the file structure.
+
 ```shell
 docker run --rm -it -v /data:/data xml2rdf  -i "/data/data2services/myfile.xml.gz" -o "/data/data2services/myfile.nq.gz" -g "http://data2services/graph/xml2rdf"
 
@@ -92,6 +94,8 @@ docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-uplo
 ```
 
 ##### AutoR2RML
+
+To convert relational databases (Postgres, SQLite), CSV, TSV and PSV files to a generic RDF 
 
 First run AutoR2RML to generate the R2RML mapping file
 
@@ -194,6 +198,8 @@ In a production environment it is considered that both Drill and GraphDb service
 ./shutdown.bat
 ```
 ### Run
+
+You can also manually [run the Docker commands](https://github.com/MaastrichtU-IDS/data2services-pipeline#using-docker-commands) for better control.
 
 ```shell
 # Run xml2rdf for XML files. Edit the script
