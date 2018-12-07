@@ -216,9 +216,15 @@ You can also manually [run the Docker commands](https://github.com/MaastrichtU-I
 ```shell
 # Run and load Postgres DB to test
 docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=pwd -d -v /data/data2services/:/data postgres
-docker exec -it postgres bash
-su postgres
-psql drugcentral < /data/drugcentral.dump.08262018.sql
+# Connect to postgres
+docker exec -it postgres psql -U postgres
+# Load sql script
+docker exec -it postgres psql -U postgres drugcentral < /data/drugcentral.dump.08262018.sql
+# Handle schema
+\dn	# List schemas
+SET search_path TO schema_name; # Choose a schema
+\dt	# List tables
+SELECT * FROM table_name LIMIT 10; 
 ```
 
 
