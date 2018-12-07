@@ -131,9 +131,7 @@ else
 
 fi
 
-echo "---------------------------------"
-echo "  Running RdfUpload..."
-echo "---------------------------------"
+echo "  --- Running RdfUpload ---"
 
 # Create GraphDB repository
 curl -X PUT --header 'Content-Type: application/json' --header 'Accept: */*' -d "{
