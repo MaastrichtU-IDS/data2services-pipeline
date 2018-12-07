@@ -1,7 +1,5 @@
 # Data 2 Services pipeline
 
-Hackathon Google doc: https://docs.google.com/document/d/1DXcpH559jEGrMTSYr3rJ6el7j64mqtrz2f5gcqnE6nE/edit# 
-
 This is a demonstrator ETL pipeline that converts relational databases, tabular files, and XML files into a generic RDF-format based on the input data structure, and loads it into a GraphDB endpoint. 
 
 [Docker](https://docs.docker.com/install/) is required to run the pipeline.
@@ -43,13 +41,11 @@ In a production environment it is considered that both **Apache Drill** and **Gr
 ./shutdown.sh
 ```
 
-For MacOS make sure the `/data` repository is access has been granted 
+For MacOS make sure access to the `/data` repository has been granted in Docker configuration.
 
 ### Run
 
-The directory where are the files to convert needs to be in `/data` (to comply with Apache Drill path).
-
-The script starts GraphDB and Apache Drill services on Docker. They can be started manually with `resources/startup.sh` and stopped with `shutdown.sh`.
+The directory where are the **files to convert needs to be in `/data`** (to comply with Apache Drill path).
 
 ```shell
 # All parameters
