@@ -47,8 +47,25 @@ For MacOS make sure access to the `/data` repository has been granted in Docker 
 
 The directory where are the **files to convert needs to be in `/data`** (to comply with Apache Drill path).
 
+Here examples with files in */data/data2services*
+
+#### Using one liner script
+
 ```shell
-# All parameters
+# Parse XML using xml2rdf.
+./run.sh --working-path /data/my_file.xml --graph http://data2services/graph/xml2rdf
+# Support GZ compressed file.
+./run.sh --working-path /data/my_file.xml.gz --graph http://data2services/graph/xml2rdf
+
+
+# Parse TSV, CSV, PSV files using Apache Drill
+./run.sh --working-path /data/data2services --jdbc-url "jdbc:drill:drillbit=drill:31010" --jdbc-container drill --graph http://data2services/graph/autor2rml
+
+# POSTGRES
+./run.sh --working-path /data/data2services --jdbc-url "jdbc:postgresql://postgres:5432/$MY_DATABASE" --jdbc-container postgres --jdbc-username postgres --jdbc-password pwd --graph http://data2services/graph/autor2rml
+
+
+# With all parameters (if different GraphDB params)
 ./run.sh --working-path /data/data2services \
 	--jdbc-url jdbc:drill:drillbit=drill:31010 \
 	--jdbc-container drill \
@@ -56,31 +73,12 @@ The directory where are the **files to convert needs to be in `/data`** (to comp
 	--graphdb-url http://graphdb:7200/ \
 	--graphdb-repository test \
 	--graphdb-username import_user --graphdb-password test \
-	--base-uri http://data2services/
-
-# Parse XML using xml2rdf.
-./run.sh --working-path /data/my_file.xml
-# Support GZ compressed file.
-./run.sh --working-path /data/my_file.xml.gz
-
-# Parse tabular files using Apache Drill
-./run.sh --working-path /data/data2services --jdbc-url "jdbc:drill:drillbit=drill:31010" --jdbc-container drill
-
-# Postgres
-./run.sh --working-path /data/data2services --jdbc-url "jdbc:postgresql://postgres:5432/my_database" --jdbc-container postgres --jdbc-username postgres --jdbc-password pwd
+	--base-uri http://data2services/ --graph http://data2services/graph/generic
 ```
 
+#### Using Docker commands
 
-
-### Transform generic RDF to target model
-
-https://github.com/vemonet/insert-data2services
-
-
-
-## Run Docker commands
-
-### xml2rdf
+##### xml2rdf
 
 ```shell
 docker run --rm -it -v /data:/data xml2rdf  -i "/data/data2services/myfile.xml.gz" -o "/data/data2services/myfile.nq.gz" -g "http://data2services/graph/xml2rdf"
@@ -93,39 +91,45 @@ docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-uplo
   -un "import_user" -pw "test"
 ```
 
-### R2RML
+##### AutoR2RML
 
 First run AutoR2RML to generate the R2RML mapping file
 
 ```shell
-# Apache Drill for CSV files
+# For CSV, TSV, PSV files
 docker run -it --rm --link drill:drill -v /data:/data autor2rml \
 	-j "jdbc:drill:drillbit=drill:31010" -r \
 	-o "/data/data2services/mapping.ttl" \
 	-d "/data/data2services" \
 	-b "http://data2services/" -g "http://data2services/graph/autor2rml"
 	
-# Postgres
-#jdbc:postgresql://localhost:5432/database
+# For Postgres
+docker run -it --rm --link postgres:postgres -v /data:/data autor2rml \
+	-j "jdbc:postgresql://postgres:5432/my_database" -r \
+	-o "/data/data2services/mapping.ttl" \
+	-u "postgres" -p "pwd" \
+	-b "http://data2services/" -g "http://data2services/graph/postgres"
 
-# SQLite
+# For SQLite
 docker run -it --rm -v /data:/data autor2rml \
-	-j "jdbc:sqlite:/data/sqlite/my_database.db" -r \
-	-o "/data/sqlite/mapping.ttl" \
+	-j "jdbc:sqlite:/data/data2services/my_database.db" -r \
+	-o "/data/data2services/mapping.ttl" \
 	-b "http://data2services/" -g "http://data2services/graph/sqlite"
 ```
 
-Generate RDF from R2RML
+Then generate RDF from R2RML and upload it
 
 ```shell
 # Generate R2RML config file
 echo "connectionURL = jdbc:drill:drillbit=drill:31010
-  mappingFile = /data/mapping.ttl
-  outputFile = /data/rdf_output.nq
-  format = NQUADS" > /data/data2services/config.properties
+mappingFile = /data/mapping.ttl
+outputFile = /data/rdf_output.nq
+format = NQUADS" > /data/data2services/config.properties
 
-# R2RML
+# R2RML for Drill
 docker run -it --rm --link drill:drill -v /data/data2services:/data r2rml /data/config.properties
+# R2RML for Postgres
+docker run -it --rm --link postgres:postgres -v /data/data2services:/data r2rml /data/config.properties
 
 # RDF Upload
 docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-upload \
@@ -138,13 +142,19 @@ docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-uplo
 
 
 
+### Transform generic RDF to target model
+
+https://github.com/vemonet/insert-data2services
+
 
 
 ## Windows
 
-Be careful if Docker can't access internet when building you might want to change the Network > DNS Server > Fixed: 8.8.8.8
+Warnings:
 
-Be careful the AntiVirus might cause problems, you might need to deactivate it
+* If Docker can't access internet when building you might want to change the `Network > DNS Server > Fixed: 8.8.8.8`
+
+* The AntiVirus could cause problems, you might need to deactivate it
 
 All windows scripts are in directory `windows_scripts`
 
@@ -191,9 +201,6 @@ In a production environment it is considered that both Drill and GraphDb service
 
 # Run AutoR2RML for Tabular files and RDB. Edit the script
 ./run-r2rml.bat
-
-# Example running Drill
-docker run -it --rm --link drill:drill -v c:/data/pharmgkb:/data autor2rml -h drill -r -o /data/mapping.ttl /data/pharmgkb
 ```
 
 
@@ -202,7 +209,7 @@ docker run -it --rm --link drill:drill -v c:/data/pharmgkb:/data autor2rml -h dr
 
 ```shell
 # Run and load Postgres DB to test
-docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=pwd -d -v /data/autor2rml/:/data postgres
+docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=pwd -d -v /data/data2services/:/data postgres
 docker exec -it postgres bash
 su postgres
 psql drugcentral < /data/drugcentral.dump.08262018.sql
