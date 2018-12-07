@@ -60,6 +60,11 @@ case $key in
     shift # past argument
     shift # past value
     ;;
+    -g|--graph)
+    GRAPH="$2"
+    shift # past argument
+    shift # past value
+    ;;
     #--default)
     #DEFAULT=YES
     #shift # past argument
@@ -78,6 +83,7 @@ GRAPHDB_REPOSITORY=${GRAPHDB_REPOSITORY:-test}
 GRAPHDB_USERNAME=${GRAPHDB_USERNAME:-import_user}
 GRAPHDB_PASSWORD=${GRAPHDB_PASSWORD:-test}
 BASE_URI=${BASE_URI:-http://data2services/}
+GRAPH=${GRAPH:-http://data2services/graph/generic}
 
 
 echo "--working-path = $WORKING_PATH (must be in a subfolder of /data)"
@@ -95,30 +101,24 @@ echo "--base-uri = $BASE_URI"
 if [[ $WORKING_PATH == *.xml || $WORKING_PATH == *.xml.gz ]]
 then
 
-  echo "---------------------------------"
-  echo "  Running xml2rdf..."
-  echo "---------------------------------"
-  GRAPH_URI_FRAGMENT="graph/xml2rdf"
+  echo " --- Running xml2rdf ---"
 
-  docker run --rm -it -v /data:/data xml2rdf  -i "$WORKING_PATH" -o "$WORKING_PATH.nq.gz" -g "$BASE_URI$GRAPH_URI_FRAGMENT"
+  docker run --rm -it -v /data:/data xml2rdf  -i "$WORKING_PATH" -o "$WORKING_PATH.nq.gz" -g "$GRAPH"
   # Now that the XML has been processed we are getting the directory of the file (for RdfUpload)
   WORKING_PATH=$(dirname "$WORKING_PATH")
 else
 
-  echo "---------------------------------"
-  echo "  Converting TSV to RDF..."
-  echo "---------------------------------"
+  echo "  --- Converting TSV to RDF ---"
   echo "Running AutoR2RML to generate R2RML mapping files..."
-  GRAPH_URI_FRAGMENT="graph/autor2rml"
 
-  docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v /data:/data autor2rml -j "$JDBC_URL" -r -o "$WORKING_PATH/mapping.ttl" -d "$WORKING_PATH" -u "$JDBC_USERNAME" -p "$JDBC_PASSWORD" -b "$BASE_URI" -g "$BASE_URI$GRAPH_URI_FRAGMENT"
+  docker run -it --rm --link $JDBC_CONTAINER:$JDBC_CONTAINER -v /data:/data autor2rml -j "$JDBC_URL" -r -o "$WORKING_PATH/mapping.ttl" -d "$WORKING_PATH" -u "$JDBC_USERNAME" -p "$JDBC_PASSWORD" -b "$BASE_URI" -g "$GRAPH"
 
 
   echo "R2RML mappings (mapping.ttl) has been generated. Running r2rml..."
 
   # Generate config.properties required for r2rml.
   sudo touch $WORKING_PATH/config.properties
-  sudo chmod 777 $WORKING_PATH/config.properties
+  sudo chmod u+w $WORKING_PATH/config.properties
   echo "connectionURL = $JDBC_URL
   mappingFile = /data/mapping.ttl
   outputFile = /data/rdf_output.nq
