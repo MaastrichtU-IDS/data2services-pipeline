@@ -1,12 +1,10 @@
-# Data 2 Services pipeline
+# Data2Services pipeline
 
 This is a demonstrator ETL pipeline that converts relational databases, tabular files, and XML files into a generic RDF-format based on the input data structure, and loads it into a GraphDB endpoint. 
 
 [Docker](https://docs.docker.com/install/) is required to run the pipeline.
 
-## Linux
-
-### Clone
+## Clone
 
 ```shell
 # WARNING: for Windows execute it before cloning to fix bugs with newlines
@@ -21,6 +19,8 @@ cd data2services-pipeline
 # Or pull the submodule after a normal git clone
 git submodule update --init --recursive
 ```
+
+## Linux & MacOS
 
 ### Build
 
@@ -47,21 +47,21 @@ For MacOS make sure access to the `/data` repository has been granted in Docker 
 
 The directory where are the **files to convert needs to be in `/data`** (to comply with Apache Drill path).
 
-Here examples with files in */data/data2services*
+Here examples with files in */data/data2services*.
 
 #### Using one liner script
 
 ```shell
-# Parse XML using xml2rdf.
-./run.sh --working-path /data/my_file.xml --graph http://data2services/graph/xml2rdf
+# XML using xml2rdf.
+./run.sh --working-path /data/data2services/my_file.xml --graph http://data2services/graph/xml2rdf
 # Support GZ compressed file.
-./run.sh --working-path /data/my_file.xml.gz --graph http://data2services/graph/xml2rdf
+./run.sh --working-path /data/data2services/my_file.xml.gz --graph http://data2services/graph/xml2rdf
 
 
-# Parse TSV, CSV, PSV files using Apache Drill
+# Generate generic RDF from TSV, CSV, PSV files using Apache Drill
 ./run.sh --working-path /data/data2services --jdbc-url "jdbc:drill:drillbit=drill:31010" --jdbc-container drill --graph http://data2services/graph/autor2rml
 
-# POSTGRES
+# Generate generic RDF from Postgres
 ./run.sh --working-path /data/data2services --jdbc-url "jdbc:postgresql://postgres:5432/$MY_DATABASE" --jdbc-container postgres --jdbc-username postgres --jdbc-password pwd --graph http://data2services/graph/autor2rml
 
 
@@ -124,11 +124,11 @@ docker run -it --rm -v /data:/data autor2rml \
 Then generate RDF from R2RML and upload it
 
 ```shell
-# Generate R2RML config file
-echo "connectionURL = jdbc:drill:drillbit=drill:31010
+# config.properties file for R2RML in /data/data2services
+connectionURL = jdbc:drill:drillbit=drill:31010
 mappingFile = /data/mapping.ttl
 outputFile = /data/rdf_output.nq
-format = NQUADS" > /data/data2services/config.properties
+format = NQUADS
 
 # R2RML for Drill
 docker run -it --rm --link drill:drill -v /data/data2services:/data r2rml /data/config.properties
@@ -211,25 +211,31 @@ You can also manually [run the Docker commands](https://github.com/MaastrichtU-I
 
 
 
-## Run Postgres
+## Run Postgres database
 
 ```shell
 # Run and load Postgres DB to test
 docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=pwd -d -v /data/data2services/:/data postgres
+
 # Connect to postgres
 docker exec -it postgres psql -U postgres
 # Load sql script
 docker exec -it postgres psql -U postgres drugcentral < /data/drugcentral.dump.08262018.sql
-# Handle schema
-\dn	# List schemas
-SET search_path TO schema_name; # Choose a schema
-\dt	# List tables
+
+### PSQL commands
+# List schemas
+\dn
+# Choose a schema
+SET search_path TO schema_name;
+# List tables
+\dt
+# Select from table
 SELECT * FROM table_name LIMIT 10; 
 ```
 
 
 
-## Fix tabular files without columns
+## Fix CSV, TSV, PSV files without columns
 
 ```shell
 # CSV
@@ -237,9 +243,10 @@ sed -i '1s/^/column1,column2,column3\n/' *.csv
 
 # TSV
 sed -i '1s/^/column1\tcolumn2\tcolumn3\n/' *.tsv
+
+# PSV
+sed -i '1s/^/column1|column2|column3\n/' *.psv
 ```
-
-
 
 
 
@@ -265,7 +272,7 @@ sed -i '1s/^/column1\tcolumn2\tcolumn3\n/' *.tsv
 - Setup > Users and access
 
   - Edit admin user > Enter a new password > Save
-  - Click on `Security is off` 
+  - Click on `Security is off`  to turn it on.
   - Create new user
     - User name: import_user
     - Password: test
@@ -278,7 +285,7 @@ sed -i '1s/^/column1\tcolumn2\tcolumn3\n/' *.tsv
 
 If you use data2services in a scientific publication, you are highly encouraged (not required) to cite the following paper:
 
-Data2Services: enabling automated conversion of data to services. Vincent Emonet, Alexander Malic, Amrapali Zaveri, Andreea Grigoriu and Michel Dumontier.
+**Data2Services: enabling automated conversion of data to services.** *Vincent Emonet, Alexander Malic, Amrapali Zaveri, Andreea Grigoriu and Michel Dumontier.*
 
 Bibtex entry:
 
@@ -290,3 +297,4 @@ booktitle = {11th Semantic Web Applications and Tools for Healthcare and Life Sc
 year = {2018}
 }
 ```
+
