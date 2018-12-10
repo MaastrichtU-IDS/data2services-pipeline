@@ -93,6 +93,8 @@ docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-uplo
   -un "import_user" -pw "test"
 ```
 
+##### TSV & RDB
+
 ##### AutoR2RML
 
 To convert relational databases (Postgres, SQLite), CSV, TSV and PSV files to a generic RDF 
@@ -120,6 +122,8 @@ docker run -it --rm -v /data:/data autor2rml \
 	-o "/data/data2services/mapping.ttl" \
 	-b "http://data2services/" -g "http://data2services/graph/sqlite"
 ```
+
+##### r2rml
 
 Then generate RDF from R2RML and upload it
 
