@@ -22,9 +22,11 @@ git submodule update --init --recursive
 
 ## Linux & MacOS
 
+Windows documentation can be found [here](https://github.com/MaastrichtU-IDS/data2services-pipeline#windows).
+
 ### Build
 
-Downloads the files and builds the docker containers if required.
+Download [GraphDB](http://graphdb.ontotext.com/) and [Apache Drill](https://drill.apache.org/), then build docker images.
 
 ```shell
 ./build.sh
@@ -154,6 +156,10 @@ docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-uplo
 
 https://github.com/vemonet/insert-data2services
 
+### Download datasets
+
+https://github.com/MaastrichtU-IDS/data2services-download
+
 
 
 ## Windows
@@ -164,7 +170,7 @@ Warnings:
 
 * The AntiVirus could cause problems, you might need to deactivate it
 
-All windows scripts are in directory `windows_scripts`
+All windows scripts are in the **`windows_scripts` folder**.
 
 ```powershell
 dir windows_scripts
@@ -203,7 +209,7 @@ In a production environment it is considered that both Drill and GraphDb service
 ```
 ### Run
 
-You can also manually [run the Docker commands](https://github.com/MaastrichtU-IDS/data2services-pipeline#using-docker-commands) for better control.
+**Edit the bat files** to set your parameters. You can also manually [run the Docker commands](https://github.com/MaastrichtU-IDS/data2services-pipeline#using-docker-commands) for better control of the workflow.
 
 ```shell
 # Run xml2rdf for XML files. Edit the script
