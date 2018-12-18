@@ -4,6 +4,11 @@ This is a demonstrator ETL pipeline that converts relational databases, tabular 
 
 [Docker](https://docs.docker.com/install/) is required to run the pipeline.
 
+If Docker can't access internet when building you might want to change the DNS. E.g.: `wget: unable to resolve host address`
+
+- On Linux: `vim /etc/resolv.conf` > `nameserver 8.8.8.8`
+- On Windows: `Docker Settings > Network > DNS Server > Fixed: 8.8.8.8`
+
 ## Clone
 
 ```shell
@@ -164,13 +169,7 @@ https://github.com/MaastrichtU-IDS/data2services-download
 
 ## Windows
 
-Warnings:
-
-* If Docker can't access internet when building you might want to change the `Network > DNS Server > Fixed: 8.8.8.8`
-
-* The AntiVirus could cause problems, you might need to deactivate it
-
-All windows scripts are in the **`windows_scripts` folder**.
+All windows scripts are in the **`windows_scripts` folder** and designed to be run from this directory.
 
 ```powershell
 cd windows_scripts
