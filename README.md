@@ -173,7 +173,7 @@ Warnings:
 All windows scripts are in the **`windows_scripts` folder**.
 
 ```powershell
-dir windows_scripts
+cd windows_scripts
 ```
 
 ### Build
@@ -189,34 +189,34 @@ dir windows_scripts
 * Build the images
 
 ```shell
-./build.bat
+build.bat
 
 # Create graphdb and graphdb-import directories in /data
 mkdir /data/graphdb
 mkdir /data/graphdb-import
 ```
 
-* Create "test" repository by accessing http://localhost:7200/repository
-
 ### Drill and GraphDb for Development
 
 In a production environment it is considered that both Drill and GraphDb services are present. Other RDF stores should also work, but have not been tested yet.
 ```shell
 # Start
-./startup.bat
+startup.bat
 # Stop
-./shutdown.bat
+shutdown.bat
 ```
+Create "*test*" repository by accessing http://localhost:7200/repository
+
 ### Run
 
 **Edit the bat files** to set your parameters. You can also manually [run the Docker commands](https://github.com/MaastrichtU-IDS/data2services-pipeline#using-docker-commands) for better control of the workflow.
 
 ```shell
 # Run xml2rdf for XML files. Edit the script
-./run-xml.bat
+run-xml.bat
 
 # Run AutoR2RML for Tabular files and RDB. Edit the script
-./run-r2rml.bat
+run-r2rml.bat
 ```
 
 
