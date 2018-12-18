@@ -11,7 +11,6 @@ SET jdbc_password="pwd"
 
 ECHO %working_path%
 
-qq
 :: Generate RML mapping.ttl file. Be careful it needs to be in /data
 docker run -it --rm --link %jdbc_container%:%jdbc_container% -v c:/data:/data autor2rml -j "%jdbc_url%" -r -o "%working_path%/mapping.ttl" -d %working_path% -u "%jdbc_username%" -p "%jdbc_password%" -b "http://data2services/" -g "http://data2services/graph/autor2rml"
 
