@@ -118,7 +118,7 @@ else
 
   # Generate config.properties required for r2rml.
   sudo touch $WORKING_PATH/config.properties
-  sudo chmod u+w $WORKING_PATH/config.properties
+  sudo chmod a+w $WORKING_PATH/config.properties
   echo "connectionURL = $JDBC_URL
   mappingFile = /data/mapping.ttl
   outputFile = /data/rdf_output.nq
