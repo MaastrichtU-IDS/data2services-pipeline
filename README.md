@@ -222,73 +222,12 @@ run-r2rml.bat
 
 
 
-## Run Postgres database
+## Further documentation in Wiki
 
-```shell
-# Run and load Postgres DB to test
-docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=pwd -d -v /data/data2services/:/data postgres
-
-# Connect to postgres
-docker exec -it postgres psql -U postgres
-# Load sql script
-docker exec -it postgres psql -U postgres drugcentral < /data/drugcentral.dump.08262018.sql
-
-### PSQL commands
-# List schemas
-\dn
-# Choose a schema
-SET search_path TO schema_name;
-# List tables
-\dt
-# Select from table
-SELECT * FROM table_name LIMIT 10; 
-```
-
-
-
-## Fix CSV, TSV, PSV files without columns
-
-```shell
-# CSV
-sed -i '1s/^/column1,column2,column3\n/' *.csv
-
-# TSV
-sed -i '1s/^/column1\tcolumn2\tcolumn3\n/' *.tsv
-
-# PSV
-sed -i '1s/^/column1|column2|column3\n/' *.psv
-```
-
-
-
-## Secure GraphDB: create users
-
-- Start graphdb
-
-  ```shell
-  # On Linux
-  ./startup.sh
-  # On Windows
-  ./startup.bat
-  ```
-
-- Go to http://localhost:7200/
-
-- Setup > Repositories > Create new repository
-
-  - Repository ID: **test** (or whatever you want it to be, but you will need to change data2services default config)
-  - Check `Use context index`
-  - Create
-
-- Setup > Users and access
-
-  - Edit admin user > Enter a new password > Save
-  - Click on `Security is off`  to turn it on.
-  - Create new user
-    - User name: import_user
-    - Password: test
-    - Repository rights > Write right on `Any data repository`
-    - Click `Create`
+* [Run Postgres](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-PostgreSQL)
+* [Run MariaDB](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-MariaDB)
+* [Secure GraphDB](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Secure-GraphDB:-create-users)
+* [Fix CSV, TSV, PSV files without columns](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Fix-CSV,-TSV,-PSV-files-without-columns)
 
 
 
