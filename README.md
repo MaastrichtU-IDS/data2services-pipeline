@@ -96,6 +96,9 @@ docker run -it --rm --link postgres:postgres -v /data:/data autor2rml \
 	-u "postgres" -p "pwd" \
 	-b "http://data2services/" -g "http://data2services/graph/postgres"
 
+# For MariaDB
+docker run -it --rm --link mariadb:mariadb -v /data:/data autor2rml -j "jdbc:mariadb://mariadb:3306/my_database" -r -o "/data/data2services/mapping.ttl" -u "root" -p "pwd" -b "http://data2services/" -g "http://data2services/graph/autor2rml"
+
 # For SQLite
 docker run -it --rm -v /data:/data autor2rml \
 	-j "jdbc:sqlite:/data/data2services/my_database.db" -r \
