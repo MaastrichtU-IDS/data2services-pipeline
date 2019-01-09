@@ -85,24 +85,24 @@ First run AutoR2RML to generate the R2RML mapping file
 # For CSV, TSV, PSV files
 docker run -it --rm --link drill:drill -v /data:/data autor2rml \
 	-j "jdbc:drill:drillbit=drill:31010" -r \
-	-o "/data/data2services/mapping.ttl" \
+	-o "/data/data2services/mapping.trig" \
 	-d "/data/data2services" \
 	-b "http://data2services/" -g "http://data2services/graph/autor2rml"
 	
 # For Postgres
 docker run -it --rm --link postgres:postgres -v /data:/data autor2rml \
 	-j "jdbc:postgresql://postgres:5432/my_database" -r \
-	-o "/data/data2services/mapping.ttl" \
+	-o "/data/data2services/mapping.trig" \
 	-u "postgres" -p "pwd" \
 	-b "http://data2services/" -g "http://data2services/graph/postgres"
 
 # For MariaDB
-docker run -it --rm --link mariadb:mariadb -v /data:/data autor2rml -j "jdbc:mariadb://mariadb:3306/my_database" -r -o "/data/data2services/mapping.ttl" -u "root" -p "pwd" -b "http://data2services/" -g "http://data2services/graph/autor2rml"
+docker run -it --rm --link mariadb:mariadb -v /data:/data autor2rml -j "jdbc:mariadb://mariadb:3306/my_database" -r -o "/data/data2services/mapping.trig" -u "root" -p "pwd" -b "http://data2services/" -g "http://data2services/graph/autor2rml"
 
 # For SQLite
 docker run -it --rm -v /data:/data autor2rml \
 	-j "jdbc:sqlite:/data/data2services/my_database.db" -r \
-	-o "/data/data2services/mapping.ttl" \
+	-o "/data/data2services/mapping.trig" \
 	-b "http://data2services/" -g "http://data2services/graph/sqlite"
 ```
 
@@ -113,7 +113,7 @@ Then generate RDF from [R2RML](https://github.com/amalic/r2rml) and upload it
 ```shell
 # config.properties file for R2RML in /data/data2services
 connectionURL = jdbc:drill:drillbit=drill:31010
-mappingFile = /data/mapping.ttl
+mappingFile = /data/mapping.trig
 outputFile = /data/rdf_output.nq
 format = NQUADS
 
