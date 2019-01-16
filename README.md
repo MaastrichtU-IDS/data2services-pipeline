@@ -162,7 +162,7 @@ docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-uplo
 
 ### Transform generic RDF to target model
 
-https://github.com/vemonet/insert-data2services
+https://github.com/vemonet/data2services-insert
 
 ### Download datasets
 
