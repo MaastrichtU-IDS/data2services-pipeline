@@ -48,7 +48,7 @@ In a production environment it is considered that both **Apache Drill** and **Gr
 ./shutdown.sh
 ```
 
-For MacOS make sure access to the `/data` repository has been granted in Docker configuration.
+For MacOS, make sure that access to the `/data` repository has been granted in Docker configuration.
 
 ### Run
 
@@ -162,7 +162,18 @@ docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-uplo
 
 ### Transform generic RDF to target model
 
-https://github.com/vemonet/data2services-insert
+https://github.com/MaastrichtU-IDS/data2services-insert
+
+```shell
+# Clone
+git clone --recursive https://github.com/MaastrichtU-IDS/data2services-insert
+# Build
+docker build -t rdf4j-sparql-operations rdf4j-sparql-operations/
+# Run
+docker run -d -v "/home/emonet/data2services-insert/insert-biolink/drugbank":/data rdf4j-sparql-operations -rq "/data" -url "http://graphdb.dumontierlab.com/repositories/ncats-red-kg/statements" -un MYUSER -pw MYPASSWORD -var serviceUrl:http://localhost:7200/repositories/test inputGraph:http://data2services/graph/xml2rdf/drugbank#5.1.1 outputGraph:https://w3id.org/data2services/graph/biolink/drugbank
+```
+
+
 
 ### Download datasets
 
