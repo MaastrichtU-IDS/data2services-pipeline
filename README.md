@@ -158,7 +158,7 @@ docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-uplo
 	--base-uri http://data2services/ --graph http://data2services/graph/generic
 ```
 
-
+---
 
 ### Transform generic RDF to target model
 
@@ -173,13 +173,25 @@ docker build -t rdf4j-sparql-operations rdf4j-sparql-operations/
 docker run -d -v "/home/emonet/data2services-insert/insert-biolink/drugbank":/data rdf4j-sparql-operations -rq "/data" -url "http://graphdb.dumontierlab.com/repositories/ncats-red-kg/statements" -un MYUSER -pw MYPASSWORD -var serviceUrl:http://localhost:7200/repositories/test inputGraph:http://data2services/graph/xml2rdf/drugbank#5.1.1 outputGraph:https://w3id.org/data2services/graph/biolink/drugbank
 ```
 
-
+---
 
 ### Download datasets
 
 https://github.com/MaastrichtU-IDS/data2services-download
 
+```shell
+# Clone
+git clone https://github.com/MaastrichtU-IDS/data2services-download.git
+# Build
+docker build -t data2services-download data2services-download
+# Run
+docker run -it --rm -v /data/data2services:/data data2services-download \
+	--download-datasets aeolus,pharmgkb,ctd \
+	--username my_login --password my_password \
+	--clean # to delete all files in /data/data2services
+```
 
+---
 
 ## Windows
 
