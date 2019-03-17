@@ -106,7 +106,7 @@ docker run -it --rm -v /data:/data autor2rml \
 
 ##### r2rml
 
-Then generate RDF from [R2RML](https://github.com/amalic/r2rml) and upload it
+Then generate RDF from [R2RML](https://github.com/amalic/r2rml). 
 
 ```shell
 # config.properties file for R2RML in /data/data2services
@@ -119,52 +119,27 @@ format = NQUADS
 docker run -it --rm --link drill:drill -v /data/data2services:/data r2rml /data/config.properties
 # R2RML for Postgres
 docker run -it --rm --link postgres:postgres -v /data/data2services:/data r2rml /data/config.properties
+```
 
+#### RdfUpload
+
+Finally, upload the generated RDF. It can also be done manually using [GraphDB server imports](http://graphdb.ontotext.com/documentation/standard/loading-data-using-the-workbench.html#importing-server-files) for more efficiency on large files.
+
+```shell
 # RDF Upload
 docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-upload \
   -m "HTTP" \
   -if "/data" \
   -url "http://graphdb:7200" \
   -rep "test" \
-  -un "import_user" -pw "test"
+  -un "import_user" -pw "PASSWORD"
 ```
 
 
 
-### Run using convenience script
+## Transform generic RDF to target model
 
-Might break unexpectedly.
-
-```shell
-# XML using xml2rdf.
-./run.sh --working-path /data/data2services/my_file.xml --graph http://data2services/graph/xml2rdf
-# Support GZ compressed file.
-./run.sh --working-path /data/data2services/my_file.xml.gz --graph http://data2services/graph/xml2rdf
-
-
-# Generate generic RDF from TSV, CSV, PSV files using Apache Drill
-./run.sh --working-path /data/data2services --jdbc-url "jdbc:drill:drillbit=drill:31010" --jdbc-container drill --graph http://data2services/graph/autor2rml
-
-# Generate generic RDF from Postgres
-./run.sh --working-path /data/data2services --jdbc-url "jdbc:postgresql://postgres:5432/$MY_DATABASE" --jdbc-container postgres --jdbc-username postgres --jdbc-password pwd --graph http://data2services/graph/autor2rml
-
-
-# With all parameters (if different GraphDB params)
-./run.sh --working-path /data/data2services \
-	--jdbc-url jdbc:drill:drillbit=drill:31010 \
-	--jdbc-container drill \
-	--jdbc-username postgres --jdbc-password pwd \
-	--graphdb-url http://graphdb:7200/ \
-	--graphdb-repository test \
-	--graphdb-username import_user --graphdb-password test \
-	--base-uri http://data2services/ --graph http://data2services/graph/generic
-```
-
----
-
-### Transform generic RDF to target model
-
-https://github.com/MaastrichtU-IDS/data2services-insert
+Next step is to transform the generic RDF generated a particular datamodel. See the [data2services-insert](https://github.com/MaastrichtU-IDS/data2services-insert) project for examples of transformation to the [BioLink model](https://biolink.github.io/biolink-model/docs/).
 
 ```shell
 # Clone
@@ -178,11 +153,11 @@ docker run -d -v "$PWD/data2services-insert/insert-biolink/drugbank":/data \
     -var serviceUrl:http://localhost:7200/repositories/test inputGraph:http://data2services/graph/xml2rdf/drugbank#5.1.1 outputGraph:https://w3id.org/data2services/graph/biolink/drugbank
 ```
 
----
 
-### Download datasets
 
-https://github.com/MaastrichtU-IDS/data2services-download
+## Download datasets
+
+Source files can be set to be downloaded automatically using Shell scripts. See the [data2services-download](https://github.com/MaastrichtU-IDS/data2services-download) module for more details.
 
 ```shell
 # Clone
@@ -196,59 +171,12 @@ docker run -it --rm -v /data/data2services:/data data2services-download \
 	--clean # to delete all files in /data/data2services
 ```
 
----
-
-## Windows
-
-*Disclaimer:* the pipeline has not been test on Windows as extensively as on Linux, and Windows is not as stable so you might encounter some issues. Feel free to document them in [issues](https://github.com/MaastrichtU-IDS/data2services-pipeline/issues), especially if a you have found a solution.
-
-All windows scripts are in the **`windows_scripts` folder** and designed to be run from this directory.
-
-```powershell
-cd windows_scripts
-```
-
-### Build
-
-* You **need to download** [Apache Drill installation bundle](https://drill.apache.org/download/) and [GraphDB standalone zip](https://www.ontotext.com/products/graphdb/) (register to get an email with download URL).
-
-* Build the images
-
-```shell
-build.bat
-
-# Create graphdb and graphdb-import directories in /data
-mkdir /data/graphdb
-mkdir /data/graphdb-import
-```
-
-### Drill and GraphDb for Development
-
-In a production environment it is considered that both Drill and GraphDb services are present. Other RDF stores should also work, but have not been tested yet.
-```shell
-# Start
-startup.bat
-# Stop
-shutdown.bat
-```
-Create "*test*" repository by accessing http://localhost:7200/repository
-
-### Run
-
-**Edit the bat files** to set your parameters. You can also manually [run the Docker commands](https://github.com/MaastrichtU-IDS/data2services-pipeline#using-docker-commands) for better control of the workflow.
-
-```shell
-# Run xml2rdf for XML files. Edit the script
-run-xml.bat
-
-# Run AutoR2RML for Tabular files and RDB. Edit the script
-run-r2rml.bat
-```
-
 
 
 ## Further documentation in Wiki
 
+* [Run on Windows](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-on-Windows)
+* [Run using convenience scripts](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-using-convenience-script)
 * [Run Postgres](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-PostgreSQL)
 * [Run MariaDB](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-MariaDB)
 * [Secure GraphDB](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Secure-GraphDB:-create-users)
