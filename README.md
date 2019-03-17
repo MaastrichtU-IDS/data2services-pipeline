@@ -12,17 +12,14 @@ This is a demonstrator ETL pipeline that converts relational databases, tabular 
 ## Clone
 
 ```shell
-# WARNING: for Windows execute it before cloning to fix bugs with newlines
+# WARNING: fix newline bugs on Windows
 git config --global core.autocrlf false
-# HTTPS
 git clone --recursive https://github.com/MaastrichtU-IDS/data2services-pipeline.git
-# SSH
-git clone --recursive git@github.com:MaastrichtU-IDS/data2services-pipeline.git
 
 cd data2services-pipeline
 
-# Or pull the submodule after a normal git clone
-git submodule update --init --recursive
+# Update submodules
+git submodule update --recursive --remote
 ```
 
 ## Linux & MacOS
@@ -34,7 +31,9 @@ Windows documentation can be found [here](https://github.com/MaastrichtU-IDS/dat
 Convenience script to build and pull all Docker images. You will **need to download** [Apache Drill installation bundle](https://drill.apache.org/download/) and [GraphDB standalone zip](https://www.ontotext.com/products/graphdb/) (register to get an email with download URL).
 
 ```shell
+# Download Apache Drill
 curl http://apache.40b.nl/drill/drill-1.15.0/apache-drill-1.15.0.tar.gz -o apache-drill/apache-drill-1.15.0.tar.gz
+# Build docker images (don't forget to get GraphDB zip file)
 ./build.sh
 ```
 
@@ -51,15 +50,13 @@ In a production environment it is considered that both **Apache Drill** and **Gr
 
 For MacOS, make sure that access to the `/data` repository has been granted in Docker configuration.
 
-### Run
+### Run using Docker commands
 
 The directory where are the **files to convert needs to be in `/data`** (to comply with Apache Drill path).
 
-Here examples with files in */data/data2services*.
+Here examples with files in `/data/data2services`.
 
-#### Using Docker commands
-
-##### Convert XML
+#### Convert XML
 
 Use [xml2rdf](https://github.com/MaastrichtU-IDS/xml2rdf) to convert XML files to a generic RDF based on the file structure.
 
@@ -74,7 +71,7 @@ docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-uplo
   -un "import_user" -pw "test"
 ```
 
-##### Convert TSV & RDB
+#### Convert TSV & RDB
 
 ##### AutoR2RML
 
@@ -132,7 +129,11 @@ docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-uplo
   -un "import_user" -pw "test"
 ```
 
-#### Using convenience script
+
+
+### Run using convenience script
+
+Might break unexpectedly.
 
 ```shell
 # XML using xml2rdf.
@@ -209,13 +210,7 @@ cd windows_scripts
 
 ### Build
 
-* Download GraphDB and put it in the graphdb directory
-
-  http://go.pardot.com/e/45622/38-graphdb-free-8-6-0-dist-zip/5pyc3s/1295914437
-
-* Download Apache Drill and put it in the apache-drill directory
-
-  [ftp://apache.proserve.nl/apache/drill/drill-1.13.0/apache-drill-1.13.0.tar.gz](ftp://apache.proserve.nl/apache/drill/drill-1.13.0/apache-drill-1.13.0.tar.gz)
+* You **need to download** [Apache Drill installation bundle](https://drill.apache.org/download/) and [GraphDB standalone zip](https://www.ontotext.com/products/graphdb/) (register to get an email with download URL).
 
 * Build the images
 
