@@ -1,4 +1,4 @@
-# Data2Services pipeline
+# data2services-pipeline
 
 This is a demonstrator ETL pipeline that converts relational databases, tabular files, and XML files into a generic RDF-format based on the input data structure, and loads it into a GraphDB endpoint. 
 
@@ -168,9 +168,12 @@ https://github.com/MaastrichtU-IDS/data2services-insert
 # Clone
 git clone --recursive https://github.com/MaastrichtU-IDS/data2services-insert
 # Build
-docker build -t rdf4j-sparql-operations rdf4j-sparql-operations/
+docker build -t rdf4j-sparql-operations rdf4j-sparql-operations
 # Run
-docker run -d -v "/home/emonet/data2services-insert/insert-biolink/drugbank":/data rdf4j-sparql-operations -rq "/data" -url "http://graphdb.dumontierlab.com/repositories/ncats-red-kg/statements" -un MYUSER -pw MYPASSWORD -var serviceUrl:http://localhost:7200/repositories/test inputGraph:http://data2services/graph/xml2rdf/drugbank#5.1.1 outputGraph:https://w3id.org/data2services/graph/biolink/drugbank
+docker run -d -v "$PWD/data2services-insert/insert-biolink/drugbank":/data \
+	rdf4j-sparql-operations -f "/data" -un USERNAME -pw PASSWORD \
+	-ep "http://graphdb.dumontierlab.com/repositories/ncats-red-kg/statements" \
+    -var serviceUrl:http://localhost:7200/repositories/test inputGraph:http://data2services/graph/xml2rdf/drugbank#5.1.1 outputGraph:https://w3id.org/data2services/graph/biolink/drugbank
 ```
 
 ---
