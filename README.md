@@ -31,9 +31,10 @@ Windows documentation can be found [here](https://github.com/MaastrichtU-IDS/dat
 
 ### Build
 
-Download [GraphDB](http://graphdb.ontotext.com/) and [Apache Drill](https://drill.apache.org/), then build docker images.
+Convenience script to build and pull all Docker images. You will **need to download** [Apache Drill installation bundle](https://drill.apache.org/download/) and [GraphDB standalone zip](https://www.ontotext.com/products/graphdb/) (register to get an email with download URL).
 
 ```shell
+curl http://apache.40b.nl/drill/drill-1.15.0/apache-drill-1.15.0.tar.gz -o apache-drill/apache-drill-1.15.0.tar.gz
 ./build.sh
 ```
 
