@@ -61,19 +61,13 @@ Here examples with files in `/data/data2services`.
 Use [xml2rdf](https://github.com/MaastrichtU-IDS/xml2rdf) to convert XML files to a generic RDF based on the file structure.
 
 ```shell
-docker run --rm -it -v /data:/data xml2rdf  -i "/data/data2services/myfile.xml.gz" -o "/data/data2services/myfile.nq.gz" -g "http://data2services/graph/xml2rdf"
-
-docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-upload \
-  -m "HTTP" \
-  -if "/data" \
-  -url "http://graphdb:7200" \
-  -rep "test" \
-  -un "import_user" -pw "test"
+docker run --rm -it -v /data:/data xml2rdf  \
+  -i "/data/data2services/myfile.xml.gz" \
+  -o "/data/data2services/myfile.nq.gz" \
+  -g "https://w3id.org/data2services/graph/xml2rdf"
 ```
 
-#### Convert TSV & RDB
-
-##### AutoR2RML
+#### Convert TSV & RDB: AutoR2RML
 
 Use [AutoR2RML](https://github.com/amalic/autor2rml) to convert relational databases (Postgres, SQLite), CSV, TSV and PSV files to a generic RDF 
 
@@ -113,7 +107,7 @@ docker run -it --rm -v /data:/data autor2rml \
   -g "https://w3id.org/data2services/graph/autor2rml"
 ```
 
-#### R2RML
+#### Convert TSV & RDB: R2RML
 
 Then generate RDF from [R2RML](https://github.com/amalic/r2rml). 
 
