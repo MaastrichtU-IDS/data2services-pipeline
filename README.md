@@ -28,7 +28,7 @@ Windows documentation can be found [here](https://github.com/MaastrichtU-IDS/dat
 
 ### Build
 
-Convenience script to build and pull all Docker images. You will **need to download** [Apache Drill installation bundle](https://drill.apache.org/download/) and [GraphDB standalone zip](https://www.ontotext.com/products/graphdb/) (register to get an email with download URL).
+Convenience script to build and pull all Docker images. You will **need to download** [Apache Drill installation bundle](https://drill.apache.org/download/) and [GraphDB standalone zip](https://www.ontotext.com/products/graphdb/) (register to get an email with download URL). And put the `.tar.gz` and `zip` files in the apache-drill and graphdb repository
 
 ```shell
 # Download Apache Drill
@@ -109,7 +109,7 @@ docker run -it --rm -v /data:/data autor2rml \
 
 #### Convert TSV & RDB: R2RML
 
-Then generate RDF from [R2RML](https://github.com/amalic/r2rml). 
+Then generate the generic RDF using [R2RML](https://github.com/amalic/r2rml). 
 
 ```shell
 # config.properties file for R2RML in /data/data2services
@@ -126,7 +126,7 @@ docker run -it --rm --link drill:drill --link postgres:postgres \
 
 #### RdfUpload
 
-Finally, upload the generated RDF. It can also be done manually using [GraphDB server imports](http://graphdb.ontotext.com/documentation/standard/loading-data-using-the-workbench.html#importing-server-files) for more efficiency on large files.
+Finally, upload the generated RDF to GraphDB. It can also be done manually using [GraphDB server imports](http://graphdb.ontotext.com/documentation/standard/loading-data-using-the-workbench.html#importing-server-files) for more efficiency on large files.
 
 ```shell
 # RDF Upload
@@ -147,7 +147,7 @@ Next step is to transform the generic RDF generated a particular datamodel. See 
 # Clone
 git clone --recursive https://github.com/MaastrichtU-IDS/data2services-insert
 # Build
-docker build -t rdf4j-sparql-operations rdf4j-sparql-operations
+docker build -t rdf4j-sparql-operations ./data2services-insert/rdf4j-sparql-operations
 # Run
 docker run -d -v "$PWD/data2services-insert/insert-biolink/drugbank":/data \
   rdf4j-sparql-operations -f "/data" -un USERNAME -pw PASSWORD \
