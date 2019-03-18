@@ -85,26 +85,35 @@ docker run -it --rm --link drill:drill -v /data:/data autor2rml \
 	-j "jdbc:drill:drillbit=drill:31010" -r \
 	-o "/data/data2services/mapping.trig" \
 	-d "/data/data2services" \
-	-b "http://data2services/" -g "http://data2services/graph/autor2rml"
+	-b "https://w3id.org/data2services/" \
+	-g "https://w3id.org/data2services/graph/autor2rml"
 	
 # For Postgres
 docker run -it --rm --link postgres:postgres -v /data:/data autor2rml \
 	-j "jdbc:postgresql://postgres:5432/my_database" -r \
 	-o "/data/data2services/mapping.trig" \
 	-u "postgres" -p "pwd" \
-	-b "http://data2services/" -g "http://data2services/graph/postgres"
+	-b "https://w3id.org/data2services/" \
+	-g "https://w3id.org/data2services/graph/autor2rml"
 
 # For MariaDB
-docker run -it --rm --link mariadb:mariadb -v /data:/data autor2rml -j "jdbc:mariadb://mariadb:3306/my_database" -r -o "/data/data2services/mapping.trig" -u "root" -p "pwd" -b "http://data2services/" -g "http://data2services/graph/autor2rml"
+docker run -it --rm --link mariadb:mariadb -v /data:/data \
+  autor2rml -r
+  -j "jdbc:mariadb://mariadb:3306/my_database" \
+  -o "/data/data2services/mapping.trig" \
+  -u "root" -p "pwd" \
+  -b "https://w3id.org/data2services/" \
+  -g "https://w3id.org/data2services/graph/autor2rml"
 
 # For SQLite
 docker run -it --rm -v /data:/data autor2rml \
-	-j "jdbc:sqlite:/data/data2services/my_database.db" -r \
-	-o "/data/data2services/mapping.trig" \
-	-b "http://data2services/" -g "http://data2services/graph/sqlite"
+  -j "jdbc:sqlite:/data/data2services/my_database.db" -r \
+  -o "/data/data2services/mapping.trig" \
+  -b "https://w3id.org/data2services/" \
+  -g "https://w3id.org/data2services/graph/autor2rml"
 ```
 
-##### r2rml
+#### R2RML
 
 Then generate RDF from [R2RML](https://github.com/amalic/r2rml). 
 
@@ -115,10 +124,10 @@ mappingFile = /data/mapping.trig
 outputFile = /data/rdf_output.nq
 format = NQUADS
 
-# R2RML for Drill
-docker run -it --rm --link drill:drill -v /data/data2services:/data r2rml /data/config.properties
-# R2RML for Postgres
-docker run -it --rm --link postgres:postgres -v /data/data2services:/data r2rml /data/config.properties
+# Run R2RML for Drill or Postgres
+docker run -it --rm --link drill:drill --link postgres:postgres \
+  -v /data/data2services:/data \
+  r2rml /data/config.properties
 ```
 
 #### RdfUpload
@@ -128,8 +137,7 @@ Finally, upload the generated RDF. It can also be done manually using [GraphDB s
 ```shell
 # RDF Upload
 docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-upload \
-  -m "HTTP" \
-  -if "/data" \
+  -m "HTTP" -if "/data" \
   -url "http://graphdb:7200" \
   -rep "test" \
   -un "import_user" -pw "PASSWORD"
@@ -148,9 +156,9 @@ git clone --recursive https://github.com/MaastrichtU-IDS/data2services-insert
 docker build -t rdf4j-sparql-operations rdf4j-sparql-operations
 # Run
 docker run -d -v "$PWD/data2services-insert/insert-biolink/drugbank":/data \
-	rdf4j-sparql-operations -f "/data" -un USERNAME -pw PASSWORD \
-	-ep "http://graphdb.dumontierlab.com/repositories/ncats-red-kg/statements" \
-    -var serviceUrl:http://localhost:7200/repositories/test inputGraph:http://data2services/graph/xml2rdf/drugbank#5.1.1 outputGraph:https://w3id.org/data2services/graph/biolink/drugbank
+  rdf4j-sparql-operations -f "/data" -un USERNAME -pw PASSWORD \
+  -ep "http://graphdb.dumontierlab.com/repositories/ncats-red-kg/statements" \
+  -var serviceUrl:http://localhost:7200/repositories/test inputGraph:http://data2services/graph/xml2rdf/drugbank#5.1.1 outputGraph:https://w3id.org/data2services/graph/biolink/drugbank
 ```
 
 
@@ -166,9 +174,9 @@ git clone https://github.com/MaastrichtU-IDS/data2services-download.git
 docker build -t data2services-download data2services-download
 # Run
 docker run -it --rm -v /data/data2services:/data data2services-download \
-	--download-datasets aeolus,pharmgkb,ctd \
-	--username my_login --password my_password \
-	--clean # to delete all files in /data/data2services
+  --download-datasets aeolus,pharmgkb,ctd \
+  --username my_login --password my_password \
+  --clean # to delete all files in /data/data2services
 ```
 
 
