@@ -1,0 +1,27 @@
+version: "3"
+services:
+    
+  drill:
+    build: ./apache-drill
+    volumes:
+      - /data:/data:ro
+    ports:
+      - 8047:8047
+      - 31010:31010
+    tty: true
+    networks:
+      - data2services
+  
+  graphdb:
+    build: ./graphdb
+    volumes:
+      - /data/graphdb:/opt/graphdb/home
+      - /data/graphdb-import:/root/graphdb-import
+    ports:
+      - 7200:7200
+    networks:
+      - data2services
+  
+networks:
+  data2services:
+    driver: bridge

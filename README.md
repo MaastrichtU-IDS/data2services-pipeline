@@ -24,7 +24,7 @@ git submodule update --recursive --remote
 
 ## Linux & MacOS
 
-Windows documentation can be found [here](https://github.com/MaastrichtU-IDS/data2services-pipeline#windows).
+Windows documentation can be found [here](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-on-Windows).
 
 ### Build
 
@@ -39,13 +39,13 @@ curl http://apache.40b.nl/drill/drill-1.15.0/apache-drill-1.15.0.tar.gz -o apach
 
 ### Start services
 
-In a production environment it is considered that both **Apache Drill** and **GraphDB** services are present. Other RDF stores should also work, but have not been tested yet.
+In a production environment it is considered that both **Apache Drill** and **GraphDB** services are present. Use `docker-compose` to start them. Other RDF stores should also work, but have not been tested yet.
 
 ```shell
 # Start
-./startup.sh
+docker-compose up -d
 # Stop
-./shutdown.sh
+docker-compose down
 ```
 
 For MacOS, make sure that access to the `/data` repository has been granted in Docker configuration.
