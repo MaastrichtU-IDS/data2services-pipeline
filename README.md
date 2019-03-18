@@ -74,7 +74,7 @@ Use [AutoR2RML](https://github.com/amalic/autor2rml) to convert relational datab
 First run AutoR2RML to generate the R2RML mapping file
 
 ```shell
-# For CSV, TSV, PSV files
+# For CSV, TSV, PSV files. Apache Drill needs to be running
 docker run -it --rm --link drill:drill -v /data:/data autor2rml \
 	-j "jdbc:drill:drillbit=drill:31010" -r \
 	-o "/data/data2services/mapping.trig" \
@@ -159,7 +159,7 @@ docker run -d -v "$PWD/data2services-insert/insert-biolink/drugbank":/data \
 
 ## Download datasets
 
-Source files can be set to be downloaded automatically using Shell scripts. See the [data2services-download](https://github.com/MaastrichtU-IDS/data2services-download) module for more details.
+Source files can be set to be downloaded automatically using [Shell scripts](https://github.com/MaastrichtU-IDS/data2services-download/blob/master/datasets/TEMPLATE/download.sh). See the [data2services-download](https://github.com/MaastrichtU-IDS/data2services-download) module for more details.
 
 ```shell
 # Clone
