@@ -145,9 +145,9 @@ Next step is to transform the generic RDF generated a particular datamodel. See 
 
 ```shell
 # Clone
-git clone --recursive https://github.com/MaastrichtU-IDS/data2services-insert
+git clone --recursive https://github.com/MaastrichtU-IDS/data2services-pipeline
 # Build
-docker build -t rdf4j-sparql-operations ./data2services-insert/rdf4j-sparql-operations
+docker build -t rdf4j-sparql-operations ./data2services-pipeline/rdf4j-sparql-operations
 # Run
 docker run -d rdf4j-sparql-operations \
   -f "https://github.com/MaastrichtU-IDS/data2services-insert/tree/master/insert-biolink/drugbank" \
