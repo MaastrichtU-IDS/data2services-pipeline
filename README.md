@@ -149,9 +149,10 @@ git clone --recursive https://github.com/MaastrichtU-IDS/data2services-insert
 # Build
 docker build -t rdf4j-sparql-operations ./data2services-insert/rdf4j-sparql-operations
 # Run
-docker run -d -v "$PWD/data2services-insert/insert-biolink/drugbank":/data \
-  rdf4j-sparql-operations -f "/data" -un USERNAME -pw PASSWORD \
+docker run -d rdf4j-sparql-operations \
+  -f "https://github.com/MaastrichtU-IDS/data2services-insert/tree/master/insert-biolink/drugbank" \
   -ep "http://graphdb.dumontierlab.com/repositories/ncats-red-kg/statements" \
+  -un USERNAME -pw PASSWORD \
   -var serviceUrl:http://localhost:7200/repositories/test inputGraph:http://data2services/graph/xml2rdf/drugbank#5.1.1 outputGraph:https://w3id.org/data2services/graph/biolink/drugbank
 ```
 
@@ -159,7 +160,7 @@ docker run -d -v "$PWD/data2services-insert/insert-biolink/drugbank":/data \
 
 ## Download datasets
 
-Source files can be set to be downloaded automatically using [Shell scripts](https://github.com/MaastrichtU-IDS/data2services-download/blob/master/datasets/TEMPLATE/download.sh). See the [data2services-download](https://github.com/MaastrichtU-IDS/data2services-download) module for more details.
+Source files can be set to be downloaded automatically using [Shell scripts](https://github.com/MaastrichtU-IDS/data2services-download/blob/master/datasets/TEMPLATE/download.sh). See the [data2services-download](https://github.com/MaastrichtU-IDS/data2services-download) module for more details.2
 
 ```shell
 # Clone
