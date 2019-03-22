@@ -147,10 +147,8 @@ docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-uplo
 Next step is to transform the generic RDF generated a particular datamodel. See the [data2services-insert](https://github.com/MaastrichtU-IDS/data2services-insert) project for examples of transformation to the [BioLink model](https://biolink.github.io/biolink-model/docs/).
 
 ```shell
-# Clone
-git clone --recursive https://github.com/MaastrichtU-IDS/data2services-pipeline
 # Build
-docker build -t rdf4j-sparql-operations ./data2services-pipeline/rdf4j-sparql-operations
+docker build -t rdf4j-sparql-operations ./rdf4j-sparql-operations
 # Run
 docker run -d rdf4j-sparql-operations \
   -f "https://github.com/MaastrichtU-IDS/data2services-insert/tree/master/insert-biolink/drugbank" \
@@ -166,10 +164,8 @@ docker run -d rdf4j-sparql-operations \
 Source files can be set to be downloaded automatically using [Shell scripts](https://github.com/MaastrichtU-IDS/data2services-download/blob/master/datasets/TEMPLATE/download.sh). See the [data2services-download](https://github.com/MaastrichtU-IDS/data2services-download) module for more details.2
 
 ```shell
-# Clone
-git clone https://github.com/MaastrichtU-IDS/data2services-download.git
 # Build
-docker build -t data2services-download data2services-download
+docker build -t data2services-download ./data2services-download
 # Run
 docker run -it --rm -v /data/data2services:/data data2services-download \
   --download-datasets aeolus,pharmgkb,ctd \
