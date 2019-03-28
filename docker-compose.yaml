@@ -23,5 +23,5 @@ services:
       - network
   
 networks:
-  data2services:
+  network:
     driver: bridge
