@@ -10,7 +10,7 @@ services:
       - 31010:31010
     tty: true
     networks:
-      - data2services
+      - network
   
   graphdb:
     build: ./graphdb
@@ -20,7 +20,7 @@ services:
     ports:
       - 7200:7200
     networks:
-      - data2services
+      - network
   
 networks:
   data2services:
