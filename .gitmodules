@@ -22,3 +22,6 @@
 [submodule "data2services-download"]
 	path = data2services-download
 	url = https://github.com/MaastrichtU-IDS/data2services-download
+[submodule "data2services-insert"]
+	path = data2services-insert
+	url = https://github.com/MaastrichtU-IDS/data2services-insert.git
