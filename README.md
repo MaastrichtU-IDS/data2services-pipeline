@@ -42,16 +42,18 @@ curl http://apache.40b.nl/drill/drill-1.15.0/apache-drill-1.15.0.tar.gz -o apach
 
 ### Start services
 
-In a production environment it is considered that both **Apache Drill** and **GraphDB** services are present. Use `docker-compose` to start them. Other RDF stores should also work, but have not been tested yet.
+In a production environment it is considered that both **Apache Drill** and **GraphDB** services are present. Other RDF triple stores should also work, but have not been tested yet.
 
 ```shell
-# Start Apache Drill and GraphDB (don't forget to download the required files)
-docker-compose up -d
-# Stop
-docker-compose down
+# Start Apache Drill
+docker run -dit --rm -p 8047:8047 -p 31010:31010 --name drill -v /data:/data:ro apache-drill
+# Start GraphDB
+docker run -d --rm --name graphdb -p 7200:7200 -v /data/graphdb:/opt/graphdb/home -v /data/graphdb-import:/root/graphdb-import graphdb
 ```
 
-For MacOS, make sure that access to the `/data` repository has been granted in Docker configuration.
+* For MacOS, make sure that access to the `/data` repository has been granted in Docker configuration.
+
+* Check the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-using-docker-compose) to use `docker-compose` to run the 2 containers
 
 ### Run using Docker commands
 
