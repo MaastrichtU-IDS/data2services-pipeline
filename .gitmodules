@@ -16,9 +16,6 @@
 [submodule "r2rml"]
 	path = r2rml
 	url = https://github.com/amalic/r2rml
-[submodule "rdf4j-sparql-operations"]
-	path = rdf4j-sparql-operations
-	url = https://github.com/vemonet/rdf4j-sparql-operations.git
 [submodule "data2services-download"]
 	path = data2services-download
 	url = https://github.com/MaastrichtU-IDS/data2services-download
