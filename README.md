@@ -30,8 +30,8 @@ Windows documentation can be found [here](https://github.com/MaastrichtU-IDS/dat
 
 `build.sh` is a convenience script to build all Docker images, but they can be built separately.
 
-* You **need to download** [Apache Drill installation bundle](https://drill.apache.org/download/) and [GraphDB standalone zip](https://www.ontotext.com/products/graphdb/) (register to get an email with download URL). 
-* Then **put** the `.tar.gz` and `zip` files **in** the **apache-drill and graphdb repositories**.
+* You need to **download** [Apache Drill installation bundle](https://drill.apache.org/download/) and [GraphDB standalone zip](https://www.ontotext.com/products/graphdb/) (register to get an email with download URL). 
+* Then **put** the `.tar.gz` and `zip` files in the **apache-drill** and **graphdb repositories**.
 
 ```shell
 # Download Apache Drill
@@ -53,7 +53,7 @@ docker run -d --rm --name graphdb -p 7200:7200 -v /data/graphdb:/opt/graphdb/hom
 
 * For MacOS, make sure that access to the `/data` repository has been granted in Docker configuration.
 
-* Check the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-using-docker-compose) to use `docker-compose` to run the 2 containers
+* Check the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-using-docker-compose) to use `docker-compose` to run the 2 containers.
 
 ### Run using Docker commands
 
@@ -65,7 +65,7 @@ Here examples with files in `/data/data2services`.
 
 Use [**xml2rdf**](https://github.com/MaastrichtU-IDS/xml2rdf) to convert XML files to a generic RDF based on the file structure.
 
-```shell
+```
 docker run --rm -it -v /data:/data xml2rdf  \
   -i "/data/data2services/myfile.xml.gz" \
   -o "/data/data2services/myfile.nq.gz" \
@@ -74,9 +74,9 @@ docker run --rm -it -v /data:/data xml2rdf  \
 
 #### Convert TSV & RDB: AutoR2RML
 
-Use [**AutoR2RML**](https://github.com/amalic/autor2rml) to convert relational databases (Postgres, SQLite), CSV, TSV and PSV files to a generic RDF 
+Use [**AutoR2RML**](https://github.com/amalic/autor2rml) to convert relational databases (Postgres, SQLite), CSV, TSV and PSV files to a generic RDF.
 
-First run AutoR2RML to generate the [R2RML](https://www.w3.org/TR/r2rml/) mapping file
+First run AutoR2RML to generate the [R2RML](https://www.w3.org/TR/r2rml/) mapping file.
 
 ```shell
 # For CSV, TSV, PSV files. Apache Drill needs to be running
