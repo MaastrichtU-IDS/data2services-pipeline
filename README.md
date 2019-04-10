@@ -150,9 +150,9 @@ Next step is to transform the generic RDF generated a particular datamodel. See 
 
 ```shell
 # Build
-docker build -t rdf4j-sparql-operations ./rdf4j-sparql-operations
+docker build -t data2services-sparql-operations ./data2services-sparql-operations
 # Run
-docker run -d rdf4j-sparql-operations \
+docker run -d data2services-sparql-operations \
   -f "https://github.com/MaastrichtU-IDS/data2services-insert/tree/master/insert-biolink/drugbank" \
   -ep "http://graphdb.dumontierlab.com/repositories/ncats-red-kg/statements" \
   -un USERNAME -pw PASSWORD \
