@@ -22,3 +22,6 @@
 [submodule "data2services-insert"]
 	path = data2services-insert
 	url = https://github.com/MaastrichtU-IDS/data2services-insert.git
+[submodule "data2services-sparql-operations"]
+	path = data2services-sparql-operations
+	url = https://github.com/MaastrichtU-IDS/data2services-sparql-operations.git
