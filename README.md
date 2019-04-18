@@ -78,6 +78,8 @@ Use [**AutoR2RML**](https://github.com/amalic/autor2rml) to convert relational d
 
 First run AutoR2RML to generate the [R2RML](https://www.w3.org/TR/r2rml/) mapping file.
 
+The database you are getting the data from needs to be running (Drill, Postgres, MariaDB...). Check out the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-PostgreSQL-database) for documentation to deploy databases.
+
 ```shell
 # For CSV, TSV, PSV files. Apache Drill needs to be running
 docker run -it --rm --link drill:drill -v /data:/data autor2rml \
