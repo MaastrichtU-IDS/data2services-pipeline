@@ -1,10 +1,10 @@
 # data2services-pipeline
 
-This is a demonstrator ETL pipeline that converts relational databases, tabular files, and XML files into a generic RDF-format based on the input data structure, and loads it into a GraphDB endpoint. 
+This is a demonstrator ETL pipeline that converts relational databases, tabular files, and XML files into a generic RDF-format based on the input data structure, and loads it into a GraphDB endpoint using modules from the [Data2Services ecosystem](https://github.com/MaastrichtU-IDS/data2services-ecosystem). 
 
 [Docker](https://docs.docker.com/install/) is required to run the pipeline.
 
-*Warning:* If Docker can't access internet when building you might want to change the DNS. E.g.: `wget: unable to resolve host address`
+*Warning:* If Docker can't access internet when building you might want to change the DNS (to use Google's one). E.g.: `wget: unable to resolve host address`
 
 - On Linux: `vim /etc/resolv.conf` > `nameserver 8.8.8.8`
 - On Windows: `Docker Settings > Network > DNS Server > Fixed: 8.8.8.8`
