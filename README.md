@@ -82,9 +82,9 @@ docker run --rm -it -v /data:/data xml2rdf  \
 
 #### Convert TSV & RDB: generate mapping file with AutoR2RML
 
-Use [**AutoR2RML**](https://github.com/amalic/autor2rml) to convert relational databases (Postgres, SQLite), CSV, TSV and PSV files to a generic RDF.
+We use [**AutoR2RML**](https://github.com/amalic/autor2rml) to generate the [R2RML](https://www.w3.org/TR/r2rml/) mapping file to convert relational databases (Postgres, SQLite, MariaDB), CSV, TSV and PSV files to a generic RDF.
 
-First run AutoR2RML to generate the [R2RML](https://www.w3.org/TR/r2rml/) mapping file.
+See the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-AutoR2RML-with-various-DBMS) for more DBMS system.
 
 ```shell
 # For CSV, TSV, PSV files. Apache Drill needs to be running
@@ -102,22 +102,6 @@ docker run -it --rm --link postgres:postgres -v /data:/data autor2rml \
 	-u "postgres" -p "pwd" \
 	-b "https://w3id.org/data2services/" \
 	-g "https://w3id.org/data2services/graph/autor2rml"
-
-# For MariaDB
-docker run -it --rm --link mariadb:mariadb -v /data:/data \
-  autor2rml -r
-  -j "jdbc:mariadb://mariadb:3306/my_database" \
-  -o "/data/data2services/mapping.trig" \
-  -u "root" -p "pwd" \
-  -b "https://w3id.org/data2services/" \
-  -g "https://w3id.org/data2services/graph/autor2rml"
-
-# For SQLite
-docker run -it --rm -v /data:/data autor2rml \
-  -j "jdbc:sqlite:/data/data2services/my_database.db" -r \
-  -o "/data/data2services/mapping.trig" \
-  -b "https://w3id.org/data2services/" \
-  -g "https://w3id.org/data2services/graph/autor2rml"
 ```
 
 #### Convert TSV & RDB: use mapping file to generate RDF with R2RML
@@ -193,12 +177,17 @@ docker run -it --rm -v /data/data2services:/data data2services-download \
 
 ## Further documentation in Wiki
 
+* [Docker documentation](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Docker-documentation) (run, share volumes, link containers, network)
+* [Run using docker-compose](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-using-docker-compose)
+
+* [Run AutoR2RML with various DBMS](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-AutoR2RML-with-various-DBMS)
+* [Fix CSV, TSV, PSV files without columns](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Fix-CSV,-TSV,-PSV-files-without-columns)
+
 * [Run on Windows](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-on-Windows)
 * [Run using convenience scripts](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-using-convenience-script)
 * [Run Postgres](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-PostgreSQL)
 * [Run MariaDB](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-MariaDB)
 * [Secure GraphDB](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Secure-GraphDB:-create-users)
-* [Fix CSV, TSV, PSV files without columns](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Fix-CSV,-TSV,-PSV-files-without-columns)
 
 
 
