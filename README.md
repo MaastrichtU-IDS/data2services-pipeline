@@ -26,6 +26,14 @@ git submodule update --recursive --remote
 
 Windows documentation can be found [here](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-on-Windows).
 
+### Data2Services philosophy
+
+Containers run with a few parameters (input file path, SPARQL endpoint, credentials, mapping file path)
+
+* **Build** the Docker images
+* **Start services** that need to be running
+* **Execute the containers** you want, providing the proper parameters
+
 ### Build
 
 `build.sh` is a convenience script to build all Docker images, but they can be built separately.
@@ -57,9 +65,9 @@ docker run -d --rm --name graphdb -p 7200:7200 -v /data/graphdb:/opt/graphdb/hom
 
 ### Run using Docker commands
 
-The directory where are the **files to convert needs to be in `/data`** (to comply with Apache Drill path).
-
-Here examples with files in `/data/data2services`.
+* Check the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Docker-documentation) for more detail on how to run Docker containers (sharing volumes, link between containers)
+* The directory where are the **files to convert needs to be in `/data`** (to comply with Apache Drill path).
+* In those examples we are using `/data/data2services` as working directory (containing all the files, note that it can be shared as `/data` in the Docker containers)
 
 #### Convert XML
 
@@ -72,7 +80,7 @@ docker run --rm -it -v /data:/data xml2rdf  \
   -g "https://w3id.org/data2services/graph/xml2rdf"
 ```
 
-#### Convert TSV & RDB: AutoR2RML
+#### Convert TSV & RDB: generate mapping file with AutoR2RML
 
 Use [**AutoR2RML**](https://github.com/amalic/autor2rml) to convert relational databases (Postgres, SQLite), CSV, TSV and PSV files to a generic RDF.
 
@@ -112,7 +120,7 @@ docker run -it --rm -v /data:/data autor2rml \
   -g "https://w3id.org/data2services/graph/autor2rml"
 ```
 
-#### Convert TSV & RDB: R2RML
+#### Convert TSV & RDB: use mapping file to generate RDF with R2RML
 
 Then generate the generic RDF using [**R2RML**](https://github.com/amalic/r2rml). 
 
@@ -159,11 +167,17 @@ docker run -d data2services-sparql-operations \
   -var serviceUrl:http://localhost:7200/repositories/test inputGraph:http://data2services/graph/xml2rdf/drugbank#5.1.1 outputGraph:https://w3id.org/data2services/graph/biolink/drugbank
 ```
 
+* You can find example of SPARQL queries used for conversion to RDF BioLink:
+  * [DrugBank](https://github.com/MaastrichtU-IDS/data2services-insert/tree/master/insert-biolink/drugbank) (XML)
+  * [HGNC](https://github.com/MaastrichtU-IDS/data2services-insert/tree/master/insert-biolink/hgnc) (TSV through AutoR2RML)
+
+* It is recommended to write **multiple SPARQL queries with simple goals** (get all drugs infos, get all drug-drug interactions, get gene infos) instead of one big complex query addressing everything.
+
 
 
 ## Download datasets
 
-Source files can be set to be downloaded automatically using [Shell scripts](https://github.com/MaastrichtU-IDS/data2services-download/blob/master/datasets/TEMPLATE/download.sh). See the [data2services-download](https://github.com/MaastrichtU-IDS/data2services-download) module for more details.2
+Source files can be set to be downloaded automatically using [Shell scripts](https://github.com/MaastrichtU-IDS/data2services-download/blob/master/datasets/TEMPLATE/download.sh). See the [data2services-download](https://github.com/MaastrichtU-IDS/data2services-download) module for more details.
 
 ```shell
 # Build
