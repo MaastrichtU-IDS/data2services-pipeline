@@ -1,10 +1,10 @@
 # data2services-pipeline
 
-This is a demonstrator ETL pipeline that converts relational databases, tabular files, and XML files into a generic RDF-format based on the input data structure, and loads it into a GraphDB endpoint. 
+This is a demonstrator ETL pipeline that converts relational databases, tabular files, and XML files into a generic RDF-format based on the input data structure, and loads it into a GraphDB endpoint using modules from the [Data2Services ecosystem](https://github.com/MaastrichtU-IDS/data2services-ecosystem). 
 
 [Docker](https://docs.docker.com/install/) is required to run the pipeline.
 
-*Warning:* If Docker can't access internet when building you might want to change the DNS. E.g.: `wget: unable to resolve host address`
+*Warning:* If Docker can't access internet when building you might want to change the DNS (to use Google's one). E.g.: `wget: unable to resolve host address`
 
 - On Linux: `vim /etc/resolv.conf` > `nameserver 8.8.8.8`
 - On Windows: `Docker Settings > Network > DNS Server > Fixed: 8.8.8.8`
@@ -25,6 +25,14 @@ git submodule update --recursive --remote
 ## Linux & MacOS
 
 Windows documentation can be found [here](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-on-Windows).
+
+### Data2Services philosophy
+
+Containers run with a few parameters (input file path, SPARQL endpoint, credentials, mapping file path)
+
+* **Build** the Docker images
+* **Start services** that need to be running
+* **Execute the containers** you want, providing the proper parameters
 
 ### Build
 
@@ -57,9 +65,9 @@ docker run -d --rm --name graphdb -p 7200:7200 -v /data/graphdb:/opt/graphdb/hom
 
 ### Run using Docker commands
 
-The directory where are the **files to convert needs to be in `/data`** (to comply with Apache Drill path).
-
-Here examples with files in `/data/data2services`.
+* Check the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Docker-documentation) for more detail on how to run Docker containers (sharing volumes, link between containers)
+* The directory where are the **files to convert needs to be in `/data`** (to comply with Apache Drill path).
+* In those examples we are using `/data/data2services` as working directory (containing all the files, note that it can be shared as `/data` in the Docker containers)
 
 #### Convert XML
 
@@ -72,16 +80,16 @@ docker run --rm -it -v /data:/data xml2rdf  \
   -g "https://w3id.org/data2services/graph/xml2rdf"
 ```
 
-#### Convert TSV & RDB: AutoR2RML
+#### Convert TSV & RDB: generate mapping file with AutoR2RML
 
-Use [**AutoR2RML**](https://github.com/amalic/autor2rml) to convert relational databases (Postgres, SQLite), CSV, TSV and PSV files to a generic RDF.
+We use [**AutoR2RML**](https://github.com/amalic/autor2rml) to generate the [R2RML](https://www.w3.org/TR/r2rml/) mapping file to convert relational databases (Postgres, SQLite, MariaDB), CSV, TSV and PSV files to a generic RDF.
 
-First run AutoR2RML to generate the [R2RML](https://www.w3.org/TR/r2rml/) mapping file.
+See the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-AutoR2RML-with-various-DBMS) for more DBMS system.
 
 The database you are getting the data from needs to be running (Drill, Postgres, MariaDB...). Check out the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-PostgreSQL-database) for documentation to deploy databases.
 
 ```shell
-# For CSV, TSV, PSV files. Apache Drill needs to be running
+# For CSV, TSV, PSV files. Apache Drill needs to be running with the name "drill"
 docker run -it --rm --link drill:drill -v /data:/data autor2rml \
 	-j "jdbc:drill:drillbit=drill:31010" -r \
 	-o "/data/data2services/mapping.trig" \
@@ -89,32 +97,16 @@ docker run -it --rm --link drill:drill -v /data:/data autor2rml \
 	-b "https://w3id.org/data2services/" \
 	-g "https://w3id.org/data2services/graph/autor2rml"
 	
-# For Postgres
+# For Postgres, a postgres docker container needs to be running with the name "postgres"
 docker run -it --rm --link postgres:postgres -v /data:/data autor2rml \
 	-j "jdbc:postgresql://postgres:5432/my_database" -r \
 	-o "/data/data2services/mapping.trig" \
 	-u "postgres" -p "pwd" \
 	-b "https://w3id.org/data2services/" \
 	-g "https://w3id.org/data2services/graph/autor2rml"
-
-# For MariaDB
-docker run -it --rm --link mariadb:mariadb -v /data:/data \
-  autor2rml -r
-  -j "jdbc:mariadb://mariadb:3306/my_database" \
-  -o "/data/data2services/mapping.trig" \
-  -u "root" -p "pwd" \
-  -b "https://w3id.org/data2services/" \
-  -g "https://w3id.org/data2services/graph/autor2rml"
-
-# For SQLite
-docker run -it --rm -v /data:/data autor2rml \
-  -j "jdbc:sqlite:/data/data2services/my_database.db" -r \
-  -o "/data/data2services/mapping.trig" \
-  -b "https://w3id.org/data2services/" \
-  -g "https://w3id.org/data2services/graph/autor2rml"
 ```
 
-#### Convert TSV & RDB: R2RML
+#### Convert TSV & RDB: use mapping file to generate RDF with R2RML
 
 Then generate the generic RDF using [**R2RML**](https://github.com/amalic/r2rml). 
 
@@ -126,7 +118,7 @@ outputFile = /data/rdf_output.nq
 format = NQUADS
 
 # Run R2RML for Drill or Postgres
-docker run -it --rm --link drill:drill --link postgres:postgres \
+docker run -it --rm --link drill:drill \ # --link postgres:postgres
   -v /data/data2services:/data \
   r2rml /data/config.properties
 ```
@@ -161,11 +153,17 @@ docker run -d data2services-sparql-operations \
   -var serviceUrl:http://localhost:7200/repositories/test inputGraph:http://data2services/graph/xml2rdf/drugbank#5.1.1 outputGraph:https://w3id.org/data2services/graph/biolink/drugbank
 ```
 
+* You can find example of SPARQL queries used for conversion to RDF BioLink:
+  * [DrugBank](https://github.com/MaastrichtU-IDS/data2services-insert/tree/master/insert-biolink/drugbank) (XML)
+  * [HGNC](https://github.com/MaastrichtU-IDS/data2services-insert/tree/master/insert-biolink/hgnc) (TSV through AutoR2RML)
+
+* It is recommended to write **multiple SPARQL queries with simple goals** (get all drugs infos, get all drug-drug interactions, get gene infos) instead of one big complex query addressing everything.
+
 
 
 ## Download datasets
 
-Source files can be set to be downloaded automatically using [Shell scripts](https://github.com/MaastrichtU-IDS/data2services-download/blob/master/datasets/TEMPLATE/download.sh). See the [data2services-download](https://github.com/MaastrichtU-IDS/data2services-download) module for more details.2
+Source files can be set to be downloaded automatically using [Shell scripts](https://github.com/MaastrichtU-IDS/data2services-download/blob/master/datasets/TEMPLATE/download.sh). See the [data2services-download](https://github.com/MaastrichtU-IDS/data2services-download) module for more details.
 
 ```shell
 # Build
@@ -181,12 +179,17 @@ docker run -it --rm -v /data/data2services:/data data2services-download \
 
 ## Further documentation in Wiki
 
+* [Docker documentation](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Docker-documentation) (run, share volumes, link containers, network)
+* [Run using docker-compose](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-using-docker-compose)
+
+* [Run AutoR2RML with various DBMS](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-AutoR2RML-with-various-DBMS)
+* [Fix CSV, TSV, PSV files without columns](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Fix-CSV,-TSV,-PSV-files-without-columns)
+
 * [Run on Windows](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-on-Windows)
 * [Run using convenience scripts](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-using-convenience-script)
 * [Run Postgres](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-PostgreSQL)
 * [Run MariaDB](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-MariaDB)
 * [Secure GraphDB](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Secure-GraphDB:-create-users)
-* [Fix CSV, TSV, PSV files without columns](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Fix-CSV,-TSV,-PSV-files-without-columns)
 
 
 
