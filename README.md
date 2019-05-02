@@ -87,7 +87,7 @@ We use [**AutoR2RML**](https://github.com/amalic/autor2rml) to generate the [R2R
 See the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-AutoR2RML-with-various-DBMS) for more DBMS system.
 
 ```shell
-# For CSV, TSV, PSV files. Apache Drill needs to be running
+# For CSV, TSV, PSV files. Apache Drill needs to be running with the name "drill"
 docker run -it --rm --link drill:drill -v /data:/data autor2rml \
 	-j "jdbc:drill:drillbit=drill:31010" -r \
 	-o "/data/data2services/mapping.trig" \
@@ -95,7 +95,7 @@ docker run -it --rm --link drill:drill -v /data:/data autor2rml \
 	-b "https://w3id.org/data2services/" \
 	-g "https://w3id.org/data2services/graph/autor2rml"
 	
-# For Postgres
+# For Postgres, a postgres docker container needs to be running with the name "postgres"
 docker run -it --rm --link postgres:postgres -v /data:/data autor2rml \
 	-j "jdbc:postgresql://postgres:5432/my_database" -r \
 	-o "/data/data2services/mapping.trig" \
@@ -116,7 +116,7 @@ outputFile = /data/rdf_output.nq
 format = NQUADS
 
 # Run R2RML for Drill or Postgres
-docker run -it --rm --link drill:drill --link postgres:postgres \
+docker run -it --rm --link drill:drill \ # --link postgres:postgres
   -v /data/data2services:/data \
   r2rml /data/config.properties
 ```
