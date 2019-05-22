@@ -14,6 +14,7 @@ docker run -it -v /data/data2services/aeolus:/data xml2rdf -i /data/drugpairReac
 
 for file in /data/data2services/aeolus/*.xml; do docker run -it -v /data:/data xml2rdf -i $file -o $file.nq -g https://w3id.org/data2services/graph/xml2rdf/aeolus ; done 
 
+cd /data/data2services/aeolus
 scp *.nq ids2:/home/emonet/aeolus
 
 # Load RDF file in GraphDB ncats-test repository

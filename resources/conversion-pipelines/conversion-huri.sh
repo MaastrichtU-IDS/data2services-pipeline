@@ -1,7 +1,7 @@
                                                      
 # HuRI.tsv file in /data/data2services
 
-docker run -it --rm -v /data/emonet/ncats/huri:/data data2services-download --download-datasets pubmed-sample
+docker run -it --rm -v /data/emonet/ncats/huri:/data data2services-download --download-datasets huri
 
 docker run -dit --rm -p 8047:8047 -p 31010:31010 --name drill -v /data:/data:ro apache-drill
 
