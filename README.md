@@ -2,9 +2,9 @@
 
 This is a demonstrator ETL pipeline that converts relational databases, tabular files, and XML files into a generic RDF-format based on the input data structure, and loads it into a GraphDB endpoint using modules from the [Data2Services ecosystem](https://github.com/MaastrichtU-IDS/data2services-ecosystem). 
 
-Only [Docker](https://docs.docker.com/install/) is required to run the pipeline. Checkout the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Docker-documentation) if you have issues with Docker.
-
-Following documentation focuses on Linux & MacOS. Windows documentation can be found [here](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-on-Windows).
+* Only [Docker](https://docs.docker.com/install/) is required to run the pipeline. Checkout the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Docker-documentation) if you have issues with Docker installation.
+* Following documentation focuses on Linux & MacOS.
+* Windows documentation can be found [here](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-on-Windows).
 
 # Data2Services philosophy
 
@@ -30,7 +30,7 @@ git submodule update --recursive --remote
 `build.sh` is a convenience script to build all Docker images, but they can be built separately.
 
 * You need to **download** [Apache Drill installation bundle](https://drill.apache.org/download/) and [GraphDB standalone zip](https://www.ontotext.com/products/graphdb/) (register to get an email with download URL). 
-* Then **put** the `.tar.gz` and `zip` files in the **apache-drill** and **graphdb repositories**.
+* Then **put** the `.tar.gz` and `.zip` files in the `./apache-drill` and `./graphdb` repositories.
 
 ```shell
 # Download Apache Drill
@@ -41,12 +41,12 @@ curl http://apache.40b.nl/drill/drill-1.15.0/apache-drill-1.15.0.tar.gz -o apach
 
 # Start services
 
-In a production environment it is considered that both **Apache Drill** and **GraphDB** services are present. Other RDF triple stores should also work, but have not been tested yet.
+In a production environment, it is considered that both [Apache Drill](https://drill.apache.org/download/) and [GraphDB](https://www.ontotext.com/products/graphdb/) services are present. Other RDF triple stores should also work, but have not been tested yet.
 
 ```shell
-# Start Apache Drill
+# Start apache-drill
 docker run -dit --rm -p 8047:8047 -p 31010:31010 --name drill -v /data:/data:ro apache-drill
-# Start GraphDB
+# Start graphdb
 docker run -d --rm --name graphdb -p 7200:7200 -v /data/graphdb:/opt/graphdb/home -v /data/graphdb-import:/root/graphdb-import graphdb
 ```
 
@@ -57,19 +57,19 @@ docker run -d --rm --name graphdb -p 7200:7200 -v /data/graphdb:/opt/graphdb/hom
 # Run using Docker commands
 
 * Check the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Docker-documentation) for more detail on how to run Docker containers (sharing volumes, link between containers)
-* The directory where are the **files to convert needs to be in `/data`** (to comply with Apache Drill path).
-* In those examples we are using `/data/data2services` as working directory (containing all the files, note that it can be shared as `/data` in the Docker containers)
+* The directory where are the **files to convert needs to be in `/data`** (to comply with *Apache Drill* path).
+* In those examples we are using `/data/data2services` as working directory (containing all the files, note that it is usually shared as `/data` in the Docker containers).
 
 ### Download datasets
 
-Source files can be set to be downloaded automatically using [Shell scripts](https://github.com/MaastrichtU-IDS/data2services-download/blob/master/datasets/TEMPLATE/download.sh). See the [data2services-download](https://github.com/MaastrichtU-IDS/data2services-download) module for more details.
+Source files can be set to be downloaded automatically using [Shell scripts](https://github.com/MaastrichtU-IDS/data2services-download/blob/master/datasets/TEMPLATE/download.sh). See the **[data2services-download](https://github.com/MaastrichtU-IDS/data2services-download)** module for more details.
 
 ```shell
 # Build
 docker build -t data2services-download ./data2services-download
 # Run
 docker run -it --rm -v /data/data2services:/data data2services-download \
-  --download-datasets aeolus,pharmgkb,ctd \
+  --download-datasets drugbank,hgnc,date \
   --username my_login --password my_password \
   --clean # to delete all files in /data/data2services
 ```
@@ -89,7 +89,7 @@ docker run --rm -it -v /data:/data xml2rdf  \
 
 We use [**AutoR2RML**](https://github.com/amalic/autor2rml) to generate the [R2RML](https://www.w3.org/TR/r2rml/) mapping file to convert relational databases (Postgres, SQLite, MariaDB), CSV, TSV and PSV files to a generic RDF.
 
-See the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-AutoR2RML-with-various-DBMS) for more DBMS system.
+See the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-AutoR2RML-with-various-DBMS) for other DBMS systems.
 
 The database you are getting the data from needs to be running (Drill, Postgres, MariaDB...). Check out the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-PostgreSQL-database) for documentation to deploy databases.
 
@@ -143,7 +143,7 @@ docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-uplo
 
 ### Transform generic RDF to target model
 
-Next step is to transform the generic RDF generated a particular datamodel. See the [data2services-insert](https://github.com/MaastrichtU-IDS/data2services-insert) project for examples of transformation to the [BioLink model](https://biolink.github.io/biolink-model/docs/).
+Next step is to transform the generic RDF generated a particular datamodel. See the **[data2services-insert](https://github.com/MaastrichtU-IDS/data2services-insert)** project for examples of transformation to the [BioLink model](https://biolink.github.io/biolink-model/docs/).
 
 ```shell
 # Build
@@ -153,7 +153,7 @@ docker run -d data2services-sparql-operations \
   -f "https://github.com/MaastrichtU-IDS/data2services-insert/tree/master/insert-biolink/drugbank" \
   -ep "http://graphdb.dumontierlab.com/repositories/ncats-red-kg/statements" \
   -un USERNAME -pw PASSWORD \
-  -var serviceUrl:http://localhost:7200/repositories/test inputGraph:http://data2services/graph/xml2rdf/drugbank#5.1.1 outputGraph:https://w3id.org/data2services/graph/biolink/drugbank
+  -var serviceUrl:http://localhost:7200/repositories/test inputGraph:http://data2services/graph/xml2rdf/drugbank outputGraph:https://w3id.org/data2services/graph/biolink/drugbank
 ```
 
 * You can find example of SPARQL queries used for conversion to RDF BioLink:
