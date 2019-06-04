@@ -109,16 +109,16 @@ The database you are getting the data from needs to be running (Drill, Postgres,
 
 ```shell
 docker build -t autor2rml ./AutoR2RML
-
-# For CSV, TSV, PSV files. Apache Drill needs to be running with the name "drill"
+# For CSV, TSV, PSV files
+# Apache Drill needs to be running with the name 'drill'
 docker run -it --rm --link drill:drill -v /data:/data autor2rml \
 	-j "jdbc:drill:drillbit=drill:31010" -r \
 	-o "/data/data2services/mapping.trig" \
 	-d "/data/data2services" \
 	-b "https://w3id.org/data2services/" \
 	-g "https://w3id.org/data2services/graph/autor2rml"
-	
-# For Postgres, a postgres docker container needs to be running with the name "postgres"
+# For Postgres, a postgres docker container 
+# needs to be running with the name 'postgres'
 docker run -it --rm --link postgres:postgres -v /data:/data autor2rml \
 	-j "jdbc:postgresql://postgres:5432/my_database" -r \
 	-o "/data/data2services/mapping.trig" \
