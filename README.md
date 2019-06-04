@@ -109,11 +109,7 @@ docker run --rm -it -v /data:/data \
 
 ## Convert TSV & RDB: generate mapping file with AutoR2RML
 
-We use [AutoR2RML](https://github.com/amalic/autor2rml) to generate the [R2RML](https://www.w3.org/TR/r2rml/) mapping file to convert relational databases (Postgres, SQLite, MariaDB), CSV, TSV and PSV files to a generic RDF.
-
-See the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-AutoR2RML-with-various-DBMS) for other DBMS systems.
-
-The database you are getting the data from needs to be running (Drill, Postgres, MariaDB...). Check out the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-PostgreSQL-database) for documentation to deploy databases.
+We use [AutoR2RML](https://github.com/amalic/autor2rml) to generate the [R2RML](https://www.w3.org/TR/r2rml/) mapping file to convert relational databases (Postgres, SQLite, MariaDB), CSV, TSV and PSV files to a generic RDF representing the input data structure. See the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-AutoR2RML-with-various-DBMS) for other DBMS systems and how to [deploy databases](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-PostgreSQL-database).
 
 ```shell
 docker build -t autor2rml ./AutoR2RML
@@ -141,7 +137,7 @@ docker run -it --rm --link postgres:postgres -v /data:/data \
 
 ## Convert TSV & RDB: use mapping file to generate RDF with R2RML
 
-Then generate the generic RDF using [R2RML](https://github.com/amalic/r2rml). 
+Then generate the generic RDF using [R2RML](https://github.com/amalic/r2rml) and the previously generated `mapping.trig` file. 
 
 ```shell
 docker build -t r2rml ./r2rml
@@ -176,7 +172,7 @@ docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data
 
 ## Transform generic RDF to target model
 
-Next step is to transform the generic RDF generated a particular datamodel. See the [data2services-insert](https://github.com/MaastrichtU-IDS/data2services-insert) project for examples of transformation to the [BioLink model](https://biolink.github.io/biolink-model/docs/).
+Last step is to transform the generic RDF generated a particular datamodel. See the [data2services-insert](https://github.com/MaastrichtU-IDS/data2services-insert) project for examples of transformation to the [BioLink model](https://biolink.github.io/biolink-model/docs/).
 
 ```shell
 docker build -t data2services-sparql-operations ./data2services-sparql-operations
