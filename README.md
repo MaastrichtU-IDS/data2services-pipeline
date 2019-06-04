@@ -90,6 +90,7 @@ docker run -it --rm -v /data/data2services:/data data2services-download \
 Use [xml2rdf](https://github.com/MaastrichtU-IDS/xml2rdf) to convert XML files to a generic RDF based on the file structure.
 
 ```
+docker build -t xml2rdf ./xml2rdf
 docker run --rm -it -v /data:/data xml2rdf  \
   -i "/data/data2services/myfile.xml.gz" \
   -o "/data/data2services/myfile.nq.gz" \
@@ -107,6 +108,8 @@ See the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Ru
 The database you are getting the data from needs to be running (Drill, Postgres, MariaDB...). Check out the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-PostgreSQL-database) for documentation to deploy databases.
 
 ```shell
+docker build -t autor2rml ./AutoR2RML
+
 # For CSV, TSV, PSV files. Apache Drill needs to be running with the name "drill"
 docker run -it --rm --link drill:drill -v /data:/data autor2rml \
 	-j "jdbc:drill:drillbit=drill:31010" -r \
@@ -131,6 +134,8 @@ docker run -it --rm --link postgres:postgres -v /data:/data autor2rml \
 Then generate the generic RDF using [R2RML](https://github.com/amalic/r2rml). 
 
 ```shell
+docker build -t r2rml ./r2rml
+
 # config.properties file for R2RML in /data/data2services
 connectionURL = jdbc:drill:drillbit=drill:31010
 mappingFile = /data/mapping.trig
@@ -150,7 +155,7 @@ docker run -it --rm --link drill:drill \ # --link postgres:postgres
 Finally, use [RdfUpload](https://github.com/MaastrichtU-IDS/RdfUpload/) to upload the generated RDF to GraphDB. It can also be done manually using [GraphDB server imports](http://graphdb.ontotext.com/documentation/standard/loading-data-using-the-workbench.html#importing-server-files) for more efficiency on large files.
 
 ```shell
-# RDF Upload
+docker build -t rdf-upload ./RdfUpload
 docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-upload \
   -m "HTTP" -if "/data" \
   -url "http://graphdb:7200" \
@@ -165,9 +170,7 @@ docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-uplo
 Next step is to transform the generic RDF generated a particular datamodel. See the [data2services-insert](https://github.com/MaastrichtU-IDS/data2services-insert) project for examples of transformation to the [BioLink model](https://biolink.github.io/biolink-model/docs/).
 
 ```shell
-# Build
 docker build -t data2services-sparql-operations ./data2services-sparql-operations
-# Run
 docker run -d data2services-sparql-operations \
   -f "https://github.com/MaastrichtU-IDS/data2services-insert/tree/master/insert-biolink/drugbank" \
   -ep "http://graphdb.dumontierlab.com/repositories/ncats-red-kg/statements" \
@@ -178,13 +181,13 @@ docker run -d data2services-sparql-operations \
 * You can find example of SPARQL queries used for conversion to RDF BioLink:
   * [DrugBank](https://github.com/MaastrichtU-IDS/data2services-insert/tree/master/insert-biolink/drugbank) (XML)
   * [HGNC](https://github.com/MaastrichtU-IDS/data2services-insert/tree/master/insert-biolink/hgnc) (TSV through AutoR2RML)
-* It is recommended to write **multiple SPARQL queries with simple goals** (get all drugs infos, get all drug-drug interactions, get gene infos) instead of one big complex query addressing everything.
+* It is recommended to write **multiple SPARQL queries with simple goals** (get all drugs infos, get all drug-drug interactions, get gene infos), rather than one complex query addressing everything.
 
 ---
 
 # Further documentation in Wiki
 
-* [Docker documentation](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Docker-documentation) (run, share volumes, link containers, network)
+* [Docker documentation](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Docker-documentation) (fix known issues, run, share volumes, link containers, network)
 * [Run using docker-compose](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-using-docker-compose)
 * [Run AutoR2RML with various DBMS](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-AutoR2RML-with-various-DBMS)
 * [Fix CSV, TSV, PSV files without columns](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Fix-CSV,-TSV,-PSV-files-without-columns)
@@ -198,7 +201,7 @@ docker run -d data2services-sparql-operations \
 
 # Citing this work
 
-If you use data2services in a scientific publication, you are highly encouraged (not required) to cite the following paper:
+If you use Data2Services in a scientific publication, you are highly encouraged (not required) to cite the following paper:
 
 **Data2Services: enabling automated conversion of data to services.** *Vincent Emonet, Alexander Malic, Amrapali Zaveri, Andreea Grigoriu and Michel Dumontier.*
 
