@@ -77,7 +77,8 @@ Source files can be set to be downloaded automatically using [Shell scripts](htt
 # Build
 docker build -t data2services-download ./data2services-download
 # Run
-docker run -it --rm -v /data/data2services:/data data2services-download \
+docker run -it --rm -v /data/data2services:/data \
+  data2services-download \
   --download-datasets drugbank,hgnc,date \
   --username my_login --password my_password \
   --clean # to delete all files in /data/data2services
@@ -89,7 +90,7 @@ docker run -it --rm -v /data/data2services:/data data2services-download \
 
 Use [xml2rdf](https://github.com/MaastrichtU-IDS/xml2rdf) to convert XML files to a generic RDF based on the file structure.
 
-```
+```shell
 docker build -t xml2rdf ./xml2rdf
 docker run --rm -it -v /data:/data xml2rdf  \
   -i "/data/data2services/myfile.xml.gz" \
@@ -111,7 +112,8 @@ The database you are getting the data from needs to be running (Drill, Postgres,
 docker build -t autor2rml ./AutoR2RML
 # For CSV, TSV, PSV files
 # Apache Drill needs to be running with the name 'drill'
-docker run -it --rm --link drill:drill -v /data:/data autor2rml \
+docker run -it --rm --link drill:drill -v /data:/data \
+	autor2rml \
 	-j "jdbc:drill:drillbit=drill:31010" -r \
 	-o "/data/data2services/mapping.trig" \
 	-d "/data/data2services" \
@@ -119,12 +121,13 @@ docker run -it --rm --link drill:drill -v /data:/data autor2rml \
 	-g "https://w3id.org/data2services/graph/autor2rml"
 # For Postgres, a postgres docker container 
 # needs to be running with the name 'postgres'
-docker run -it --rm --link postgres:postgres -v /data:/data autor2rml \
-	-j "jdbc:postgresql://postgres:5432/my_database" -r \
-	-o "/data/data2services/mapping.trig" \
-	-u "postgres" -p "pwd" \
-	-b "https://w3id.org/data2services/" \
-	-g "https://w3id.org/data2services/graph/autor2rml"
+docker run -it --rm --link postgres:postgres -v /data:/data \
+  autor2rml \
+  -j "jdbc:postgresql://postgres:5432/my_database" -r \
+  -o "/data/data2services/mapping.trig" \
+  -u "postgres" -p "pwd" \
+  -b "https://w3id.org/data2services/" \
+  -g "https://w3id.org/data2services/graph/autor2rml"
 ```
 
 ---
@@ -154,8 +157,8 @@ Finally, use [RdfUpload](https://github.com/MaastrichtU-IDS/RdfUpload/) to uploa
 
 ```shell
 docker build -t rdf-upload ./RdfUpload
-docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-upload \
-  -m "HTTP" -if "/data" \
+docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data 
+  rdf-upload -m "HTTP" -if "/data" \
   -url "http://graphdb:7200" \
   -rep "test" \
   -un "import_user" -pw "PASSWORD"
