@@ -6,6 +6,8 @@ This is a demonstrator ETL pipeline that converts relational databases, tabular 
 * Following documentation focuses on Linux & MacOS.
 * Windows documentation can be found [here](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-on-Windows).
 
+---
+
 # Data2Services philosophy
 
 Containers run with a few parameters (input file path, SPARQL endpoint, credentials, mapping file path)
@@ -13,6 +15,8 @@ Containers run with a few parameters (input file path, SPARQL endpoint, credenti
 - **Build** the Docker images
 - **Start services** that need to be running
 - **Execute the containers** you want, providing the proper parameters
+
+---
 
 # Clone
 
@@ -24,6 +28,8 @@ cd data2services-pipeline
 # Update all submodules
 git submodule update --recursive --remote
 ```
+
+---
 
 # Build
 
@@ -39,6 +45,8 @@ curl http://apache.40b.nl/drill/drill-1.15.0/apache-drill-1.15.0.tar.gz -o apach
 ./build.sh
 ```
 
+---
+
 # Start services
 
 In a production environment, it is considered that both [Apache Drill](https://drill.apache.org/download/) and [GraphDB](https://www.ontotext.com/products/graphdb/) services are present. Other RDF triple stores should also work, but have not been tested yet.
@@ -51,8 +59,9 @@ docker run -d --rm --name graphdb -p 7200:7200 -v /data/graphdb:/opt/graphdb/hom
 ```
 
 * For MacOS, make sure that access to the `/data` repository has been granted in Docker configuration.
-
 * Check the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-using-docker-compose) to use `docker-compose` to run the 2 containers.
+
+---
 
 # Run using Docker commands
 
@@ -74,6 +83,8 @@ docker run -it --rm -v /data/data2services:/data data2services-download \
   --clean # to delete all files in /data/data2services
 ```
 
+---
+
 ### Convert XML
 
 Use [**xml2rdf**](https://github.com/MaastrichtU-IDS/xml2rdf) to convert XML files to a generic RDF based on the file structure.
@@ -84,6 +95,8 @@ docker run --rm -it -v /data:/data xml2rdf  \
   -o "/data/data2services/myfile.nq.gz" \
   -g "https://w3id.org/data2services/graph/xml2rdf"
 ```
+
+---
 
 ### Convert TSV & RDB: generate mapping file with AutoR2RML
 
@@ -111,6 +124,8 @@ docker run -it --rm --link postgres:postgres -v /data:/data autor2rml \
 	-g "https://w3id.org/data2services/graph/autor2rml"
 ```
 
+---
+
 ### Convert TSV & RDB: use mapping file to generate RDF with R2RML
 
 Then generate the generic RDF using [**R2RML**](https://github.com/amalic/r2rml). 
@@ -128,6 +143,8 @@ docker run -it --rm --link drill:drill \ # --link postgres:postgres
   r2rml /data/config.properties
 ```
 
+---
+
 ### Upload RDF
 
 Finally, use [**RdfUpload**](https://github.com/MaastrichtU-IDS/RdfUpload/) to upload the generated RDF to GraphDB. It can also be done manually using [GraphDB server imports](http://graphdb.ontotext.com/documentation/standard/loading-data-using-the-workbench.html#importing-server-files) for more efficiency on large files.
@@ -140,6 +157,8 @@ docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-uplo
   -rep "test" \
   -un "import_user" -pw "PASSWORD"
 ```
+
+---
 
 ### Transform generic RDF to target model
 
@@ -161,23 +180,21 @@ docker run -d data2services-sparql-operations \
   * [HGNC](https://github.com/MaastrichtU-IDS/data2services-insert/tree/master/insert-biolink/hgnc) (TSV through AutoR2RML)
 * It is recommended to write **multiple SPARQL queries with simple goals** (get all drugs infos, get all drug-drug interactions, get gene infos) instead of one big complex query addressing everything.
 
-
+---
 
 # Further documentation in Wiki
 
 * [Docker documentation](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Docker-documentation) (run, share volumes, link containers, network)
 * [Run using docker-compose](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-using-docker-compose)
-
 * [Run AutoR2RML with various DBMS](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-AutoR2RML-with-various-DBMS)
 * [Fix CSV, TSV, PSV files without columns](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Fix-CSV,-TSV,-PSV-files-without-columns)
-
 * [Run on Windows](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-on-Windows)
 * [Run using convenience scripts](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-using-convenience-script)
 * [Run Postgres](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-PostgreSQL)
 * [Run MariaDB](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-MariaDB)
 * [Secure GraphDB](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Secure-GraphDB:-create-users)
 
-
+---
 
 # Citing this work
 
