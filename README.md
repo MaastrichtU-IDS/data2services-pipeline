@@ -66,7 +66,7 @@ docker run -d --rm --name graphdb -p 7200:7200 -v /data/graphdb:/opt/graphdb/hom
 # Run using Docker commands
 
 * Check the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Docker-documentation) for more detail on how to run Docker containers (sharing volumes, link between containers)
-* The directory where are the **files to convert needs to be in `/data`** (to comply with *Apache Drill* path).
+* The directory where are the **files to convert needs to be in `/data`** (to comply with [Apache Drill](https://drill.apache.org/download/) shared volume).
 * In those examples we are using `/data/data2services` as working directory (containing all the files, note that it is usually shared as `/data` in the Docker containers).
 
 ## Download datasets
@@ -87,7 +87,7 @@ docker run -it --rm -v /data/data2services:/data data2services-download \
 
 ## Convert XML
 
-Use [**xml2rdf**](https://github.com/MaastrichtU-IDS/xml2rdf) to convert XML files to a generic RDF based on the file structure.
+Use **[xml2rdf](https://github.com/MaastrichtU-IDS/xml2rdf)** to convert XML files to a generic RDF based on the file structure.
 
 ```
 docker run --rm -it -v /data:/data xml2rdf  \
