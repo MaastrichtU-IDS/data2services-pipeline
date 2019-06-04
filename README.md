@@ -53,9 +53,14 @@ In a production environment, it is considered that both [Apache Drill](https://d
 
 ```shell
 # Start apache-drill
-docker run -dit --rm -p 8047:8047 -p 31010:31010 --name drill -v /data:/data:ro apache-drill
+docker run -dit --rm -p 8047:8047 -p 31010:31010 \
+  --name drill -v /data:/data:ro \
+  apache-drill
 # Start graphdb
-docker run -d --rm --name graphdb -p 7200:7200 -v /data/graphdb:/opt/graphdb/home -v /data/graphdb-import:/root/graphdb-import graphdb
+docker run -d --rm --name graphdb -p 7200:7200 \
+  -v /data/graphdb:/opt/graphdb/home \
+  -v /data/graphdb-import:/root/graphdb-import \
+  graphdb
 ```
 
 * For MacOS, make sure that access to the `/data` repository has been granted in Docker configuration.
@@ -92,7 +97,8 @@ Use [xml2rdf](https://github.com/MaastrichtU-IDS/xml2rdf) to convert XML files t
 
 ```shell
 docker build -t xml2rdf ./xml2rdf
-docker run --rm -it -v /data:/data xml2rdf  \
+docker run --rm -it -v /data:/data \
+  xml2rdf  \
   -i "/data/data2services/myfile.xml.gz" \
   -o "/data/data2services/myfile.nq.gz" \
   -g "https://w3id.org/data2services/graph/xml2rdf"
@@ -113,12 +119,12 @@ docker build -t autor2rml ./AutoR2RML
 # For CSV, TSV, PSV files
 # Apache Drill needs to be running with the name 'drill'
 docker run -it --rm --link drill:drill -v /data:/data \
-	autor2rml \
-	-j "jdbc:drill:drillbit=drill:31010" -r \
-	-o "/data/data2services/mapping.trig" \
-	-d "/data/data2services" \
-	-b "https://w3id.org/data2services/" \
-	-g "https://w3id.org/data2services/graph/autor2rml"
+  autor2rml \
+  -j "jdbc:drill:drillbit=drill:31010" -r \
+  -o "/data/data2services/mapping.trig" \
+  -d "/data/data2services" \
+  -b "https://w3id.org/data2services/" \
+  -g "https://w3id.org/data2services/graph/autor2rml"
 # For Postgres, a postgres docker container 
 # needs to be running with the name 'postgres'
 docker run -it --rm --link postgres:postgres -v /data:/data \
@@ -158,7 +164,8 @@ Finally, use [RdfUpload](https://github.com/MaastrichtU-IDS/RdfUpload/) to uploa
 ```shell
 docker build -t rdf-upload ./RdfUpload
 docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data 
-  rdf-upload -m "HTTP" -if "/data" \
+  rdf-upload \
+  -m "HTTP" -if "/data" \
   -url "http://graphdb:7200" \
   -rep "test" \
   -un "import_user" -pw "PASSWORD"
