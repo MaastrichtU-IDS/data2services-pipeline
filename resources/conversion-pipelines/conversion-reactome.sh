@@ -3,6 +3,8 @@
 
 docker run -it --rm -v /data/emonet/ncats/reactome:/data data2services-download --download-datasets reactome
 
+
+
 docker run -it --rm -v /data/data2services:/data data2services-download --download-datasets reactome
 
 docker run -it -v /data/data2services/reactome:/data json2xml -i /data
