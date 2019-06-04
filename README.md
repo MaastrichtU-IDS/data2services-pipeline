@@ -135,13 +135,11 @@ Then generate the generic RDF using [R2RML](https://github.com/amalic/r2rml).
 
 ```shell
 docker build -t r2rml ./r2rml
-
-# config.properties file for R2RML in /data/data2services
+# Add config.properties file for R2RML in /data/data2services
 connectionURL = jdbc:drill:drillbit=drill:31010
 mappingFile = /data/mapping.trig
 outputFile = /data/rdf_output.nq
 format = NQUADS
-
 # Run R2RML for Drill or Postgres
 docker run -it --rm --link drill:drill \ # --link postgres:postgres
   -v /data/data2services:/data \
