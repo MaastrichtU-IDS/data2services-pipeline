@@ -8,7 +8,7 @@ This is a demonstrator ETL pipeline that converts relational databases, tabular 
 
 ---
 
-# Data2Services philosophy
+## The Data2Services philosophy
 
 Containers run with a few parameters (input file path, SPARQL endpoint, credentials, mapping file path)
 
