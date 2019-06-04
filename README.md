@@ -52,11 +52,13 @@ curl http://apache.40b.nl/drill/drill-1.15.0/apache-drill-1.15.0.tar.gz -o apach
 In a production environment, it is considered that both [Apache Drill](https://drill.apache.org/download/) and [GraphDB](https://www.ontotext.com/products/graphdb/) services are present. Other RDF triple stores should also work, but have not been tested yet.
 
 ```shell
-# Start apache-drill
+# Build and start apache-drill
+docker build -t apache-drill ./apache-drill
 docker run -dit --rm -p 8047:8047 -p 31010:31010 \
   --name drill -v /data:/data:ro \
   apache-drill
-# Start graphdb
+# Build and start graphdb
+docker build -t graphdb ./graphdb
 docker run -d --rm --name graphdb -p 7200:7200 \
   -v /data/graphdb:/opt/graphdb/home \
   -v /data/graphdb-import:/root/graphdb-import \
@@ -79,9 +81,7 @@ docker run -d --rm --name graphdb -p 7200:7200 \
 Source files can be set to be downloaded automatically using [Shell scripts](https://github.com/MaastrichtU-IDS/data2services-download/blob/master/datasets/TEMPLATE/download.sh). See the [data2services-download](https://github.com/MaastrichtU-IDS/data2services-download) module for more details.
 
 ```shell
-# Build
 docker build -t data2services-download ./data2services-download
-# Run
 docker run -it --rm -v /data/data2services:/data \
   data2services-download \
   --download-datasets drugbank,hgnc,date \
