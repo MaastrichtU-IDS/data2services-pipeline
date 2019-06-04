@@ -69,7 +69,7 @@ docker run -d --rm --name graphdb -p 7200:7200 -v /data/graphdb:/opt/graphdb/hom
 * The directory where are the **files to convert needs to be in `/data`** (to comply with *Apache Drill* path).
 * In those examples we are using `/data/data2services` as working directory (containing all the files, note that it is usually shared as `/data` in the Docker containers).
 
-### Download datasets
+## Download datasets
 
 Source files can be set to be downloaded automatically using [Shell scripts](https://github.com/MaastrichtU-IDS/data2services-download/blob/master/datasets/TEMPLATE/download.sh). See the **[data2services-download](https://github.com/MaastrichtU-IDS/data2services-download)** module for more details.
 
@@ -85,7 +85,7 @@ docker run -it --rm -v /data/data2services:/data data2services-download \
 
 ---
 
-### Convert XML
+## Convert XML
 
 Use [**xml2rdf**](https://github.com/MaastrichtU-IDS/xml2rdf) to convert XML files to a generic RDF based on the file structure.
 
@@ -98,7 +98,7 @@ docker run --rm -it -v /data:/data xml2rdf  \
 
 ---
 
-### Convert TSV & RDB: generate mapping file with AutoR2RML
+## Convert TSV & RDB: generate mapping file with AutoR2RML
 
 We use [**AutoR2RML**](https://github.com/amalic/autor2rml) to generate the [R2RML](https://www.w3.org/TR/r2rml/) mapping file to convert relational databases (Postgres, SQLite, MariaDB), CSV, TSV and PSV files to a generic RDF.
 
@@ -126,7 +126,7 @@ docker run -it --rm --link postgres:postgres -v /data:/data autor2rml \
 
 ---
 
-### Convert TSV & RDB: use mapping file to generate RDF with R2RML
+## Convert TSV & RDB: use mapping file to generate RDF with R2RML
 
 Then generate the generic RDF using [**R2RML**](https://github.com/amalic/r2rml). 
 
@@ -145,7 +145,7 @@ docker run -it --rm --link drill:drill \ # --link postgres:postgres
 
 ---
 
-### Upload RDF
+## Upload RDF
 
 Finally, use [**RdfUpload**](https://github.com/MaastrichtU-IDS/RdfUpload/) to upload the generated RDF to GraphDB. It can also be done manually using [GraphDB server imports](http://graphdb.ontotext.com/documentation/standard/loading-data-using-the-workbench.html#importing-server-files) for more efficiency on large files.
 
@@ -160,7 +160,7 @@ docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data rdf-uplo
 
 ---
 
-### Transform generic RDF to target model
+## Transform generic RDF to target model
 
 Next step is to transform the generic RDF generated a particular datamodel. See the **[data2services-insert](https://github.com/MaastrichtU-IDS/data2services-insert)** project for examples of transformation to the [BioLink model](https://biolink.github.io/biolink-model/docs/).
 
