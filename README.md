@@ -190,7 +190,7 @@ docker run -d data2services-sparql-operations \
 
 ---
 
-# Further documentation in Wiki
+# Further documentation in the Wiki
 
 * [Docker documentation](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Docker-documentation) (fix known issues, run, share volumes, link containers, network)
 * [Run using docker-compose](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-using-docker-compose)
@@ -201,6 +201,7 @@ docker run -d data2services-sparql-operations \
 * [Run Postgres](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-PostgreSQL)
 * [Run MariaDB](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-MariaDB)
 * [Secure GraphDB](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Secure-GraphDB:-create-users)
+* **BETA**: [RDF validation using ShEx](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/RDF-validation-using-ShEx)
 
 ---
 
