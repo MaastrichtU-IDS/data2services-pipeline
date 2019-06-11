@@ -172,20 +172,20 @@ docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data \
 
 ## Transform generic RDF to target model
 
-Last step is to transform the generic RDF generated a particular datamodel. See the [data2services-insert](https://github.com/MaastrichtU-IDS/data2services-insert) project for examples of transformation to the [BioLink model](https://biolink.github.io/biolink-model/docs/) using the [data2services-sparql-operations](https://github.com/MaastrichtU-IDS/data2services-sparql-operations) module to execute multiple SPARQL queries.
+Last step is to transform the generic RDF generated a particular datamodel. See the [data2services-transform-repository](https://github.com/MaastrichtU-IDS/data2services-transform-repository) project for examples of transformation to the [BioLink model](https://biolink.github.io/biolink-model/docs/) using the [data2services-sparql-operations](https://github.com/MaastrichtU-IDS/data2services-sparql-operations) module to execute multiple SPARQL queries.
 
 ```shell
 docker build -t data2services-sparql-operations ./data2services-sparql-operations
 docker run -d data2services-sparql-operations \
-  -f "https://github.com/MaastrichtU-IDS/data2services-insert/tree/master/insert-biolink/drugbank" \
+  -f "https://github.com/MaastrichtU-IDS/data2services-transform-repository/tree/master/sparql/insert-biolink/drugbank" \
   -ep "http://graphdb.dumontierlab.com/repositories/ncats-red-kg/statements" \
   -un USERNAME -pw PASSWORD \
   -var serviceUrl:http://localhost:7200/repositories/test inputGraph:http://data2services/graph/xml2rdf/drugbank outputGraph:https://w3id.org/data2services/graph/biolink/drugbank
 ```
 
 * You can find example of SPARQL queries used for conversion to RDF BioLink:
-  * [DrugBank](https://github.com/MaastrichtU-IDS/data2services-insert/tree/master/insert-biolink/drugbank) (XML)
-  * [HGNC](https://github.com/MaastrichtU-IDS/data2services-insert/tree/master/insert-biolink/hgnc) (TSV through AutoR2RML)
+  * [DrugBank](https://github.com/MaastrichtU-IDS/data2services-transform-repository/tree/master/sparql/insert-biolink/drugbank) (XML)
+  * [HGNC](https://github.com/MaastrichtU-IDS/data2services-transform-repository/tree/master/sparql/insert-biolink/hgnc) (TSV through AutoR2RML)
 * It is recommended to write **multiple SPARQL queries with simple goals** (get all drugs infos, get all drug-drug interactions, get gene infos), rather than one complex query addressing everything.
 
 ---
