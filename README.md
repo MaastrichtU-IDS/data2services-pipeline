@@ -1,6 +1,6 @@
 # Get started
 
-This is a demonstrator ETL pipeline that **converts** relational databases, tabular files, and XML files **to RDF**. A generic RDF, based on the input data structure, is generated and [SPARQL](https://www.w3.org/TR/sparql11-query/) queries are defined to map the generic RDF to a specific model.
+This is a demonstrator ETL pipeline that **converts** relational databases, tabular files, and XML files **to RDF**. A generic RDF, based on the input data structure, is generated and [SPARQL](https://www.w3.org/TR/sparql11-query/) queries are **designed by the user** to map the generic RDF to a **specific model**.
 
 * Only [Docker](https://docs.docker.com/install/) is required to run the pipeline. Checkout the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Docker-documentation) if you have issues with Docker installation.
 * Following documentation **focuses on Linux & MacOS**.
