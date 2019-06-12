@@ -172,11 +172,21 @@ docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data \
 
 ## Transform generic RDF to target model
 
-Last step is to transform the generic RDF generated a particular datamodel. See the [data2services-transform-repository](https://github.com/MaastrichtU-IDS/data2services-transform-repository) project for examples of transformation to the [BioLink model](https://biolink.github.io/biolink-model/docs/) using the [data2services-sparql-operations](https://github.com/MaastrichtU-IDS/data2services-sparql-operations) module to execute multiple SPARQL queries.
+Last step is to transform the generic RDF generated a particular data model. See the [data2services-transform-repository](https://github.com/MaastrichtU-IDS/data2services-transform-repository) project for examples of transformation to the [BioLink model](https://biolink.github.io/biolink-model/docs/) using the [data2services-sparql-operations](https://github.com/MaastrichtU-IDS/data2services-sparql-operations) module to execute multiple SPARQL queries from a Github repository.
 
 ```shell
-docker build -t data2services-sparql-operations ./data2services-sparql-operations
-docker run -d data2services-sparql-operations \
+docker pull vemonet/data2services-sparql-operations
+
+# Load UniProt organisms and Human proteins as BioLink in local endpoint
+docker run -d --link graphdb:graphdb \
+  vemonet/data2services-sparql-operations \
+  -f "https://github.com/MaastrichtU-IDS/data2services-transform-repository/tree/master/sparql/insert-biolink/uniprot" \
+  -ep "http://graphdb:7200/repositories/test/statements" \
+  -un MYUSERNAME -pw MYPASSWORD \
+  -var outputGraph:https://w3id.org/data2services/graph/biolink/uniprot
+
+# Load DrugBank xml2rdf generic RDF as BioLink to remote SPARQL endpoint
+docker run -d vemonet/data2services-sparql-operations \
   -f "https://github.com/MaastrichtU-IDS/data2services-transform-repository/tree/master/sparql/insert-biolink/drugbank" \
   -ep "http://graphdb.dumontierlab.com/repositories/ncats-red-kg/statements" \
   -un USERNAME -pw PASSWORD \
@@ -184,9 +194,11 @@ docker run -d data2services-sparql-operations \
 ```
 
 * You can find example of SPARQL queries used for conversion to RDF BioLink:
+  * [UniProt](https://github.com/MaastrichtU-IDS/data2services-transform-repository/tree/master/sparql/insert-biolink/uniprot) (RDF)
   * [DrugBank](https://github.com/MaastrichtU-IDS/data2services-transform-repository/tree/master/sparql/insert-biolink/drugbank) (XML)
   * [HGNC](https://github.com/MaastrichtU-IDS/data2services-transform-repository/tree/master/sparql/insert-biolink/hgnc) (TSV through AutoR2RML)
 * It is recommended to write **multiple SPARQL queries with simple goals** (get all drugs infos, get all drug-drug interactions, get gene infos), rather than one complex query addressing everything.
+* Remove the `\` and make the `docker run` command one line for **Windows PowerShell**.
 
 ---
 
@@ -201,7 +213,7 @@ docker run -d data2services-sparql-operations \
 * [Run Postgres](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-PostgreSQL)
 * [Run MariaDB](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-MariaDB)
 * [Secure GraphDB](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Secure-GraphDB:-create-users)
-* **BETA**: [RDF validation using ShEx](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/RDF-validation-using-ShEx)
+* `BETA`: [RDF validation using ShEx](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/RDF-validation-using-ShEx)
 
 ---
 
