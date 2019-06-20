@@ -26,7 +26,7 @@ git clone --recursive https://github.com/MaastrichtU-IDS/data2services-pipeline.
 
 cd data2services-pipeline
 
-# Update all submodules
+# To update all submodules
 git submodule update --recursive --remote
 ```
 
