@@ -19,9 +19,6 @@
 [submodule "data2services-download"]
 	path = data2services-download
 	url = https://github.com/MaastrichtU-IDS/data2services-download
-[submodule "data2services-sparql-operations"]
-	path = data2services-sparql-operations
-	url = https://github.com/MaastrichtU-IDS/data2services-sparql-operations.git
 [submodule "data2services-transform-repository"]
 	path = data2services-transform-repository
 	url = https://github.com/MaastrichtU-IDS/data2services-transform-repository.git
