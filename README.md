@@ -82,9 +82,9 @@ docker run -d --rm --name graphdb -p 7200:7200 \
 Source files can be set to be downloaded automatically using [Shell scripts](https://github.com/MaastrichtU-IDS/data2services-download/blob/master/datasets/TEMPLATE/download.sh). See the [data2services-download](https://github.com/MaastrichtU-IDS/data2services-download) module for more details.
 
 ```shell
-docker build -t data2services-download ./data2services-download
+docker pull vemonet/data2services-download
 docker run -it --rm -v /data/data2services:/data \
-  data2services-download \
+  vemonet/data2services-download \
   --download-datasets drugbank,hgnc,date \
   --username my_login --password my_password \
   --clean # to delete all files in /data/data2services
