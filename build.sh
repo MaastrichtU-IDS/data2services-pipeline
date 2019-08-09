@@ -10,5 +10,5 @@ docker build -t r2rml ./r2rml
 docker build -t xml2rdf ./xml2rdf
 docker build -t rdf-upload ./RdfUpload
 docker build -t graphdb ./graphdb
-docker pull vemonet/rdf4j-sparql-operations
+docker pull vemonet/data2services-sparql-operations
 docker pull vemonet/data2services-download
