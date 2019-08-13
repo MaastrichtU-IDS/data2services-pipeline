@@ -97,9 +97,9 @@ docker run -it --rm -v /data/data2services:/data \
 Use [xml2rdf](https://github.com/MaastrichtU-IDS/xml2rdf) to convert XML files to a generic RDF based on the file structure.
 
 ```shell
-docker build -t xml2rdf ./xml2rdf
+docker pull vemonet/xml2rdf
 docker run --rm -it -v /data:/data \
-  xml2rdf  \
+  vemonet/xml2rdf  \
   -i "/data/data2services/myfile.xml.gz" \
   -o "/data/data2services/myfile.nq.gz" \
   -g "https://w3id.org/data2services/graph/xml2rdf"
@@ -112,11 +112,11 @@ docker run --rm -it -v /data:/data \
 We use [AutoR2RML](https://github.com/amalic/autor2rml) to generate the [R2RML](https://www.w3.org/TR/r2rml/) mapping file to convert relational databases (Postgres, SQLite, MariaDB), CSV, TSV and PSV files to a generic RDF representing the input data structure. See the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-AutoR2RML-with-various-DBMS) for other DBMS systems and how to [deploy databases](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-PostgreSQL-database).
 
 ```shell
-docker build -t autor2rml ./AutoR2RML
+docker pull vemonet/autor2rml
 # For CSV, TSV, PSV files
 # Apache Drill needs to be running with the name 'drill'
 docker run -it --rm --link drill:drill -v /data:/data \
-  autor2rml \
+  vemonet/autor2rml \
   -j "jdbc:drill:drillbit=drill:31010" -r \
   -o "/data/data2services/mapping.trig" \
   -d "/data/data2services" \
@@ -125,7 +125,7 @@ docker run -it --rm --link drill:drill -v /data:/data \
 # For Postgres, a postgres docker container 
 # needs to be running with the name 'postgres'
 docker run -it --rm --link postgres:postgres -v /data:/data \
-  autor2rml \
+  vemonet/autor2rml \
   -j "jdbc:postgresql://postgres:5432/my_database" -r \
   -o "/data/data2services/mapping.trig" \
   -u "postgres" -p "pwd" \
@@ -140,7 +140,7 @@ docker run -it --rm --link postgres:postgres -v /data:/data \
 Generate the generic RDF using [R2RML](https://github.com/amalic/r2rml) and the previously generated `mapping.trig` file. 
 
 ```shell
-docker build -t r2rml ./r2rml
+docker pull vemonet/r2rml
 # Add config.properties file for R2RML in /data/data2services
 connectionURL = jdbc:drill:drillbit=drill:31010
 mappingFile = /data/mapping.trig
@@ -149,7 +149,7 @@ format = NQUADS
 # Run R2RML for Drill or Postgres
 docker run -it --rm --link drill:drill \ # --link postgres:postgres
   -v /data/data2services:/data \
-  r2rml /data/config.properties
+  vemonet/r2rml /data/config.properties
 ```
 
 ---
@@ -159,9 +159,9 @@ docker run -it --rm --link drill:drill \ # --link postgres:postgres
 Finally, use [RdfUpload](https://github.com/MaastrichtU-IDS/RdfUpload/) to upload the generated RDF to GraphDB. It can also be done manually using [GraphDB server imports](http://graphdb.ontotext.com/documentation/standard/loading-data-using-the-workbench.html#importing-server-files) for more efficiency on large files.
 
 ```shell
-docker build -t rdf-upload ./RdfUpload
+docker pull vemonet/rdf-upload
 docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data \
-  rdf-upload \
+  vemonet/rdf-upload \
   -m "HTTP" -if "/data" \
   -url "http://graphdb:7200" \
   -rep "test" \
