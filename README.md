@@ -6,16 +6,17 @@ This is a demonstrator ETL pipeline that **converts** relational databases, tabu
 * Following documentation **focuses on Linux & MacOS**.
 * **Windows documentation** can be found [here](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-on-Windows).
 * Modules are from the [Data2Services ecosystem](https://github.com/MaastrichtU-IDS/data2services-ecosystem). 
+* See [data2services-transform-biolink](https://github.com/MaastrichtU-IDS/data2services-transform-biolink) to run Data2Services transformation workflow using [CWL](https://www.commonwl.org/) or [Argo](https://argoproj.github.io/argo/).
 
 ---
 
 ## The Data2Services philosophy
 
-Containers run with a few parameters (input file path, SPARQL endpoint, credentials, mapping file path)
+Docker containers running with a few parameters (e.g. input file path, SPARQL endpoint, credentials, mapping file path)
 
-- **Build** the Docker images
-- **Start services** that need to be running
-- **Execute the containers** you want, providing the proper parameters
+- **Build** or pull the Docker images.
+- **Start required services** ([Apache Drill](https://github.com/amalic/apache-drill) and [GraphDB](https://github.com/MaastrichtU-IDS/graphdb)).
+- **Execute the Docker modules** you want, providing the proper parameters.
 
 ---
 
@@ -23,10 +24,9 @@ Containers run with a few parameters (input file path, SPARQL endpoint, credenti
 
 ```shell
 git clone --recursive https://github.com/MaastrichtU-IDS/data2services-pipeline.git
-
 cd data2services-pipeline
 
-# To update all submodules
+# Update all submodules
 git submodule update --recursive --remote
 ```
 
@@ -34,15 +34,15 @@ git submodule update --recursive --remote
 
 # Build
 
-`build.sh` is a convenience script to build all Docker images, but they can be built separately.
+`build.sh` is a convenience script to build/pull all Docker images, but they can be built separately.
 
-* You need to **download** [Apache Drill installation bundle](https://drill.apache.org/download/) and [GraphDB standalone zip](https://www.ontotext.com/products/graphdb/) (register to get an email with download URL). 
-* Then **put** the `.tar.gz` and `.zip` files in the `./apache-drill` and `./graphdb` repositories.
+* You need to **download** the [GraphDB standalone zip](https://www.ontotext.com/products/graphdb/) (register to get an email with download URL). 
+* Then **put** the `.zip` files in the `./graphdb` repositories.
+
+Build/pull all docker images:
 
 ```shell
-# Download Apache Drill
-curl http://apache.40b.nl/drill/drill-1.15.0/apache-drill-1.15.0.tar.gz -o apache-drill/apache-drill-1.15.0.tar.gz
-# Build docker images (don't forget to get GraphDB zip file)
+# Don't forget to put GraphDB zip file in the graphdb folder
 ./build.sh
 ```
 
@@ -54,10 +54,10 @@ In a production environment, it is considered that both [Apache Drill](https://d
 
 ```shell
 # Build and start apache-drill
-docker build -t apache-drill ./apache-drill
+docker pull vemonet/apache-drill
 docker run -dit --rm -p 8047:8047 -p 31010:31010 \
   --name drill -v /data:/data:ro \
-  apache-drill
+  vemonet/apache-drill
 # Build and start graphdb
 docker build -t graphdb ./graphdb
 docker run -d --rm --name graphdb -p 7200:7200 \
