@@ -6,7 +6,7 @@ This is a demonstrator ETL pipeline that **converts** relational databases, tabu
 * Following documentation **focuses on Linux & MacOS**.
 * **Windows documentation** can be found [here](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-on-Windows).
 * Modules are from the [Data2Services ecosystem](https://github.com/MaastrichtU-IDS/data2services-ecosystem). 
-* See [data2services-transform-biolink](https://github.com/MaastrichtU-IDS/data2services-transform-biolink) to run Data2Services transformation workflow using [CWL](https://www.commonwl.org/) or [Argo](https://argoproj.github.io/argo/).
+* See [data2services-transform-biolink](https://github.com/MaastrichtU-IDS/data2services-transform-biolink) to run Data2Services transformation workflows using [CWL](https://www.commonwl.org/) or [Argo](https://argoproj.github.io/argo/).
 
 ---
 
@@ -53,12 +53,12 @@ Build/pull all docker images:
 In a production environment, it is considered that both [Apache Drill](https://drill.apache.org/download/) and [GraphDB](https://www.ontotext.com/products/graphdb/) services are present. Other RDF triple stores should also work, but have not been tested yet.
 
 ```shell
-# Build and start apache-drill
+# Pull and start apache-drill
 docker pull vemonet/apache-drill
 docker run -dit --rm -p 8047:8047 -p 31010:31010 \
   --name drill -v /data:/data:ro \
   vemonet/apache-drill
-# Build and start graphdb
+# Build and start graphdb (don't forget to put the .zip file in the graphdb folder)
 docker build -t graphdb ./graphdb
 docker run -d --rm --name graphdb -p 7200:7200 \
   -v /data/graphdb:/opt/graphdb/home \
@@ -67,13 +67,13 @@ docker run -d --rm --name graphdb -p 7200:7200 \
 ```
 
 * For MacOS, make sure that access to the `/data` repository has been granted in Docker configuration.
-* Check the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-using-docker-compose) to use `docker-compose` to run the 2 containers.
+* See the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Run-using-docker-compose) to run those services using `docker-compose`.
 
 ---
 
 # Run using Docker commands
 
-* Check the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Docker-documentation) for more detail on how to run Docker containers (sharing volumes, link between containers)
+* Check the [Wiki](https://github.com/MaastrichtU-IDS/data2services-pipeline/wiki/Docker-documentation) if you need help running Docker containers (sharing volumes, link between containers)
 * The directory where are the **files to convert needs to be in `/data`** (to comply with [Apache Drill](https://drill.apache.org/download/) shared volume).
 * In those examples we are using `/data/data2services` as working directory (containing all the files, note that it is usually shared as `/data` in the Docker containers).
 
@@ -146,6 +146,7 @@ connectionURL = jdbc:drill:drillbit=drill:31010
 mappingFile = /data/mapping.trig
 outputFile = /data/rdf_output.nq
 format = NQUADS
+
 # Run R2RML for Drill or Postgres
 docker run -it --rm --link drill:drill \ # --link postgres:postgres
   -v /data/data2services:/data \
@@ -172,7 +173,9 @@ docker run -it --rm --link graphdb:graphdb -v /data/data2services:/data \
 
 ## Transform generic RDF to target model
 
-Last step is to transform the generic RDF generated a particular data model. See the [data2services-transform-repository](https://github.com/MaastrichtU-IDS/data2services-transform-repository) project for examples of transformation to the [BioLink model](https://biolink.github.io/biolink-model/docs/) using the [data2services-sparql-operations](https://github.com/MaastrichtU-IDS/data2services-sparql-operations) module to execute multiple SPARQL queries from a Github repository.
+Last step is to transform the generic RDF generated a particular data model. See the [data2services-transform-repository](https://github.com/MaastrichtU-IDS/data2services-transform-repository) project for examples of transformation to the [BioLink model](https://biolink.github.io/biolink-model/docs/). 
+
+We will use the [data2services-sparql-operations](https://github.com/MaastrichtU-IDS/data2services-sparql-operations) module to execute multiple SPARQL queries from a Github repository using variables to define the graphs URIs.
 
 ```shell
 docker pull vemonet/data2services-sparql-operations
@@ -183,14 +186,16 @@ docker run -d --link graphdb:graphdb \
   -f "https://github.com/MaastrichtU-IDS/data2services-transform-repository/tree/master/sparql/insert-biolink/uniprot" \
   -ep "http://graphdb:7200/repositories/test/statements" \
   -un MYUSERNAME -pw MYPASSWORD \
-  -var outputGraph:https://w3id.org/data2services/graph/biolink/uniprot
+  --var-outputGraph https://w3id.org/data2services/graph/biolink/uniprot
 
 # Load DrugBank xml2rdf generic RDF as BioLink to remote SPARQL endpoint
 docker run -d vemonet/data2services-sparql-operations \
   -f "https://github.com/MaastrichtU-IDS/data2services-transform-repository/tree/master/sparql/insert-biolink/drugbank" \
   -ep "http://graphdb.dumontierlab.com/repositories/ncats-red-kg/statements" \
   -un USERNAME -pw PASSWORD \
-  -var serviceUrl:http://localhost:7200/repositories/test inputGraph:http://data2services/graph/xml2rdf/drugbank outputGraph:https://w3id.org/data2services/graph/biolink/drugbank
+  --var-serviceUrl http://localhost:7200/repositories/test \
+  --var-inputGraph http://data2services/graph/xml2rdf/drugbank \
+  --var-outputGraph https://w3id.org/data2services/graph/biolink/drugbank
 ```
 
 * You can find example of SPARQL queries used for conversion to RDF BioLink:
