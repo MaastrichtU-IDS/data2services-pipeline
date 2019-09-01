@@ -186,16 +186,16 @@ docker run -d --link graphdb:graphdb \
   -f "https://github.com/MaastrichtU-IDS/data2services-transform-repository/tree/master/sparql/insert-biolink/uniprot" \
   -ep "http://graphdb:7200/repositories/test/statements" \
   -un MYUSERNAME -pw MYPASSWORD \
-  --var-outputGraph https://w3id.org/data2services/graph/biolink/uniprot
+  --var-output https://w3id.org/data2services/graph/biolink/uniprot
 
 # Load DrugBank xml2rdf generic RDF as BioLink to remote SPARQL endpoint
 docker run -d vemonet/data2services-sparql-operations \
   -f "https://github.com/MaastrichtU-IDS/data2services-transform-repository/tree/master/sparql/insert-biolink/drugbank" \
   -ep "http://graphdb.dumontierlab.com/repositories/ncats-red-kg/statements" \
   -un USERNAME -pw PASSWORD \
-  --var-serviceUrl http://localhost:7200/repositories/test \
-  --var-inputGraph http://data2services/graph/xml2rdf/drugbank \
-  --var-outputGraph https://w3id.org/data2services/graph/biolink/drugbank
+  --var-service http://localhost:7200/repositories/test \
+  --var-input http://data2services/graph/xml2rdf/drugbank \
+  --var-output https://w3id.org/data2services/graph/biolink/drugbank
 ```
 
 * You can find example of SPARQL queries used for conversion to RDF BioLink:
